@@ -18,10 +18,10 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-hero" />
       <motion.div className="container relative z-10" style={{ opacity: contentOpacity, y: contentY }}>
         <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: easeSpring }} className="max-w-3xl">
-          <p className="text-micro text-accent mb-5">Workflow design for small teams in Southeast Asia</p>
-          <h1 className="text-hero text-foreground">Your business runs on <em className="text-primary">memory and hope</em>.</h1>
-          <p className="mt-5 text-lead text-stone max-w-md">Quotes in WhatsApp. Schedules on whiteboards. Stock counts in someone&apos;s head. When that person is sick, everything stops. We turn mess into workflow — in two weeks.</p>
-          <motion.a href="#problem" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="btn-primary mt-7">See what breaks</motion.a>
+          <p className="text-micro text-accent mb-5">Workflows for the determined — in Southeast Asia</p>
+          <h1 className="text-hero text-foreground">Workflows for small teams in <em className="text-primary">Southeast Asia</em>.</h1>
+          <p className="mt-5 text-lead text-stone max-w-md">Your business runs on memory and hope. Quotes in WhatsApp. Schedules on whiteboards. When the person who knows everything is sick, everything stops. We build systems that keep moving — even when you are not there.</p>
+          <motion.a href="#problem" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="btn-primary mt-7">See how it works</motion.a>
         </motion.div>
       </motion.div>
       <motion.div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ opacity: indicatorOpacity }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.6 }}>

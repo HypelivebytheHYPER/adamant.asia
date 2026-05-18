@@ -24,10 +24,10 @@ export function Partner() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           <div>
             <ScrollReveal delay={0.1}>
-              <h2 className="text-display text-background mb-5">Ready to fix your <em className="italic">workflow</em>?</h2>
+              <h2 className="text-display text-background mb-5">Start your <em className="italic">project</em>.</h2>
             </ScrollReveal>
             <ScrollReveal delay={0.15}>
-              <p className="text-body text-dim max-w-sm mb-8">Tell us what is broken. We will tell you if we can fix it — and how long it takes. No pitch. No pressure.</p>
+              <p className="text-body text-dim max-w-sm mb-8">Tell us what you are building. We will show you how to get there — and how long it takes. No pitch. No pressure.</p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>

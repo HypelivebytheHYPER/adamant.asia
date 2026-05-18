@@ -8,20 +8,20 @@ import { easeSmooth } from "@/lib/animation";
 const phases = [
   {
     number: "01",
-    title: "Unpack the mess",
+    title: "Unpack how you work",
     body: "We sit with your team and map what actually happens. Not the org chart — the real flow. WhatsApp groups, whiteboards, the notebook under the counter.",
     deliverable: "Process map + pain points documented",
   },
   {
     number: "02",
-    title: "Design the fix",
+    title: "Design the flow",
     body: "We build the simplest possible workflow that solves the biggest pain first. No enterprise bloat. Just the steps you need, connected.",
     deliverable: "Workflow prototype + tool recommendations",
   },
   {
     number: "03",
-    title: "Build and break",
-    body: "First version in days, not months. Your team uses it. It breaks. We fix it. Three cycles and it stops breaking.",
+    title: "Build and refine",
+    body: "First version in days, not months. Your team uses it. We refine. Three cycles and it runs smooth.",
     deliverable: "Working system your team can use",
   },
   {
@@ -63,7 +63,7 @@ export function Process() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div className="lg:sticky lg:top-28">
             <ScrollReveal delay={0.1}>
-              <h2 className="text-display text-foreground mb-5">From chaos to workflow in <em className="italic">2 weeks</em>.</h2>
+              <h2 className="text-display text-foreground mb-5">How we build your workflow in <em className="italic">2 weeks</em>.</h2>
             </ScrollReveal>
             <ScrollReveal delay={0.15}>
               <p className="text-body text-stone max-w-sm">No six-month projects. No software you need a manual to use. We build fast, test with your team, and hand it over working.</p>

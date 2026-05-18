@@ -50,7 +50,7 @@ export function Proof() {
       <div className="container relative">
         <div className="max-w-2xl mb-10 md:mb-14">
           <ScrollReveal delay={0.08}>
-            <h2 className="text-display text-foreground mb-4">Workflows, websites, and <em className="italic">dashboards</em>.</h2>
+            <h2 className="text-display text-foreground mb-4">What we build for <em className="italic">teams like yours</em>.</h2>
           </ScrollReveal>
           <ScrollReveal delay={0.12}>
             <p className="text-body text-stone max-w-md">Configured for your tools. Your language. Your pace. Everything connects to everything else.</p>

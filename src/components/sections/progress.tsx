@@ -67,10 +67,10 @@ export function Progress() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div className="lg:sticky lg:top-28">
             <ScrollReveal delay={0.1}>
-              <h2 className="text-display text-foreground mb-5">Get your <em className="italic">Tuesdays back</em>.</h2>
+              <h2 className="text-display text-foreground mb-5">What you get: <em className="italic">12 hours back</em> every week.</h2>
             </ScrollReveal>
             <ScrollReveal delay={0.15}>
-              <p className="text-body text-stone max-w-sm mb-6">That is 12 hours a week you spend chasing people, checking stock, rewriting the same message. We give that back to you.</p>
+              <p className="text-body text-stone max-w-sm mb-6">That is time you spend chasing people, checking stock, rewriting the same message. We give that back to you.</p>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
               <p className="text-lead text-foreground italic">&ldquo;I forgot the workflow was there. The work just got easier.&rdquo;</p>

@@ -20,7 +20,7 @@ const painStates = [
   {
     before: "Friday night panic",
     after: "Monday morning clarity",
-    detail: "You discover the double-booking at 6 PM. The stockout after the client paid. The missed deadline when it is too late to fix.",
+    detail: "You discover the double-booking at 6 PM. The stockout after the client paid. The missed deadline when it is too late to catch.",
   },
 ];
 
@@ -85,10 +85,10 @@ export function Problem() {
       <div className="container relative">
         <div className="max-w-3xl mb-14 md:mb-18">
           <ScrollReveal>
-            <h2 className="text-display text-foreground mb-5">You did not start a business to become <em className="italic">the database</em>.</h2>
+            <h2 className="text-display text-foreground mb-5">Why does your team keep asking <em className="italic">you</em> the same questions?</h2>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <p className="text-body text-stone max-w-md">You started it to build, sell, create, lead. But somewhere along the way, you became the person everyone asks. The one who knows. The one who remembers.</p>
+            <p className="text-body text-stone max-w-md">You started a business to build, sell, create, lead. But somewhere along the way, you became the person everyone asks. The one who knows. The one who remembers.</p>
           </ScrollReveal>
         </div>
 
@@ -110,7 +110,7 @@ export function Problem() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.1} className="mt-14 md:mt-18 max-w-md">
-          <p className="text-body text-stone">This is not a staffing problem. It is a workflow problem. We have fixed it 47 times across manufacturing, retail, education, and services.</p>
+          <p className="text-body text-stone">This is not a staffing problem. It is a workflow problem. We have solved it 47 times across manufacturing, retail, education, and services.</p>
         </ScrollReveal>
       </div>
     </section>

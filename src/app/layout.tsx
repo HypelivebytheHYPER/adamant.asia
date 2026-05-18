@@ -25,11 +25,11 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://adamant.asia"),
-  title: "Adamant — Workflow Design for Small Teams in Southeast Asia",
+  title: "Adamant — Workflows for Small Teams in Southeast Asia",
   description:
-    "We turn your messy workflow into a clean system. Custom workflow design, CRM setup, dashboards, and websites for small teams in Bangkok, Singapore, and across Southeast Asia. Built in 2 weeks.",
+    "We build systems that keep your business moving. Custom workflows, CRM setup, dashboards, and websites for small teams in Bangkok, Singapore, and across Southeast Asia. Built in 2 weeks.",
   keywords: [
-    "workflow design",
+    "workflow automation",
     "small business automation",
     "CRM setup",
     "Southeast Asia",
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Adamant — Workflow Design for Small Teams in Southeast Asia",
+    title: "Adamant — Workflows for Small Teams in Southeast Asia",
     description:
-      "We turn your messy workflow into a clean system. Built in 2 weeks. For teams in Bangkok, Singapore, and across SEA.",
+      "We build systems that keep your business moving. Built in 2 weeks. For teams in Bangkok, Singapore, and across SEA.",
     type: "website",
     locale: "en_US",
     url: "https://adamant.asia",
@@ -70,15 +70,15 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Adamant — Workflow design for small teams in Southeast Asia",
+        alt: "Adamant — Workflows for small teams in Southeast Asia",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adamant — Workflow Design for Small Teams in Southeast Asia",
+    title: "Adamant — Workflows for Small Teams in Southeast Asia",
     description:
-      "We turn your messy workflow into a clean system. Built in 2 weeks.",
+      "We build systems that keep your business moving. Built in 2 weeks.",
     images: ["/og-image.svg"],
   },
   icons: {
