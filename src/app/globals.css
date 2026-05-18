@@ -1,26 +1,553 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Container query support for component-local responsive typography */
+@container (min-width: 400px) {
+  .cq\:text-headline {
+    font-size: clamp(1.25rem, 2.5cqi, 2rem);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   ADAMANT.ASIA — Design System 2026
+   Synthesis: Cora.ai editorial warmth + QBDS token architecture
+   + Neuropsychology cognitive load principles.
+   
+   QBDS patterns adopted:
+   - Semantic token naming: fg-*, fill-*, stroke-*, surface-*
+   - State layer overlays: hover/pressed/disabled as overlays
+   - Elevation system: directional shadows with opacity tokens
+   - Radius mode: sharp default, 8px in radius-mode
+   ============================================================ */
+
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
+  --font-heading: var(--font-newsreader);
+
+  /* Radii — 8px base (Cora direction + QBDS radius-mode) */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+
+  /* Semantic bindings — QBDS-inspired naming */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* QBDS-style semantic tokens */
+  --color-fg-primary: var(--foreground);
+  --color-fg-secondary: var(--stone);
+  --color-fg-tertiary: var(--dim);
+  --color-fg-disabled: var(--dim);
+  --color-fg-inverse: var(--background);
+
+  --color-fill-primary: var(--primary);
+  --color-fill-secondary: var(--secondary);
+  --color-fill-muted: var(--muted);
+  --color-fill-inverse: var(--foreground);
+
+  --color-stroke-primary: var(--border);
+  --color-stroke-secondary: rgba(27, 27, 24, 0.12);
+  --color-stroke-active: var(--primary);
+
+  --color-surface-primary: var(--card);
+  --color-surface-secondary: var(--surface-raised);
+  --color-surface-base: var(--background);
+
+  /* State layer overlays — QBDS pattern */
+  --color-overlay-hover: rgba(15, 118, 110, 0.06);
+  --color-overlay-pressed: rgba(15, 118, 110, 0.12);
+  --color-overlay-disabled: rgba(27, 27, 24, 0.04);
+
+  /* Animation tokens */
+  --animate-marquee: marquee var(--duration, 40s) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear infinite;
+
+  /* Adamant custom tokens */
+  --color-paper: #f2f2ee;
+  --color-ink: #1b1b18;
+  --color-teal: #0f766e;
+  --color-amber: #b45309;
+  --color-teal-light: #14b8a6;
+  --color-amber-light: #d97706;
+  --color-stone: #6b6560;
+  --color-mist: #e8e8e3;
+  --color-dim: #9c9c96;
+  --color-warm: #f5f0e8;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fafaf8;
+  --color-verse: #4a4a45;
+
+  /* Easing tokens */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-dramatic: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+:root {
+  /* === COLOR PALETTE ===
+     Cora.ai direction: warm gray scale, not pure black/white.
+     QBDS direction: semantic tokens with opacity variants.
+  */
+  --background: #f2f2ee;
+  --foreground: #1b1b18;
+
+  /* Surfaces */
+  --card: #ffffff;
+  --card-foreground: #1b1b18;
+  --popover: #ffffff;
+  --popover-foreground: #1b1b18;
+
+  /* Primary — Deep Teal */
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+
+  /* Secondary — Warm Stone */
+  --secondary: #e8e8e3;
+  --secondary-foreground: #1b1b18;
+
+  /* Accent — Amber Sun */
+  --accent: #b45309;
+  --accent-foreground: #ffffff;
+
+  /* Muted scale */
+  --muted: #e8e8e3;
+  --muted-foreground: #6b6560;
+
+  /* Utility */
+  --destructive: #b91c1c;
+  --border: rgba(27, 27, 24, 0.07);
+  --input: rgba(27, 27, 24, 0.07);
+  --ring: #0f766e;
+
+  /* Shape — 8px base (Cora + QBDS radius-mode) */
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  ::selection {
+    background: rgba(15, 118, 110, 0.15);
+    color: #1b1b18;
+  }
+}
+
+@layer utilities {
+  /* === FLUID TYPOGRAPHY ===
+     Mobile-first: base tokens are mobile-appropriate, scale up with viewport.
+     Newsreader (serif) for ALL editorial text.
+     Geist Sans ONLY for nav/UI chrome.
+
+     2026 SEA-mobile-first approach:
+     - Minimums tuned for 360px–414px devices (iPhone SE, budget Android)
+     - Body minimum raised to 1rem (16px) for readability
+     - Touch targets: 48px minimum
+  */
+  .text-hero {
+    font-family: var(--font-newsreader);
+    font-size: clamp(2rem, 4.5vw + 0.5rem, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 400;
+  }
+
+  .text-hero em,
+  .text-hero .italic-accent {
+    font-style: italic;
+    color: var(--primary);
+  }
+
+  .text-display {
+    font-family: var(--font-newsreader);
+    font-size: clamp(1.5rem, 2.2vw + 0.5rem, 2.25rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+  }
+
+  .text-display em,
+  .text-display .italic-accent {
+    font-style: italic;
+    color: var(--primary);
+  }
+
+  .text-headline {
+    font-family: var(--font-newsreader);
+    font-size: clamp(1rem, 0.8vw + 0.5rem, 1.25rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+
+  .text-lead {
+    font-family: var(--font-newsreader);
+    font-size: clamp(0.9375rem, 0.8vw + 0.4rem, 1.0625rem);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+  }
+
+  .text-body {
+    font-family: var(--font-geist-sans);
+    font-size: clamp(1rem, 0.8vw + 0.6rem, 1.0625rem);
+    line-height: 1.65;
+  }
+
+  .text-caption {
+    font-family: var(--font-geist-sans);
+    font-size: clamp(0.75rem, 0.4vw + 0.5rem, 0.8125rem);
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  .text-micro {
+    font-family: var(--font-geist-sans);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* UI-specific text — Geist Sans only */
+  .text-ui {
+    font-family: var(--font-geist-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  /* === CONTAINER QUERY TYPOGRAPHY ===
+     For components that need to respond to their container, not viewport.
+     Usage: @container (min-width: 400px) { .cq\:text-headline { ... } }
+  */
+  @container (min-width: 400px) {
+    .cq\:text-headline {
+      font-size: clamp(1.25rem, 2.5cqi, 2rem);
+    }
+  }
+
+  /* === ELEVATION — QBDS-inspired directional shadows === */
+  .shadow-rest {
+    box-shadow: 0 1px 3px rgba(27, 27, 24, 0.04), 0 4px 12px rgba(27, 27, 24, 0.03);
+  }
+
+  .shadow-hover {
+    box-shadow: 0 2px 6px rgba(27, 27, 24, 0.05), 0 8px 24px rgba(27, 27, 24, 0.04);
+  }
+
+  .shadow-active {
+    box-shadow: 0 1px 2px rgba(27, 27, 24, 0.06);
+  }
+
+  /* === BUTTON STYLES (Cora gradient border + QBDS state layers) === */
+  .btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-geist-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--primary-foreground);
+    background: var(--foreground);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    padding: 2px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-geist-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--foreground);
+    background: transparent;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+  }
+
+  .btn-secondary:hover {
+    background: var(--secondary);
+    border-color: rgba(27, 27, 24, 0.12);
+  }
+
+  .btn-secondary-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-geist-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--background);
+    background: transparent;
+    border-radius: 8px;
+    border: 1px solid rgba(242, 242, 238, 0.2);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+  }
+
+  .btn-secondary-dark:hover {
+    background: rgba(242, 242, 238, 0.05);
+    border-color: rgba(242, 242, 238, 0.3);
+  }
+
+  /* === NAVIGATION ===
+     No glass. Solid color transitions only.
+  */
+  .nav-solid {
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-transparent {
+    background: transparent;
+    border-bottom: 1px solid transparent;
+  }
+
+  /* === ANIMATION EASINGS === */
+  .ease-spring {
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .ease-smooth {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ease-dramatic {
+    transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+  }
+
+  /* === GRADIENTS ===
+     Hero: Cora technique — cream → transparent → cream
+  */
+  .bg-gradient-hero {
+    background: linear-gradient(
+      180deg,
+      rgba(242, 242, 238, 0.85) 0%,
+      rgba(242, 242, 238, 0.2) 35%,
+      rgba(242, 242, 238, 0) 55%,
+      rgba(242, 242, 238, 0.3) 75%,
+      rgba(242, 242, 238, 0.95) 100%
+    );
+  }
+
+  .bg-gradient-warm {
+    background: linear-gradient(135deg, var(--warm) 0%, #faf8f5 100%);
+  }
+
+  /* === CHAPTER MARKER ===
+     Large watermark numbers used across all sections.
+  */
+  .text-chapter {
+    font-family: var(--font-newsreader);
+    font-size: clamp(6rem, 15vw, 12rem);
+    line-height: 1;
+    font-weight: 400;
+    color: var(--stone);
+    opacity: 0.06;
+  }
+
+  /* === CONTAINER === */
+  .container {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+  }
+
+  /* === FLUID SPACING ===
+     2026 standard: clamp() for macro rhythm, breakpoints for architecture.
+     Base unit: 0.25rem (4px) — aligns with Tailwind's spacing scale.
+  */
+  .section-pad {
+    padding-top: clamp(3rem, 5vw + 1rem, 5.5rem);
+    padding-bottom: clamp(3rem, 5vw + 1rem, 5.5rem);
+  }
+
+  .section-pad-sm {
+    padding-top: clamp(2.5rem, 5vw + 0.5rem, 5rem);
+    padding-bottom: clamp(2.5rem, 5vw + 0.5rem, 5rem);
+  }
+
+  .gap-fluid {
+    gap: clamp(1rem, 2vw + 0.25rem, 2rem);
+  }
+
+  .gap-fluid-lg {
+    gap: clamp(1.5rem, 3vw + 0.5rem, 3rem);
+  }
+
+  /* === TOUCH TARGETS ===
+     WCAG 2.2 minimum: 24×24px. Platform comfort: 44–48px.
+     We use 48px as the comfortable minimum for primary actions.
+  */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .touch-target-sm {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* === OPACITY UTILITIES ===
+     Tailwind v4 doesn't include opacity-2/3 by default.
+  */
+  .opacity-2 {
+    opacity: 0.02;
+  }
+
+  .opacity-3 {
+    opacity: 0.03;
+  }
+
+  /* Scale utilities not in default Tailwind v4 */
+  .scale-115 {
+    --tw-scale-x: 1.15;
+    --tw-scale-y: 1.15;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  /* === QBDS STATE LAYER OVERLAYS === */
+  .state-hover {
+    transition: background-color 0.2s var(--ease-smooth);
+  }
+
+  .state-hover:hover {
+    background-color: var(--color-overlay-hover);
+  }
+
+  .state-pressed:active {
+    background-color: var(--color-overlay-pressed);
+  }
+
+  /* === MARQUEE KEYFRAMES === */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap, 1rem)));
+    }
+  }
+
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap, 1rem)));
+    }
+  }
+
+  /* === MOTION SAFETY ===
+     motion-safe: only animate when user has not requested reduced motion.
+     This pairs with Tailwind's motion-safe variant.
+  */
+  .motion-safe\:animate-marquee {
+    animation: marquee var(--duration, 40s) linear infinite;
+  }
+
+  .motion-safe\:animate-marquee-vertical {
+    animation: marquee-vertical var(--duration, 40s) linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .motion-safe\:animate-marquee,
+    .motion-safe\:animate-marquee-vertical {
+      animation: none !important;
+    }
+  }
 }

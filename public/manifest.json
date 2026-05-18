@@ -1,0 +1,20 @@
+{
+  "name": "Adamant — Workflow Design",
+  "short_name": "Adamant",
+  "description": "Workflow design for small teams in Southeast Asia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f2ee",
+  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
