@@ -1,39 +1,93 @@
 "use client";
 
 import { BlurFade } from "@/components/blur-fade";
-import { WorkflowDiagram } from "@/components/workflow-nodes";
+import { AnimatedList } from "@/components/animated-list";
+import { Terminal, TypingAnimation, AnimatedSpan } from "@/components/terminal";
+import { MessageSquare, Mail, ShoppingCart, HelpCircle, CheckCircle2, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const beforeNodes = [
-  { id: "line", x: 55, y: 45, label: "LINE", r: 22 },
-  { id: "email", x: 115, y: 45, label: "Email", r: 22 },
-  { id: "team", x: 175, y: 45, label: "Team", r: 22 },
-  { id: "orders", x: 235, y: 45, label: "Orders", r: 22 },
-  { id: "questions", x: 305, y: 45, label: "Questions", r: 26 },
-  { id: "you", x: 180, y: 155, label: "You", r: 36, fill: "var(--accent)", textFill: "var(--background)" },
+/* ── Before: chaotic notifications piling up ── */
+const chaosNotifications = [
+  { icon: MessageSquare, color: "text-green-600", label: "LINE", msg: "Min: Where is the price list?", time: "2m ago" },
+  { icon: Mail, color: "text-blue-600", label: "Email", msg: "Supplier: Updated invoice #4021", time: "5m ago" },
+  { icon: HelpCircle, color: "text-amber-600", label: "Team", msg: "Ploy: How do I process a refund?", time: "8m ago" },
+  { icon: ShoppingCart, color: "text-purple-600", label: "Orders", msg: "New order #8392 — pending review", time: "12m ago" },
+  { icon: MessageSquare, color: "text-green-600", label: "LINE", msg: "Client: Can we meet tomorrow?", time: "15m ago" },
+  { icon: Mail, color: "text-blue-600", label: "Email", msg: "3 overdue invoices need chasing", time: "22m ago" },
 ];
 
-const beforeConns = [
-  { from: "line", to: "you", color: "var(--accent)" },
-  { from: "email", to: "you", color: "var(--accent)" },
-  { from: "team", to: "you", color: "var(--accent)" },
-  { from: "orders", to: "you", color: "var(--accent)" },
-  { from: "questions", to: "you", color: "var(--accent)" },
-];
+function NotificationCard({
+  icon: Icon,
+  color,
+  label,
+  msg,
+  time,
+}: {
+  icon: React.ElementType;
+  color: string;
+  label: string;
+  msg: string;
+  time: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg bg-surface border border-border p-3 shadow-sm">
+      <div className={cn("flex-shrink-0", color)}>
+        <Icon size={16} strokeWidth={2} />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-medium text-stone uppercase tracking-wider">{label}</span>
+          <span className="text-[10px] text-dim">{time}</span>
+        </div>
+        <p className="text-caption text-foreground truncate">{msg}</p>
+      </div>
+      <div className="flex-shrink-0 w-2 h-2 rounded-full bg-accent animate-pulse" />
+    </div>
+  );
+}
 
-const afterNodes = [
-  { id: "inputs", x: 70, y: 100, label: "Inputs", r: 24 },
-  { id: "system", x: 200, y: 100, label: "System", r: 30, fill: "var(--primary)", textFill: "var(--background)" },
-  { id: "auto", x: 340, y: 55, label: "Auto", r: 22 },
-  { id: "dash", x: 340, y: 100, label: "Dash", r: 22 },
-  { id: "self", x: 340, y: 145, label: "Self", r: 22 },
-];
-
-const afterConns = [
-  { from: "inputs", to: "system", animated: true },
-  { from: "system", to: "auto", animated: true },
-  { from: "system", to: "dash", animated: true },
-  { from: "system", to: "self", animated: true },
-];
+/* ── After: terminal showing system auto-responses ── */
+function SystemTerminal() {
+  return (
+    <Terminal title="adamant-system" className="h-full">
+      <div className="space-y-2">
+        <TypingAnimation delay={400} duration={30}>
+          $ adamant init --workflow=sales
+        </TypingAnimation>
+        <AnimatedSpan delay={1200} className="text-green-400/80">
+          <CheckCircle2 size={12} className="inline mr-1.5" />
+          Connected: LINE, Lark, Email, Shopify
+        </AnimatedSpan>
+        <AnimatedSpan delay={1800} className="text-green-400/80">
+          <CheckCircle2 size={12} className="inline mr-1.5" />
+          Auto-responder: active
+        </AnimatedSpan>
+        <AnimatedSpan delay={2200} className="text-green-400/80">
+          <CheckCircle2 size={12} className="inline mr-1.5" />
+          Dashboard: live
+        </AnimatedSpan>
+        <TypingAnimation delay={2800} duration={25}>
+          $ adamant status
+        </TypingAnimation>
+        <AnimatedSpan delay={3400} className="text-inverse-muted">
+          <Zap size={12} className="inline mr-1.5 text-primary" />
+          23 questions answered today
+        </AnimatedSpan>
+        <AnimatedSpan delay={3800} className="text-inverse-muted">
+          <Zap size={12} className="inline mr-1.5 text-primary" />
+          0 tasks waiting on you
+        </AnimatedSpan>
+        <AnimatedSpan delay={4200} className="text-inverse-muted">
+          <Zap size={12} className="inline mr-1.5 text-primary" />
+          Avg response time: 12 seconds
+        </AnimatedSpan>
+        <TypingAnimation delay={5000} duration={20}>
+          $ _
+        </TypingAnimation>
+      </div>
+    </Terminal>
+  );
+}
 
 export function Problem() {
   return (
@@ -54,32 +108,24 @@ export function Problem() {
 
         <BlurFade delay={0.2} className="space-block">
           <div className="grid md:grid-cols-2 gap-4">
-            {/* Before — chaos */}
+            {/* Before — chaos notifications */}
             <div className="rounded-xl bg-surface border border-border p-5">
               <p className="text-micro text-accent uppercase tracking-wider mb-4">Before</p>
-              <WorkflowDiagram
-                viewBoxWidth={360}
-                viewBoxHeight={210}
-                nodes={beforeNodes}
-                connections={beforeConns}
-                ariaLabel="Before: all channels converge on one person"
-              />
-              <p className="text-caption text-stone mt-3 text-center">
+              <AnimatedList delay={600} staggerDelay={1400}>
+                {chaosNotifications.map((n, i) => (
+                  <NotificationCard key={i} {...n} />
+                ))}
+              </AnimatedList>
+              <p className="text-caption text-stone mt-4 text-center">
                 Everything converges on one person.
               </p>
             </div>
 
-            {/* After — system */}
+            {/* After — system terminal */}
             <div className="rounded-xl bg-surface border border-border p-5">
               <p className="text-micro text-primary uppercase tracking-wider mb-4">After</p>
-              <WorkflowDiagram
-                viewBoxWidth={400}
-                viewBoxHeight={200}
-                nodes={afterNodes}
-                connections={afterConns}
-                ariaLabel="After: one system handles every channel automatically"
-              />
-              <p className="text-caption text-stone mt-3 text-center">
+              <SystemTerminal />
+              <p className="text-caption text-stone mt-4 text-center">
                 One system handles every channel.
               </p>
             </div>

@@ -624,6 +624,25 @@
     background-color: var(--color-overlay-pressed);
   }
 
+  /* === ORBIT KEYFRAMES === */
+  @keyframes orbit-normal {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes orbit-reverse {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
   /* === MARQUEE KEYFRAMES === */
   @keyframes marquee {
     from {
@@ -653,6 +672,15 @@
 
   .motion-safe\:animate-marquee-vertical {
     animation: marquee-vertical var(--duration, 40s) linear infinite;
+  }
+
+  /* Orbit animations */
+  [style*="orbit-normal"] {
+    animation: orbit-normal var(--orbit-duration, 20s) linear infinite;
+  }
+
+  [style*="orbit-reverse"] {
+    animation: orbit-reverse var(--orbit-duration, 20s) linear infinite;
   }
 
   /* === DARK MODE ===

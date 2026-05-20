@@ -3,6 +3,9 @@
 import { BlurFade } from "@/components/blur-fade";
 import { Text3DFlip } from "@/components/text-3d-flip";
 import { WorkflowDiagram } from "@/components/workflow-nodes";
+import { AnimatedList, AnimatedListItem } from "@/components/animated-list";
+import { Map, PenTool, Hammer, Rocket } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const pipelineNodes = [
   { id: "map", x: 55, y: 50, label: "Map", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
@@ -18,10 +21,10 @@ const pipelineConns = [
 ];
 
 const phases = [
-  { title: "Map", detail: "Find the three highest-impact fixes." },
-  { title: "Design", detail: "Prototype in your tools within 3 days." },
-  { title: "Build", detail: "Your team tests. We adjust." },
-  { title: "Run", detail: "Handover + 30-day support." },
+  { title: "Map", detail: "Find the three highest-impact fixes.", icon: Map, color: "text-primary" },
+  { title: "Design", detail: "Prototype in your tools within 3 days.", icon: PenTool, color: "text-primary" },
+  { title: "Build", detail: "Your team tests. We adjust.", icon: Hammer, color: "text-primary" },
+  { title: "Run", detail: "Handover + 30-day support.", icon: Rocket, color: "text-teal" },
 ];
 
 export function Process() {
@@ -50,13 +53,25 @@ export function Process() {
               connections={pipelineConns}
               ariaLabel="Four-step pipeline: Map, Design, Build, Run"
             />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
-              {phases.map((p) => (
-                <div key={p.title} className="text-center">
-                  <p className="text-caption text-foreground font-medium mb-0.5">{p.title}</p>
-                  <p className="text-caption text-stone">{p.detail}</p>
-                </div>
-              ))}
+
+            {/* Phase cards — sequentially animated */}
+            <div className="mt-6">
+              <AnimatedList delay={400} staggerDelay={900}>
+                {phases.map((p) => (
+                  <div
+                    key={p.title}
+                    className="flex items-center gap-4 rounded-lg bg-background border border-border/50 p-4 hover:border-primary/20 transition-colors"
+                  >
+                    <div className={cn("flex-shrink-0 w-10 h-10 rounded-lg bg-muted flex items-center justify-center", p.color)}>
+                      <p.icon size={18} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-caption text-foreground font-medium">{p.title}</p>
+                      <p className="text-caption text-stone">{p.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </AnimatedList>
             </div>
           </div>
         </BlurFade>

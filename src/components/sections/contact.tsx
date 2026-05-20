@@ -6,12 +6,44 @@ import { CornerPlus } from "@/components/ui/corner-plus";
 import { ContactForm } from "@/components/contact-form";
 import { ScrollParallax } from "@/components/scroll-parallax";
 import { DottedMap } from "@/components/dotted-map";
-import { Mail, MapPin } from "lucide-react";
+import { Terminal, TypingAnimation, AnimatedSpan } from "@/components/terminal";
+import { Mail, MapPin, Calendar, ArrowRight } from "lucide-react";
 
 const markers = [
   { lat: 15.87, lng: 100.9925, size: 2.5, pulse: true },
   { lat: 1.3521, lng: 103.8198, size: 2.5, pulse: true },
 ];
+
+function BookingTerminal() {
+  return (
+    <Terminal title="adamant-booking" className="mb-6">
+      <div className="space-y-2">
+        <TypingAnimation delay={300} duration={35}>
+          $ adamant book --discovery
+        </TypingAnimation>
+        <AnimatedSpan delay={1000} className="text-primary/80">
+          <Calendar size={12} className="inline mr-1.5" />
+          Checking availability...
+        </AnimatedSpan>
+        <AnimatedSpan delay={1600} className="text-green-400/80">
+          ✓ Next available: This Thursday, 2pm ICT
+        </AnimatedSpan>
+        <AnimatedSpan delay={2100} className="text-inverse-muted">
+          — 45-minute workflow audit
+        </AnimatedSpan>
+        <AnimatedSpan delay={2400} className="text-inverse-muted">
+          — Live problem mapping
+        </AnimatedSpan>
+        <AnimatedSpan delay={2700} className="text-inverse-muted">
+          — Fixed-price proposal within 48h
+        </AnimatedSpan>
+        <TypingAnimation delay={3400} duration={30}>
+          $ _
+        </TypingAnimation>
+      </div>
+    </Terminal>
+  );
+}
 
 export function Contact() {
   return (
@@ -36,7 +68,12 @@ export function Contact() {
               <h2 className="text-display text-background mb-5">Fix your <em className="italic">workflow</em>.</h2>
             </BlurFade>
             <BlurFade delay={0.18}>
-              <p className="text-body text-inverse-weak max-w-sm mb-8">What's broken? We'll map the fix and give you a timeline. No pitch.</p>
+              <p className="text-body text-inverse-weak max-w-sm mb-8">What&apos;s broken? We&apos;ll map the fix and give you a timeline. No pitch.</p>
+            </BlurFade>
+
+            {/* CLI-style booking terminal */}
+            <BlurFade delay={0.22}>
+              <BookingTerminal />
             </BlurFade>
 
             <BlurFade delay={0.26}>
