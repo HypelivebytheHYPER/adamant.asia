@@ -26,9 +26,9 @@ export function Terminal({ children, className, title = "adamant" }: TerminalPro
       {/* Terminal header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border/10">
         <div className="flex gap-1.5">
-          <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-          <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-          <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
+          <div className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
+          <div className="h-2.5 w-2.5 rounded-full bg-accent/70" />
+          <div className="h-2.5 w-2.5 rounded-full bg-primary/70" />
         </div>
         <span className="text-[11px] text-inverse-muted font-mono ml-2">{title}</span>
       </div>
