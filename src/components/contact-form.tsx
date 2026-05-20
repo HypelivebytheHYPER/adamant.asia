@@ -76,7 +76,7 @@ export function ContactForm() {
             }`}
           />
         ))}
-        <span className="text-micro text-dim ml-2">
+        <span className="text-micro text-stone ml-2">
           Step {step + 1} of 3
         </span>
       </div>
@@ -99,7 +99,7 @@ export function ContactForm() {
                   value={form.name}
                   onChange={(e) => update("name", e.target.value)}
                   placeholder="Thida, Min, Sarin..."
-                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-dim focus:outline-none focus:border-primary transition-colors"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-stone focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
               <div>
@@ -109,7 +109,7 @@ export function ContactForm() {
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
                   placeholder="you@company.com"
-                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-dim focus:outline-none focus:border-primary transition-colors"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-stone focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
               <div>
@@ -119,7 +119,7 @@ export function ContactForm() {
                   value={form.company}
                   onChange={(e) => update("company", e.target.value)}
                   placeholder="Optional"
-                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-dim focus:outline-none focus:border-primary transition-colors"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-3 text-body text-foreground placeholder:text-stone focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
             </div>
@@ -211,7 +211,7 @@ export function ContactForm() {
                 onChange={(e) => update("problem", e.target.value)}
                 placeholder="e.g. Everything is on WhatsApp."
                 rows={3}
-                className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-body text-foreground placeholder:text-dim focus:outline-none focus:border-primary transition-colors resize-none"
+                className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-body text-foreground placeholder:text-stone focus:outline-none focus:border-primary transition-colors resize-none"
               />
             </div>
             <div className="flex gap-3 mt-6">

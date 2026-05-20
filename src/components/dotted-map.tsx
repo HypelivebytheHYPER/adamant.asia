@@ -85,13 +85,12 @@ export function DottedMap<M extends Marker = Marker>({
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className={cn("text-dim/30", className)}
+      className={cn(className)}
       style={{ width: "100%", height: "100%", ...style }}
-      role="img"
-      aria-label="Map showing Adamant's presence in Southeast Asia"
+      aria-hidden="true"
       {...svgProps}
     >
-      {points.map((point, index) => {
+      {points.map((point) => {
         const rowIndex = yToRowIndex.get(point.y) ?? 0;
         const offsetX = stagger && rowIndex % 2 === 1 ? xStep / 2 : 0;
         return (

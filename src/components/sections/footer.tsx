@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { CornerPlus } from "@/components/ui/corner-plus";
 
 export function Footer() {
   return (
-    <footer className="bg-foreground border-t border-border/10">
-      <div className="container py-8">
+    <footer className="bg-foreground divider-dark relative overflow-hidden">
+      <div className="absolute top-0 right-8 hidden md:block">
+        <CornerPlus position="top-right" className="text-background/15" />
+      </div>
+      <div className="container space-strip">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background text-foreground text-caption font-normal">
@@ -16,13 +20,13 @@ export function Footer() {
             </span>
           </div>
 
-          <nav className="flex flex-wrap gap-6 text-ui text-dim">
-            <Link
-              href="/"
+          <nav className="flex flex-wrap gap-6 text-ui text-inverse-weak">
+            <a
+              href="#main"
               className="hover:text-background transition-colors duration-300"
             >
               Home
-            </Link>
+            </a>
             <a
               href="#problem"
               className="hover:text-background transition-colors duration-300"
@@ -39,18 +43,18 @@ export function Footer() {
               href="#proof"
               className="hover:text-background transition-colors duration-300"
             >
-              Work
+              Proof
             </a>
             <a
-              href="#partner"
+              href="#contact"
               className="hover:text-background transition-colors duration-300"
             >
               Contact
             </a>
           </nav>
 
-          <p className="text-caption text-stone">
-            &copy; {new Date().getFullYear()} Adamant. Built from human mess.
+          <p className="text-caption text-inverse-muted">
+            &copy; {new Date().getFullYear()} Adamant. Systems built from real human mess.
           </p>
         </div>
       </div>

@@ -31,24 +31,24 @@ export function Navigation() {
         <div className="hidden md:flex items-center gap-8">
           <a
             href="#problem"
-            className="text-ui text-muted-foreground hover:text-foreground transition-colors duration-300"
+            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
           >
             Problem
           </a>
           <a
             href="#process"
-            className="text-ui text-muted-foreground hover:text-foreground transition-colors duration-300"
+            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
           >
             Process
           </a>
           <a
             href="#proof"
-            className="text-ui text-muted-foreground hover:text-foreground transition-colors duration-300"
+            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
           >
             Proof
           </a>
-          <a href="#partner" className="btn-primary text-caption py-2 px-4">
-            Start a project
+          <a href="#contact" className="btn-primary text-caption py-2 px-4">
+            Contact us
           </a>
         </div>
         <button
@@ -74,30 +74,30 @@ export function Navigation() {
               <a
                 href="#problem"
                 onClick={closeMobile}
-                className="text-ui text-muted-foreground hover:text-foreground touch-target"
+                className="text-ui text-stone hover:text-foreground touch-target"
               >
                 Problem
               </a>
               <a
                 href="#process"
                 onClick={closeMobile}
-                className="text-ui text-muted-foreground hover:text-foreground touch-target"
+                className="text-ui text-stone hover:text-foreground touch-target"
               >
                 Process
               </a>
               <a
                 href="#proof"
                 onClick={closeMobile}
-                className="text-ui text-muted-foreground hover:text-foreground touch-target"
+                className="text-ui text-stone hover:text-foreground touch-target"
               >
                 Proof
               </a>
               <a
-                href="#partner"
+                href="#contact"
                 onClick={closeMobile}
                 className="text-ui text-primary touch-target"
               >
-                Start a project
+                Contact us
               </a>
             </div>
           </motion.div>

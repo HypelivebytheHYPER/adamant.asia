@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SmoothScroll } from "@/components/smooth-scroll";
+import { TOKENS } from "@/lib/tokens";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 
@@ -95,7 +98,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#f2f2ee",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: TOKENS.color.background },
+    { media: "(prefers-color-scheme: dark)", color: TOKENS.color.foreground },
+  ],
 };
 
 export default function RootLayout({
@@ -110,7 +116,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}
     >
       <body className="min-h-screen bg-background text-foreground">
-        {children}
+        <a href="#main" className="skip-link">Skip to content</a>
+        <SmoothScroll>{children}</SmoothScroll>
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -5,38 +5,32 @@ import { TrustedBy } from "@/components/trusted-by";
 import { JsonLd } from "@/components/json-ld";
 import { Hero } from "@/components/sections/hero";
 import { Problem } from "@/components/sections/problem";
-import { Process } from "@/components/sections/process";
-import { Progress } from "@/components/sections/progress";
-import { Proof } from "@/components/sections/proof";
-import { Partner } from "@/components/sections/partner";
+import { SectionLoader } from "@/components/section-loader";
 import { Footer } from "@/components/sections/footer";
 
 export default function Home() {
   return (
     <>
       <JsonLd />
-      <main className="min-h-screen bg-background text-foreground">
+      <main id="main" className="min-h-screen bg-background text-foreground isolation-auto">
         <ScrollProgress />
         <Navigation />
         <Hero />
         <TrustedBy />
         <Problem />
-        <Process />
-        <Progress />
-        <Proof />
+        <SectionLoader />
 
-        <Marquee className="py-6 md:py-8 bg-foreground" speed={50} gap={48}>
-          <MarqueeText text="Workflows for the determined." className="text-dim/[0.25]" />
-          <span className="text-dim/[0.15] text-headline">•</span>
-          <MarqueeText text="Small teams. Big vision." className="text-dim/[0.25]" />
-          <span className="text-dim/[0.15] text-headline">•</span>
-          <MarqueeText text="Southeast Asia." className="text-dim/[0.25]" />
-          <span className="text-dim/[0.15] text-headline">•</span>
-          <MarqueeText text="Built for those who will not quit." className="text-dim/[0.25]" />
-          <span className="text-dim/[0.15] text-headline">•</span>
+        <Marquee className="space-strip bg-foreground" speed={50} gap={48}>
+          <MarqueeText text="Build once. Run forever." className="text-inverse/[0.25]" />
+          <span className="text-inverse/[0.15] text-headline">•</span>
+          <MarqueeText text="Systems, not slogans." className="text-inverse/[0.25]" />
+          <span className="text-inverse/[0.15] text-headline">•</span>
+          <MarqueeText text="Your team should not need you for everything." className="text-inverse/[0.25]" />
+          <span className="text-inverse/[0.15] text-headline">•</span>
+          <MarqueeText text="Fix the workflow. Free the founder." className="text-inverse/[0.25]" />
+          <span className="text-inverse/[0.15] text-headline">•</span>
         </Marquee>
 
-        <Partner />
         <Footer />
       </main>
     </>

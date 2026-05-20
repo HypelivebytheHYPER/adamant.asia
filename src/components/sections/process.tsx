@@ -1,83 +1,78 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { ScrollReveal } from "@/components/scroll-reveal";
-import { easeSmooth } from "@/lib/animation";
+import { BlurFade } from "@/components/blur-fade";
+import { Text3DFlip } from "@/components/text-3d-flip";
+import { WorkflowDiagram } from "@/components/workflow-nodes";
 
-const phases = [
-  {
-    number: "01",
-    title: "Unpack how you work",
-    body: "We sit with your team and map what actually happens. Not the org chart — the real flow. WhatsApp groups, whiteboards, the notebook under the counter.",
-    deliverable: "Process map + pain points documented",
-  },
-  {
-    number: "02",
-    title: "Design the flow",
-    body: "We build the simplest possible workflow that solves the biggest pain first. No enterprise bloat. Just the steps you need, connected.",
-    deliverable: "Workflow prototype + tool recommendations",
-  },
-  {
-    number: "03",
-    title: "Build and refine",
-    body: "First version in days, not months. Your team uses it. We refine. Three cycles and it runs smooth.",
-    deliverable: "Working system your team can use",
-  },
-  {
-    number: "04",
-    title: "Hand it over",
-    body: "We train your team, document the workflow, and stay close for 30 days. Then you run it. We are here if something changes.",
-    deliverable: "Documentation + 30-day support",
-  },
+const pipelineNodes = [
+  { id: "map", x: 55, y: 50, label: "Map", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
+  { id: "design", x: 155, y: 50, label: "Design", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
+  { id: "build", x: 255, y: 50, label: "Build", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
+  { id: "handover", x: 355, y: 50, label: "Run", r: 22, fill: "var(--teal)", textFill: "var(--background)" },
 ];
 
-function PhaseCard({ phase }: { phase: (typeof phases)[0] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "start 0.5"] });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.2, 1], { ease: easeSmooth });
-  const y = useTransform(scrollYProgress, [0, 1], [24, 0], { ease: easeSmooth });
-  const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"], { ease: easeSmooth });
+const pipelineConns = [
+  { from: "map", to: "design", animated: true },
+  { from: "design", to: "build", animated: true },
+  { from: "build", to: "handover", animated: true },
+];
 
-  return (
-    <motion.div ref={ref} style={{ opacity, y }} className="relative pl-7 md:pl-10 pb-10 last:pb-0">
-      <div className="absolute left-0 top-0 bottom-0 w-px bg-border"><motion.div style={{ height: lineWidth }} className="w-full bg-primary origin-top" /></div>
-      <div className="absolute left-0 top-0 -translate-x-1/2 w-2 h-2 rounded-full bg-primary ring-3 ring-background" />
-      <span className="text-micro text-dim mb-2 block">{phase.number}</span>
-      <h3 className="text-headline text-foreground mb-2">{phase.title}</h3>
-      <p className="text-body text-stone max-w-sm mb-3">{phase.body}</p>
-      <p className="text-caption text-primary">{phase.deliverable}</p>
-    </motion.div>
-  );
-}
+const phases = [
+  { title: "Map", detail: "Find the three highest-impact fixes." },
+  { title: "Design", detail: "Prototype in your tools within 3 days." },
+  { title: "Build", detail: "Your team tests. We adjust." },
+  { title: "Run", detail: "Handover + 30-day support." },
+];
 
 export function Process() {
   return (
     <section id="process" className="section-pad bg-gradient-warm relative overflow-hidden">
-      <div className="absolute top-[5%] right-[5%] select-none pointer-events-none" aria-hidden="true">
-        <span className="text-micro text-stone/[0.4] block text-right mb-2">HOW IT WORKS</span>
-        <span className="text-chapter leading-none block">02</span>
-      </div>
-
       <div className="container relative">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          <div className="lg:sticky lg:top-28">
-            <ScrollReveal delay={0.1}>
-              <h2 className="text-display text-foreground mb-5">How we build your workflow in <em className="italic">2 weeks</em>.</h2>
-            </ScrollReveal>
-            <ScrollReveal delay={0.15}>
-              <p className="text-body text-stone max-w-sm">No six-month projects. No software you need a manual to use. We build fast, test with your team, and hand it over working.</p>
-            </ScrollReveal>
-          </div>
-
-          <div className="pt-2">
-            {phases.map((phase) => (<PhaseCard key={phase.number} phase={phase} />))}
-          </div>
+        <div className="max-w-2xl space-block-sm">
+          <BlurFade delay={0.1}>
+            <h2 className="text-display text-foreground mb-4">
+              From chaos to <em className="italic">system</em> in two weeks.
+            </h2>
+          </BlurFade>
+          <BlurFade delay={0.18}>
+            <p className="text-body text-stone max-w-sm">
+              Prototype in your tools first. No migration. No learning curve.
+            </p>
+          </BlurFade>
         </div>
 
-        <ScrollReveal delay={0.1} className="mt-16 md:mt-20 max-w-lg">
-          <p className="text-lead text-foreground italic">&ldquo;First version breaks. Second improves. Third surprises.&rdquo;</p>
-        </ScrollReveal>
+        <BlurFade delay={0.2} className="space-block">
+          <div className="rounded-xl bg-surface border border-border p-5 md:p-6">
+            <WorkflowDiagram
+              viewBoxWidth={400}
+              viewBoxHeight={100}
+              nodes={pipelineNodes}
+              connections={pipelineConns}
+              ariaLabel="Four-step pipeline: Map, Design, Build, Run"
+            />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
+              {phases.map((p) => (
+                <div key={p.title} className="text-center">
+                  <p className="text-caption text-foreground font-medium mb-0.5">{p.title}</p>
+                  <p className="text-caption text-stone">{p.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </BlurFade>
+
+        <BlurFade delay={0.1} className="space-block-lg max-w-lg">
+          <Text3DFlip
+            as="p"
+            className="text-lead text-foreground italic cursor-pointer"
+            textClassName="text-foreground"
+            flipTextClassName="text-primary"
+            rotateDirection="right"
+            staggerFrom="center"
+          >
+            The best workflow is the one your team actually uses.
+          </Text3DFlip>
+        </BlurFade>
       </div>
     </section>
   );

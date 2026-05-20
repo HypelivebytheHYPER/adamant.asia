@@ -15,7 +15,7 @@
    ADAMANT.ASIA — Design System 2026
    Synthesis: Cora.ai editorial warmth + QBDS token architecture
    + Neuropsychology cognitive load principles.
-   
+
    QBDS patterns adopted:
    - Semantic token naming: fg-*, fill-*, stroke-*, surface-*
    - State layer overlays: hover/pressed/disabled as overlays
@@ -70,17 +70,25 @@
   --color-fill-inverse: var(--foreground);
 
   --color-stroke-primary: var(--border);
-  --color-stroke-secondary: rgba(27, 27, 24, 0.12);
+  --color-stroke-secondary: color-mix(in srgb, var(--foreground) 12%, transparent);
   --color-stroke-active: var(--primary);
 
   --color-surface-primary: var(--card);
   --color-surface-secondary: var(--surface-raised);
   --color-surface-base: var(--background);
 
+  /* Inverse text — for hardcoded dark surfaces (partner, footer, marquee, proof carousel).
+     These are fixed values tested against #1b1b18, independent of prefers-color-scheme.
+     Ratios: 15.4:1 (inverse), 8.3:1 (inverse-weak), 4.7:1 (inverse-muted) — all pass WCAG AA.
+  */
+  --color-inverse: #f2f2ee;
+  --color-inverse-weak: #b8b3aa;
+  --color-inverse-muted: #8a847a;
+
   /* State layer overlays — QBDS pattern */
-  --color-overlay-hover: rgba(15, 118, 110, 0.06);
-  --color-overlay-pressed: rgba(15, 118, 110, 0.12);
-  --color-overlay-disabled: rgba(27, 27, 24, 0.04);
+  --color-overlay-hover: color-mix(in srgb, var(--primary) 6%, transparent);
+  --color-overlay-pressed: color-mix(in srgb, var(--primary) 12%, transparent);
+  --color-overlay-disabled: color-mix(in srgb, var(--foreground) 4%, transparent);
 
   /* Animation tokens */
   --animate-marquee: marquee var(--duration, 40s) linear infinite;
@@ -90,12 +98,12 @@
   --color-paper: #f2f2ee;
   --color-ink: #1b1b18;
   --color-teal: #0f766e;
-  --color-amber: #b45309;
+  --color-amber: #9a4707;
   --color-teal-light: #14b8a6;
   --color-amber-light: #d97706;
   --color-stone: #6b6560;
   --color-mist: #e8e8e3;
-  --color-dim: #9c9c96;
+  --color-dim: #7a746d;
   --color-warm: #f5f0e8;
   --color-surface: #ffffff;
   --color-surface-raised: #fafaf8;
@@ -115,6 +123,14 @@
   --background: #f2f2ee;
   --foreground: #1b1b18;
 
+  /* Shadow colors — derived from tokens, used in inline styles where Tailwind v4
+     arbitrary values are unreliable (e.g. bento-grid hover shadows) */
+  --shadow-border: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --shadow-ambient: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --shadow-cast: color-mix(in srgb, var(--foreground) 3%, transparent);
+  --shadow-hover-border: color-mix(in srgb, var(--primary) 15%, transparent);
+  --shadow-hover-ambient: color-mix(in srgb, var(--foreground) 5%, transparent);
+
   /* Surfaces */
   --card: #ffffff;
   --card-foreground: #1b1b18;
@@ -130,7 +146,7 @@
   --secondary-foreground: #1b1b18;
 
   /* Accent — Amber Sun */
-  --accent: #b45309;
+  --accent: #9a4707;
   --accent-foreground: #ffffff;
 
   /* Muted scale */
@@ -139,8 +155,8 @@
 
   /* Utility */
   --destructive: #b91c1c;
-  --border: rgba(27, 27, 24, 0.07);
-  --input: rgba(27, 27, 24, 0.07);
+  --border: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --input: color-mix(in srgb, var(--foreground) 7%, transparent);
   --ring: #0f766e;
 
   /* Shape — 8px base (Cora + QBDS radius-mode) */
@@ -162,11 +178,58 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    color-scheme: light dark;
+  }
+
+  /* === SKIP LINK === */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-family: var(--font-geist-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: top 0.2s var(--ease-smooth);
+  }
+
+  .skip-link:focus {
+    top: 0.75rem;
+    outline: 2px solid var(--background);
+    outline-offset: 2px;
+  }
+
+  /* === FOCUS VISIBLE ===
+     High-visibility focus ring for keyboard navigation.
+     Respects :focus-visible to avoid rings on mouse clicks.
+  */
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Remove default browser outline when our custom ring is active */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Ensure focus rings are visible on dark backgrounds */
+  .bg-foreground :focus-visible,
+  [class*="bg-foreground"] :focus-visible {
+    outline-color: var(--primary);
+    outline-offset: 2px;
   }
 
   ::selection {
-    background: rgba(15, 118, 110, 0.15);
-    color: #1b1b18;
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--foreground);
   }
 }
 
@@ -187,6 +250,7 @@
     line-height: 1.1;
     letter-spacing: -0.03em;
     font-weight: 400;
+    text-wrap: balance;
   }
 
   .text-hero em,
@@ -201,6 +265,7 @@
     line-height: 1.2;
     letter-spacing: -0.02em;
     font-weight: 400;
+    text-wrap: balance;
   }
 
   .text-display em,
@@ -215,6 +280,7 @@
     line-height: 1.3;
     letter-spacing: -0.01em;
     font-weight: 400;
+    text-wrap: balance;
   }
 
   .text-lead {
@@ -264,15 +330,15 @@
 
   /* === ELEVATION — QBDS-inspired directional shadows === */
   .shadow-rest {
-    box-shadow: 0 1px 3px rgba(27, 27, 24, 0.04), 0 4px 12px rgba(27, 27, 24, 0.03);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--foreground) 4%, transparent), 0 4px 12px color-mix(in srgb, var(--foreground) 3%, transparent);
   }
 
   .shadow-hover {
-    box-shadow: 0 2px 6px rgba(27, 27, 24, 0.05), 0 8px 24px rgba(27, 27, 24, 0.04);
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--foreground) 5%, transparent), 0 8px 24px color-mix(in srgb, var(--foreground) 4%, transparent);
   }
 
   .shadow-active {
-    box-shadow: 0 1px 2px rgba(27, 27, 24, 0.06);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
   }
 
   /* === BUTTON STYLES (Cora gradient border + QBDS state layers) === */
@@ -288,7 +354,7 @@
     font-weight: 500;
     color: var(--primary-foreground);
     background: var(--foreground);
-    border-radius: 8px;
+    border-radius: var(--radius);
     border: none;
     cursor: pointer;
     transition: all 0.3s var(--ease-smooth);
@@ -299,7 +365,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 8px;
+    border-radius: var(--radius);
     padding: 2px;
     background: linear-gradient(
       180deg,
@@ -332,7 +398,7 @@
     font-weight: 500;
     color: var(--foreground);
     background: transparent;
-    border-radius: 8px;
+    border-radius: var(--radius);
     border: 1px solid var(--border);
     cursor: pointer;
     transition: all 0.3s var(--ease-smooth);
@@ -340,7 +406,7 @@
 
   .btn-secondary:hover {
     background: var(--secondary);
-    border-color: rgba(27, 27, 24, 0.12);
+    border-color: color-mix(in srgb, var(--foreground) 12%, transparent);
   }
 
   .btn-secondary-dark {
@@ -354,15 +420,15 @@
     font-weight: 500;
     color: var(--background);
     background: transparent;
-    border-radius: 8px;
-    border: 1px solid rgba(242, 242, 238, 0.2);
+    border-radius: var(--radius);
+    border: 1px solid color-mix(in srgb, var(--background) 20%, transparent);
     cursor: pointer;
     transition: all 0.3s var(--ease-smooth);
   }
 
   .btn-secondary-dark:hover {
-    background: rgba(242, 242, 238, 0.05);
-    border-color: rgba(242, 242, 238, 0.3);
+    background: color-mix(in srgb, var(--background) 5%, transparent);
+    border-color: color-mix(in srgb, var(--background) 30%, transparent);
   }
 
   /* === NAVIGATION ===
@@ -397,16 +463,16 @@
   .bg-gradient-hero {
     background: linear-gradient(
       180deg,
-      rgba(242, 242, 238, 0.85) 0%,
-      rgba(242, 242, 238, 0.2) 35%,
-      rgba(242, 242, 238, 0) 55%,
-      rgba(242, 242, 238, 0.3) 75%,
-      rgba(242, 242, 238, 0.95) 100%
+      color-mix(in srgb, var(--background) 85%, transparent) 0%,
+      color-mix(in srgb, var(--background) 20%, transparent) 35%,
+      transparent 55%,
+      color-mix(in srgb, var(--background) 30%, transparent) 75%,
+      color-mix(in srgb, var(--background) 95%, transparent) 100%
     );
   }
 
   .bg-gradient-warm {
-    background: linear-gradient(135deg, var(--warm) 0%, #faf8f5 100%);
+    background: linear-gradient(135deg, var(--warm) 0%, var(--surface-raised) 100%);
   }
 
   /* === CHAPTER MARKER ===
@@ -427,11 +493,18 @@
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   @media (min-width: 768px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
     .container {
       padding-left: 2.5rem;
       padding-right: 2.5rem;
@@ -458,6 +531,33 @@
 
   .gap-fluid-lg {
     gap: clamp(1.5rem, 3vw + 0.5rem, 3rem);
+  }
+
+  /* === MACRO BLOCK SPACING ===
+     Consistent vertical rhythm between content blocks within a section.
+     Used instead of raw Tailwind margins for internal section spacing.
+  */
+  .space-block-sm {
+    margin-bottom: clamp(2rem, 3vw + 0.5rem, 3.5rem);
+  }
+
+  .space-block {
+    margin-bottom: clamp(2.5rem, 4vw + 0.5rem, 4.5rem);
+  }
+
+  .space-block-lg {
+    margin-top: clamp(3rem, 4vw + 1rem, 5rem);
+    margin-bottom: clamp(3rem, 4vw + 1rem, 5rem);
+  }
+
+  .space-strip {
+    padding-top: clamp(1.25rem, 2vw + 0.25rem, 2rem);
+    padding-bottom: clamp(1.25rem, 2vw + 0.25rem, 2rem);
+  }
+
+  /* Divider between sections on dark backgrounds */
+  .divider-dark {
+    border-top: 1px solid color-mix(in srgb, var(--background) 12%, transparent);
   }
 
   /* === TOUCH TARGETS ===
@@ -490,6 +590,25 @@
     --tw-scale-x: 1.15;
     --tw-scale-y: 1.15;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  /* === 3D TRANSFORM UTILITIES ===
+     Required for Text3DFlip and other 3D text effects.
+  */
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .perspective-500 {
+    perspective: 500px;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
   }
 
   /* === QBDS STATE LAYER OVERLAYS === */
@@ -536,7 +655,40 @@
     animation: marquee-vertical var(--duration, 40s) linear infinite;
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* === DARK MODE ===
+   Respects system preference. Swaps light/dark tokens.
+   Keeps the warm gray scale — never pure black/white.
+*/
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1b1b18;
+    --foreground: #f2f2ee;
+
+    --card: #242420;
+    --card-foreground: #f2f2ee;
+    --popover: #242420;
+    --popover-foreground: #f2f2ee;
+
+    --primary: #14b8a6;
+    --primary-foreground: #0f1f1d;
+
+    --secondary: #2a2a26;
+    --secondary-foreground: #f2f2ee;
+
+    --accent: #f59e0b;
+    --accent-foreground: #1b1b18;
+
+    --muted: #2a2a26;
+    --muted-foreground: #a8a39a;
+
+    --destructive: #ef4444;
+    --border: color-mix(in srgb, var(--foreground) 10%, transparent);
+    --input: color-mix(in srgb, var(--foreground) 10%, transparent);
+    --ring: #14b8a6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {

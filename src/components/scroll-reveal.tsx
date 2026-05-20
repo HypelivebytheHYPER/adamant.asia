@@ -22,7 +22,7 @@ export function ScrollReveal({
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once, margin: "-100px" });
+  const isInView = useInView(ref, { once, margin: "-60px" });
 
   const directions = {
     up: { y: 40, x: 0 },
