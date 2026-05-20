@@ -2,8 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 /* Container query support for component-local responsive typography */
 @container (min-width: 400px) {
   .cq\:text-headline {
@@ -178,7 +176,7 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
-    color-scheme: light dark;
+    color-scheme: light;
   }
 
   /* === SKIP LINK === */
@@ -675,39 +673,6 @@
   }
 
   /* Orbit animations — handled inline by OrbitingCircles component */
-
-  /* === DARK MODE ===
-   Respects system preference. Swaps light/dark tokens.
-   Keeps the warm gray scale — never pure black/white.
-*/
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1b1b18;
-    --foreground: #f2f2ee;
-
-    --card: #242420;
-    --card-foreground: #f2f2ee;
-    --popover: #242420;
-    --popover-foreground: #f2f2ee;
-
-    --primary: #14b8a6;
-    --primary-foreground: #0f1f1d;
-
-    --secondary: #2a2a26;
-    --secondary-foreground: #f2f2ee;
-
-    --accent: #f59e0b;
-    --accent-foreground: #1b1b18;
-
-    --muted: #2a2a26;
-    --muted-foreground: #a8a39a;
-
-    --destructive: #ef4444;
-    --border: color-mix(in srgb, var(--foreground) 10%, transparent);
-    --input: color-mix(in srgb, var(--foreground) 10%, transparent);
-    --ring: #14b8a6;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
     *,
