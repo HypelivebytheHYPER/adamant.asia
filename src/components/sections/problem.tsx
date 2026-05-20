@@ -1,12 +1,11 @@
 "use client";
 
 import { BlurFade } from "@/components/blur-fade";
-import { AnimatedList } from "@/components/animated-list";
 import { Terminal, TypingAnimation, AnimatedSpan } from "@/components/terminal";
 import { MessageSquare, Mail, ShoppingCart, HelpCircle, CheckCircle2, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/* ── Before: chaotic notifications piling up ── */
+/* ── Before: chaotic notifications ── */
 const chaosNotifications = [
   { icon: MessageSquare, color: "text-teal", label: "LINE", msg: "Min: Where is the price list?", time: "2m ago" },
   { icon: Mail, color: "text-primary", label: "Email", msg: "Supplier: Updated invoice #4021", time: "5m ago" },
@@ -30,7 +29,7 @@ function NotificationCard({
   time: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-surface border border-border p-3 shadow-sm">
+    <div className="flex items-center gap-3 rounded-lg bg-background border border-border/60 p-3">
       <div className={cn("flex-shrink-0", color)}>
         <Icon size={16} strokeWidth={2} />
       </div>
@@ -46,42 +45,34 @@ function NotificationCard({
   );
 }
 
-/* ── After: terminal showing system auto-responses ── */
+/* ── After: terminal ── */
 function SystemTerminal() {
   return (
     <Terminal title="adamant-system" className="h-full">
       <div className="space-y-2">
-        <TypingAnimation delay={400} duration={30}>
+        <TypingAnimation delay={200} duration={25}>
           $ adamant init --workflow=sales
         </TypingAnimation>
-        <AnimatedSpan delay={1200} className="text-primary">
+        <AnimatedSpan delay={800} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Connected: LINE, Lark, Email, Shopify
         </AnimatedSpan>
-        <AnimatedSpan delay={1800} className="text-primary">
+        <AnimatedSpan delay={1100} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Auto-responder: active
         </AnimatedSpan>
-        <AnimatedSpan delay={2200} className="text-primary">
+        <AnimatedSpan delay={1400} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Dashboard: live
         </AnimatedSpan>
-        <TypingAnimation delay={2800} duration={25}>
+        <TypingAnimation delay={1800} duration={20}>
           $ adamant status
         </TypingAnimation>
-        <AnimatedSpan delay={3400} className="text-inverse-muted">
+        <AnimatedSpan delay={2200} className="text-inverse-muted">
           <Zap size={12} className="inline mr-1.5 text-primary" />
-          23 questions answered today
+          23 questions answered today · 0 waiting · 12s avg
         </AnimatedSpan>
-        <AnimatedSpan delay={3800} className="text-inverse-muted">
-          <Zap size={12} className="inline mr-1.5 text-primary" />
-          0 tasks waiting on you
-        </AnimatedSpan>
-        <AnimatedSpan delay={4200} className="text-inverse-muted">
-          <Zap size={12} className="inline mr-1.5 text-primary" />
-          Avg response time: 12 seconds
-        </AnimatedSpan>
-        <TypingAnimation delay={5000} duration={20}>
+        <TypingAnimation delay={2600} duration={20}>
           $ _
         </TypingAnimation>
       </div>
@@ -108,20 +99,20 @@ export function Problem() {
 
         <BlurFade delay={0.2} className="space-block">
           <div className="grid md:grid-cols-2 gap-4">
-            {/* Before — chaos notifications */}
+            {/* Before — all notifications visible */}
             <div className="rounded-xl bg-surface border border-border p-5">
               <p className="text-micro text-accent uppercase tracking-wider mb-4">Before</p>
-              <AnimatedList delay={600} staggerDelay={1400}>
+              <div className="flex flex-col gap-2">
                 {chaosNotifications.map((n, i) => (
                   <NotificationCard key={i} {...n} />
                 ))}
-              </AnimatedList>
+              </div>
               <p className="text-caption text-stone mt-4 text-center">
                 Everything converges on one person.
               </p>
             </div>
 
-            {/* After — system terminal */}
+            {/* After — terminal */}
             <div className="rounded-xl bg-surface border border-border p-5">
               <p className="text-micro text-primary uppercase tracking-wider mb-4">After</p>
               <SystemTerminal />

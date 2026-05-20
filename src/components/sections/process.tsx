@@ -3,9 +3,7 @@
 import { BlurFade } from "@/components/blur-fade";
 import { Text3DFlip } from "@/components/text-3d-flip";
 import { WorkflowDiagram } from "@/components/workflow-nodes";
-import { AnimatedList } from "@/components/animated-list";
 import { Map, PenTool, Hammer, Rocket } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const pipelineNodes = [
   { id: "map", x: 55, y: 50, label: "Map", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
@@ -21,10 +19,10 @@ const pipelineConns = [
 ];
 
 const phases = [
-  { title: "Map", detail: "Find the three highest-impact fixes.", icon: Map, color: "text-primary" },
-  { title: "Design", detail: "Prototype in your tools within 3 days.", icon: PenTool, color: "text-primary" },
-  { title: "Build", detail: "Your team tests. We adjust.", icon: Hammer, color: "text-primary" },
-  { title: "Run", detail: "Handover + 30-day support.", icon: Rocket, color: "text-teal" },
+  { num: "01", title: "Map", detail: "Find the three highest-impact fixes in your workflow.", icon: Map },
+  { num: "02", title: "Design", detail: "Prototype in your tools within 3 days.", icon: PenTool },
+  { num: "03", title: "Build", detail: "Your team tests. We adjust until it works.", icon: Hammer },
+  { num: "04", title: "Run", detail: "Handover + 30-day support. You own the system.", icon: Rocket },
 ];
 
 export function Process() {
@@ -44,6 +42,7 @@ export function Process() {
           </BlurFade>
         </div>
 
+        {/* Pipeline diagram */}
         <BlurFade delay={0.2} className="space-block">
           <div className="rounded-xl bg-surface border border-border p-5 md:p-6">
             <WorkflowDiagram
@@ -53,26 +52,31 @@ export function Process() {
               connections={pipelineConns}
               ariaLabel="Four-step pipeline: Map, Design, Build, Run"
             />
+          </div>
+        </BlurFade>
 
-            {/* Phase cards — sequentially animated */}
-            <div className="mt-6">
-              <AnimatedList delay={400} staggerDelay={900}>
-                {phases.map((p) => (
-                  <div
-                    key={p.title}
-                    className="flex items-center gap-4 rounded-lg bg-background border border-border/50 p-4 hover:border-primary/20 transition-colors"
-                  >
-                    <div className={cn("flex-shrink-0 w-10 h-10 rounded-lg bg-muted flex items-center justify-center", p.color)}>
-                      <p.icon size={18} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                      <p className="text-caption text-foreground font-medium">{p.title}</p>
-                      <p className="text-caption text-stone">{p.detail}</p>
-                    </div>
+        {/* Phase cards — clean grid, no sequential animation */}
+        <BlurFade delay={0.25} className="space-block">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {phases.map((p) => (
+              <div
+                key={p.title}
+                className="group relative rounded-xl bg-surface border border-border p-5 hover:border-primary/30 transition-all duration-300"
+              >
+                {/* Number watermark */}
+                <span className="absolute top-3 right-3 text-[2rem] font-serif leading-none text-foreground/[0.06] select-none">
+                  {p.num}
+                </span>
+
+                <div className="relative">
+                  <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-primary mb-3">
+                    <p.icon size={18} strokeWidth={1.5} />
                   </div>
-                ))}
-              </AnimatedList>
-            </div>
+                  <p className="text-caption text-foreground font-medium mb-1">{p.title}</p>
+                  <p className="text-caption text-stone leading-snug">{p.detail}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </BlurFade>
 

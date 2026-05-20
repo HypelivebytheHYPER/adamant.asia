@@ -5,7 +5,10 @@ import { TrustedBy } from "@/components/trusted-by";
 import { JsonLd } from "@/components/json-ld";
 import { Hero } from "@/components/sections/hero";
 import { Problem } from "@/components/sections/problem";
-import { SectionLoader } from "@/components/section-loader";
+import { Process } from "@/components/sections/process";
+import { Progress } from "@/components/sections/progress";
+import { Proof } from "@/components/sections/proof";
+import { Contact } from "@/components/sections/contact";
 import { Footer } from "@/components/sections/footer";
 
 export default function Home() {
@@ -18,7 +21,10 @@ export default function Home() {
         <Hero />
         <TrustedBy />
         <Problem />
-        <SectionLoader />
+        <Process />
+        <Progress />
+        <Proof />
+        <Contact />
 
         <Marquee className="space-strip bg-foreground" speed={50} gap={48}>
           <MarqueeText text="Build once. Run forever." className="text-inverse/[0.25]" />

@@ -18,26 +18,26 @@ function BookingTerminal() {
   return (
     <Terminal title="adamant-booking" className="mb-6">
       <div className="space-y-2">
-        <TypingAnimation delay={300} duration={35}>
+        <TypingAnimation delay={200} duration={25}>
           $ adamant book --discovery
         </TypingAnimation>
-        <AnimatedSpan delay={1000} className="text-primary/80">
+        <AnimatedSpan delay={700} className="text-primary/80">
           <Calendar size={12} className="inline mr-1.5" />
           Checking availability...
         </AnimatedSpan>
-        <AnimatedSpan delay={1600} className="text-primary">
+        <AnimatedSpan delay={1100} className="text-primary">
           ✓ Next available: This Thursday, 2pm ICT
         </AnimatedSpan>
-        <AnimatedSpan delay={2100} className="text-inverse-muted">
+        <AnimatedSpan delay={1400} className="text-inverse-muted">
           — 45-minute workflow audit
         </AnimatedSpan>
-        <AnimatedSpan delay={2400} className="text-inverse-muted">
+        <AnimatedSpan delay={1600} className="text-inverse-muted">
           — Live problem mapping
         </AnimatedSpan>
-        <AnimatedSpan delay={2700} className="text-inverse-muted">
+        <AnimatedSpan delay={1800} className="text-inverse-muted">
           — Fixed-price proposal within 48h
         </AnimatedSpan>
-        <TypingAnimation delay={3400} duration={30}>
+        <TypingAnimation delay={2200} duration={20}>
           $ _
         </TypingAnimation>
       </div>
