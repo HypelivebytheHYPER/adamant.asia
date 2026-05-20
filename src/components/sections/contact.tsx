@@ -7,7 +7,7 @@ import { ContactForm } from "@/components/contact-form";
 import { ScrollParallax } from "@/components/scroll-parallax";
 import { DottedMap } from "@/components/dotted-map";
 import { Terminal, TypingAnimation, AnimatedSpan } from "@/components/terminal";
-import { Mail, MapPin, Calendar, ArrowRight } from "lucide-react";
+import { Mail, MapPin, Calendar } from "lucide-react";
 
 const markers = [
   { lat: 15.87, lng: 100.9925, size: 2.5, pulse: true },
@@ -25,7 +25,7 @@ function BookingTerminal() {
           <Calendar size={12} className="inline mr-1.5" />
           Checking availability...
         </AnimatedSpan>
-        <AnimatedSpan delay={1600} className="text-green-400/80">
+        <AnimatedSpan delay={1600} className="text-primary">
           ✓ Next available: This Thursday, 2pm ICT
         </AnimatedSpan>
         <AnimatedSpan delay={2100} className="text-inverse-muted">

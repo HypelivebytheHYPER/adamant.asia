@@ -674,14 +674,7 @@
     animation: marquee-vertical var(--duration, 40s) linear infinite;
   }
 
-  /* Orbit animations */
-  [style*="orbit-normal"] {
-    animation: orbit-normal var(--orbit-duration, 20s) linear infinite;
-  }
-
-  [style*="orbit-reverse"] {
-    animation: orbit-reverse var(--orbit-duration, 20s) linear infinite;
-  }
+  /* Orbit animations — handled inline by OrbitingCircles component */
 
   /* === DARK MODE ===
    Respects system preference. Swaps light/dark tokens.

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Settings, MoreHorizontal, CheckCircle2, Clock, DollarSign, MessageSquare, TrendingUp, MousePointerClick, Eye } from "lucide-react";
+import { Search, Settings, CheckCircle2, Clock, DollarSign, MessageSquare, TrendingUp, MousePointerClick, Eye } from "lucide-react";
 
 const kols = [
   { name: "Thida", handle: "@thida.style", followers: "125K", status: "live", statusLabel: "Live" },

@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 
 /* ── Before: chaotic notifications piling up ── */
 const chaosNotifications = [
-  { icon: MessageSquare, color: "text-green-600", label: "LINE", msg: "Min: Where is the price list?", time: "2m ago" },
-  { icon: Mail, color: "text-blue-600", label: "Email", msg: "Supplier: Updated invoice #4021", time: "5m ago" },
-  { icon: HelpCircle, color: "text-amber-600", label: "Team", msg: "Ploy: How do I process a refund?", time: "8m ago" },
-  { icon: ShoppingCart, color: "text-purple-600", label: "Orders", msg: "New order #8392 — pending review", time: "12m ago" },
-  { icon: MessageSquare, color: "text-green-600", label: "LINE", msg: "Client: Can we meet tomorrow?", time: "15m ago" },
-  { icon: Mail, color: "text-blue-600", label: "Email", msg: "3 overdue invoices need chasing", time: "22m ago" },
+  { icon: MessageSquare, color: "text-teal", label: "LINE", msg: "Min: Where is the price list?", time: "2m ago" },
+  { icon: Mail, color: "text-primary", label: "Email", msg: "Supplier: Updated invoice #4021", time: "5m ago" },
+  { icon: HelpCircle, color: "text-accent", label: "Team", msg: "Ploy: How do I process a refund?", time: "8m ago" },
+  { icon: ShoppingCart, color: "text-stone", label: "Orders", msg: "New order #8392 — pending review", time: "12m ago" },
+  { icon: MessageSquare, color: "text-teal", label: "LINE", msg: "Client: Can we meet tomorrow?", time: "15m ago" },
+  { icon: Mail, color: "text-primary", label: "Email", msg: "3 overdue invoices need chasing", time: "22m ago" },
 ];
 
 function NotificationCard({
@@ -54,15 +54,15 @@ function SystemTerminal() {
         <TypingAnimation delay={400} duration={30}>
           $ adamant init --workflow=sales
         </TypingAnimation>
-        <AnimatedSpan delay={1200} className="text-green-400/80">
+        <AnimatedSpan delay={1200} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Connected: LINE, Lark, Email, Shopify
         </AnimatedSpan>
-        <AnimatedSpan delay={1800} className="text-green-400/80">
+        <AnimatedSpan delay={1800} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Auto-responder: active
         </AnimatedSpan>
-        <AnimatedSpan delay={2200} className="text-green-400/80">
+        <AnimatedSpan delay={2200} className="text-primary">
           <CheckCircle2 size={12} className="inline mr-1.5" />
           Dashboard: live
         </AnimatedSpan>

@@ -3,7 +3,7 @@
 import { BlurFade } from "@/components/blur-fade";
 import { Text3DFlip } from "@/components/text-3d-flip";
 import { WorkflowDiagram } from "@/components/workflow-nodes";
-import { AnimatedList, AnimatedListItem } from "@/components/animated-list";
+import { AnimatedList } from "@/components/animated-list";
 import { Map, PenTool, Hammer, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
