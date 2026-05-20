@@ -1,50 +1,48 @@
 "use client";
 
-import { ScrollReveal } from "@/components/scroll-reveal";
 import { BlurFade } from "@/components/blur-fade";
-import { FlickeringGrid } from "@/components/flickering-grid";
-import { Text3DFlip } from "@/components/text-3d-flip";
+import { Marquee, MarqueeText } from "@/components/marquee";
 
 const transformations = [
   {
     who: "Thida",
     industry: "Manufacturing",
     location: "Bangkok",
-    before: "Answering 20 questions a day.",
-    after: "Team finds answers without asking.",
+    before: "20 questions a day",
+    after: "Team self-serves",
     quote: "I stopped answering questions and started building again.",
   },
   {
     who: "Min",
     industry: "Retail",
     location: "Chiang Mai",
-    before: "Three months. No working system.",
-    after: "Dashboard live in three days.",
+    before: "3 months, no system",
+    after: "Dashboard in 3 days",
     quote: "We had a working prototype in three days. Not three months.",
   },
   {
     who: "Sarin",
     industry: "Education",
     location: "Phuket",
-    before: "$15,000 quote. Mostly unused.",
-    after: "One handoff fixed in one week.",
+    before: "$15K quote, unused",
+    after: "Fixed in one week",
     quote: "They fixed what was actually broken. Nothing more.",
   },
   {
     who: "Ploy",
     industry: "F&B",
     location: "Bangkok",
-    before: "Orders in three notebooks.",
-    after: "One LINE + Lark workflow.",
+    before: "Orders in 3 notebooks",
+    after: "LINE + Lark flow",
     quote: "No more lost orders.",
   },
 ];
 
 const stats = [
-  { value: "2 weeks", label: "average to first system" },
-  { value: "47", label: "teams unblocked" },
+  { value: "2 weeks", label: "to first system" },
+  { value: "47", label: "teams" },
   { value: "4", label: "countries" },
-  { value: "30 days", label: "support after handover" },
+  { value: "30 days", label: "support" },
 ];
 
 export function Proof() {
@@ -64,83 +62,67 @@ export function Proof() {
           </BlurFade>
         </div>
 
-        <ScrollReveal className="space-block">
-          <div className="grid md:grid-cols-2 gap-3">
+        <BlurFade delay={0.2} className="space-block">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             {transformations.map((t) => (
               <div
                 key={t.who}
-                className="group relative rounded-xl bg-surface border border-border overflow-hidden transition-all duration-500 hover:border-primary/20"
+                className="group relative rounded-lg bg-surface border border-border overflow-hidden transition-all duration-300 hover:border-primary/20"
               >
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-primary/30 via-accent/20 to-transparent" />
-                <div className="p-5 md:p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-foreground text-inverse text-micro font-medium">
+                <div className="p-3">
+                  {/* Name row */}
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-foreground text-inverse text-[10px] font-medium">
                       {t.who[0]}
                     </span>
-                    <div>
-                      <p className="text-caption text-foreground font-medium">{t.who}</p>
-                      <p className="text-micro text-stone">{t.industry}, {t.location}</p>
+                    <div className="min-w-0">
+                      <p className="text-caption text-foreground font-medium leading-tight truncate">{t.who}</p>
+                      <p className="text-[10px] text-stone leading-tight truncate">{t.industry}, {t.location}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-caption text-stone flex-1">{t.before}</span>
-                    <span className="text-caption text-primary flex-shrink-0">→</span>
-                    <span className="text-caption text-foreground flex-1">{t.after}</span>
+                  {/* Before → After */}
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className="text-[10px] text-stone truncate">{t.before}</span>
+                    <span className="text-[10px] text-primary flex-shrink-0">→</span>
+                    <span className="text-[10px] text-foreground truncate">{t.after}</span>
                   </div>
 
-                  <blockquote className="border-l-2 border-primary/30 pl-3">
-                    <p className="text-body italic text-foreground/90">&ldquo;{t.quote}&rdquo;</p>
-                  </blockquote>
+                  {/* Quote */}
+                  <p className="text-[10px] italic text-foreground/80 leading-snug">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
                 </div>
               </div>
             ))}
           </div>
-        </ScrollReveal>
+        </BlurFade>
 
-        <ScrollReveal className="space-block relative">
-          <div className="absolute -inset-4 -z-10 opacity-40 pointer-events-none overflow-hidden rounded-2xl">
-            <FlickeringGrid
-              squareSize={3}
-              gridGap={4}
-              color="var(--primary)"
-              maxOpacity={0.1}
-              flickerChance={0.12}
-            />
-          </div>
-          <div className="rounded-xl bg-surface border border-border p-5 md:p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {stats.map((s) => (
-                <div key={s.value}>
-                  <p className="text-headline text-primary mb-0.5">{s.value}</p>
-                  <p className="text-caption text-stone">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div className="grid md:grid-cols-3 gap-3">
-            {transformations.slice(0, 3).map((t) => (
-              <div key={t.who} className="rounded-xl bg-surface border border-border p-5">
-                <Text3DFlip
-                  as="p"
-                  className="text-body text-foreground italic mb-2 cursor-pointer"
-                  textClassName="text-foreground"
-                  flipTextClassName="text-primary"
-                  rotateDirection="right"
-                  staggerFrom="center"
-                >
-                  {t.quote}
-                </Text3DFlip>
-                <p className="text-caption text-stone">
-                  {t.who}, {t.industry.toLowerCase()}, {t.location}
-                </p>
+        {/* Stats — compact row */}
+        <BlurFade delay={0.1} className="space-block">
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-surface border border-border px-4 py-3">
+            {stats.map((s) => (
+              <div key={s.value} className="text-center">
+                <p className="text-caption text-primary font-medium">{s.value}</p>
+                <p className="text-[10px] text-stone">{s.label}</p>
               </div>
             ))}
           </div>
-        </ScrollReveal>
+        </BlurFade>
+
+        {/* Auto-scrolling quote marquee */}
+        <BlurFade delay={0.1}>
+          <Marquee className="space-strip bg-foreground" speed={40} gap={32}>
+            {transformations.map((t) => (
+              <span key={t.who} className="inline-flex items-center gap-2 text-inverse/60 text-caption whitespace-nowrap">
+                <span className="text-primary/60">&ldquo;{t.quote}&rdquo;</span>
+                <span className="text-inverse/30">— {t.who}, {t.location}</span>
+                <span className="text-inverse/20 mx-2">•</span>
+              </span>
+            ))}
+          </Marquee>
+        </BlurFade>
       </div>
     </section>
   );
