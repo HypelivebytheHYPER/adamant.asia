@@ -2,7 +2,9 @@
 
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
-interface NodeDef {
+/* ── Legacy SVG node graph (used by hero decoration) ── */
+
+interface LegacyNodeDef {
   id: string;
   x: number;
   y: number;
@@ -13,7 +15,7 @@ interface NodeDef {
   textFill?: string;
 }
 
-interface ConnDef {
+interface LegacyConnDef {
   from: string;
   to: string;
   d?: string;
@@ -22,27 +24,27 @@ interface ConnDef {
   dashed?: boolean;
 }
 
-interface WorkflowDiagramProps {
+interface LegacyWorkflowDiagramProps {
   viewBoxWidth?: number;
   viewBoxHeight?: number;
-  nodes: NodeDef[];
-  connections: ConnDef[];
+  nodes: LegacyNodeDef[];
+  connections: LegacyConnDef[];
   className?: string;
   ariaLabel?: string;
 }
 
-export function WorkflowDiagram({
+function LegacyWorkflowDiagram({
   viewBoxWidth = 400,
   viewBoxHeight = 240,
   nodes,
   connections,
   className = "",
   ariaLabel = "Workflow diagram",
-}: WorkflowDiagramProps) {
+}: LegacyWorkflowDiagramProps) {
   const reducedMotion = useReducedMotion();
   const nodeMap = new Map(nodes.map((n) => [n.id, n]));
 
-  function pathBetween(a: NodeDef, b: NodeDef, customD?: string): string {
+  function pathBetween(a: LegacyNodeDef, b: LegacyNodeDef, customD?: string): string {
     if (customD) return customD;
     const dx = b.x - a.x;
     const dy = b.y - a.y;
@@ -70,16 +72,6 @@ export function WorkflowDiagram({
       <defs>
         {!reducedMotion && (
           <>
-            <marker
-              id="arrowhead"
-              markerWidth="8"
-              markerHeight="6"
-              refX="7"
-              refY="3"
-              orient="auto"
-            >
-              <polygon points="0 0, 8 3, 0 6" fill="var(--primary)" opacity="0.5" />
-            </marker>
             <style>{`
               @keyframes flowPulse {
                 0% { stroke-dashoffset: 200; }
@@ -94,7 +86,6 @@ export function WorkflowDiagram({
         )}
       </defs>
 
-      {/* Connections */}
       {connections.map((c, i) => {
         const a = nodeMap.get(c.from);
         const b = nodeMap.get(c.to);
@@ -111,25 +102,17 @@ export function WorkflowDiagram({
             strokeDasharray={c.dashed ? "4 4" : undefined}
             opacity={0.4}
             className={c.animated && !reducedMotion ? "conn-animated" : ""}
-            markerEnd={c.animated ? "url(#arrowhead)" : undefined}
           />
         );
       })}
 
-      {/* Nodes */}
       {nodes.map((n) => {
         const r = n.r ?? 28;
         const fill = n.fill ?? "var(--foreground)";
         const textFill = n.textFill ?? "var(--background)";
         return (
           <g key={n.id}>
-            <circle
-              cx={n.x}
-              cy={n.y}
-              r={r}
-              fill={fill}
-              opacity={0.9}
-            />
+            <circle cx={n.x} cy={n.y} r={r} fill={fill} opacity={0.9} />
             <text
               x={n.x}
               y={n.y + 1}
@@ -159,4 +142,98 @@ export function WorkflowDiagram({
       })}
     </svg>
   );
+}
+
+/* ── Modern stepper (used by process pipeline) ── */
+
+interface StepperNodeDef {
+  id: string;
+  label: string;
+  sublabel?: string;
+}
+
+interface StepperDiagramProps {
+  nodes: StepperNodeDef[];
+  className?: string;
+  ariaLabel?: string;
+}
+
+function StepperDiagram({
+  nodes,
+  className = "",
+  ariaLabel = "Workflow pipeline",
+}: StepperDiagramProps) {
+  const reducedMotion = useReducedMotion();
+
+  return (
+    <div className={`w-full ${className}`} role="img" aria-label={ariaLabel}>
+      <div className="relative flex items-start justify-between">
+        {/* Background track */}
+        <div className="absolute top-[11px] left-0 right-0 h-px bg-border" aria-hidden="true" />
+
+        {/* Animated flow */}
+        {!reducedMotion && (
+          <div
+            className="absolute top-[11px] left-0 h-px"
+            style={{
+              width: "100%",
+              background: "linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%)",
+              backgroundSize: "200% 100%",
+              animation: "pipelineFlow 2.5s ease-in-out infinite",
+            }}
+            aria-hidden="true"
+          />
+        )}
+
+        {nodes.map((node, i) => (
+          <div key={node.id} className="relative flex flex-col items-center z-10">
+            {/* Step dot */}
+            <div
+              className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center bg-surface ${
+                i === nodes.length - 1 ? "border-teal" : "border-primary"
+              }`}
+            >
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  i === nodes.length - 1 ? "bg-teal" : "bg-primary"
+                }`}
+              />
+            </div>
+
+            {/* Label */}
+            <span
+              className={`mt-2 text-caption font-medium ${
+                i === nodes.length - 1 ? "text-teal" : "text-foreground"
+              }`}
+            >
+              {node.label}
+            </span>
+
+            {/* Sub-label */}
+            {node.sublabel && (
+              <span className="mt-0.5 text-[10px] text-stone">{node.sublabel}</span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {!reducedMotion && (
+        <style>{`
+          @keyframes pipelineFlow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      )}
+    </div>
+  );
+}
+
+/* ── Unified export ── */
+
+export function WorkflowDiagram(props: LegacyWorkflowDiagramProps | StepperDiagramProps) {
+  if ("connections" in props) {
+    return <LegacyWorkflowDiagram {...props} />;
+  }
+  return <StepperDiagram {...props} />;
 }

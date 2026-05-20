@@ -6,16 +6,10 @@ import { WorkflowDiagram } from "@/components/workflow-nodes";
 import { Map, PenTool, Hammer, Rocket } from "lucide-react";
 
 const pipelineNodes = [
-  { id: "map", x: 55, y: 50, label: "Map", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
-  { id: "design", x: 155, y: 50, label: "Design", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
-  { id: "build", x: 255, y: 50, label: "Build", r: 22, fill: "var(--primary)", textFill: "var(--background)" },
-  { id: "handover", x: 355, y: 50, label: "Run", r: 22, fill: "var(--teal)", textFill: "var(--background)" },
-];
-
-const pipelineConns = [
-  { from: "map", to: "design", animated: true },
-  { from: "design", to: "build", animated: true },
-  { from: "build", to: "handover", animated: true },
+  { id: "map", label: "Map" },
+  { id: "design", label: "Design" },
+  { id: "build", label: "Build" },
+  { id: "handover", label: "Run" },
 ];
 
 const phases = [
@@ -46,10 +40,7 @@ export function Process() {
         <BlurFade delay={0.2} className="space-block">
           <div className="rounded-xl bg-surface border border-border p-5 md:p-6">
             <WorkflowDiagram
-              viewBoxWidth={400}
-              viewBoxHeight={100}
               nodes={pipelineNodes}
-              connections={pipelineConns}
               ariaLabel="Four-step pipeline: Map, Design, Build, Run"
             />
           </div>
