@@ -30,26 +30,7 @@ All text MUST use design tokens. Never hardcode font sizes, weights, or families
 - **Never use `font-medium` or `tracking-tight` ad-hoc** — bake into token if needed
 - Italic emphasis (`<em>`) is preferred over bold for highlighting
 
-## Stage Labels (Chapter Markers)
-
-Every section has a chapter marker in the top-right corner:
-
-| Chapter | Label | Section ID | Color |
-|---------|-------|-----------|-------|
-| 01 | **THE PROBLEM** | `#problem` | `text-stone/[0.4]` |
-| 02 | **HOW IT WORKS** | `#process` | `text-stone/[0.4]` |
-| 03 | **THE PROGRESS** | `#progress` | `text-stone/[0.4]` |
-| 04 | **WHAT WE BUILD** | `#proof` | `text-stone/[0.4]` |
-
-Structure:
-```tsx
-<div className="absolute top-[5%] right-[5%] select-none pointer-events-none" aria-hidden="true">
-  <span className="text-micro text-stone/[0.4] block text-right mb-2">LABEL</span>
-  <span className="text-chapter leading-none block">01</span>
-</div>
-```
-
-## Color Tokens
+## Color Tokens (Light Mode Only — No Dark Mode)
 
 | Token | Value | Usage |
 |-------|-------|-------|
@@ -63,7 +44,8 @@ Structure:
 | `--surface` | `#ffffff` | Card backgrounds |
 | `--surface-raised` | `#fafaf8` | Elevated surfaces |
 | `--warm` | `#f5f0e8` | Gradient backgrounds |
-| `--border` | `rgba(27,27,24,0.07)` | Subtle borders |
+| `--border` | `color-mix(...)` | Subtle borders |
+| `--destructive` | `#b91c1c` | Error states |
 
 **Inverse palette** (for dark surfaces only: `bg-foreground`, marquee, footer):
 | Token | Value | Contrast on `#1b1b18` |
@@ -76,6 +58,7 @@ Structure:
 - `text-dim` and `text-stone` are for **light surfaces only**
 - Dark surfaces MUST use `text-inverse*` family
 - Never use `text-muted-foreground` — use `text-stone`
+- **No dark mode** — the site is warm cream by design. No `prefers-color-scheme`, no `dark:` variants.
 
 ## Spacing Tokens
 
@@ -101,15 +84,26 @@ Raw Tailwind spacing (`p-5`, `gap-4`, `mb-5`) is acceptable for **micro-layout w
 | `BlurFade` | `components/blur-fade.tsx` | Opacity + translateY entrance |
 | `ScrollParallax` | `components/scroll-parallax.tsx` | Scroll-driven y-transform wrapper |
 | `Marquee` / `MarqueeText` | `components/marquee.tsx` | CSS infinite scroll band |
-| `TrustedBy` | `components/trusted-by.tsx` | Platform logo strip with off-page links |
-| `BentoGrid` / `BentoCard` | `components/bento-grid.tsx` | 3D layered cards with hover depth |
+| `TrustedBy` | `components/trusted-by.tsx` | Orbiting circles integration showcase |
+| `OrbitingCircles` | `components/orbiting-circles.tsx` | Dual-orbit animation for tool icons |
+| `Terminal` | `components/terminal.tsx` | macOS terminal with typing animation |
 | `DottedMap` | `components/dotted-map.tsx` | SVG world map with pulse markers |
 | `Text3DFlip` | `components/text-3d-flip.tsx` | Per-character 3D flip animation |
 | `WaveCanvas` | `components/wave-canvas.tsx` | WebGL wave shader hero background |
 | `CornerPlus` | `components/ui/corner-plus.tsx` | Architectural corner accent marks |
-| `FlickeringGrid` | `components/flickering-grid.tsx` | Animated grid texture background |
+| `WorkflowDiagram` | `components/workflow-nodes.tsx` | SVG node graphs with animated connections |
+| `KOLDashboardMockup` | `components/kol-dashboard-mockup.tsx` | Pure CSS dashboard UI mockup |
 | `JsonLd` | `components/json-ld.tsx` | Structured data for SEO |
 | `ContactForm` | `components/contact-form.tsx` | Dark-section contact form |
+| `PlatformLogos` | `components/platform-logos.tsx` | Monochrome SVG marks for integrations |
+
+**Removed components (do not re-add):**
+| Component | Why Removed |
+|-----------|-------------|
+| `BentoGrid` / `BentoCard` | Unused, added visual complexity without conversion impact |
+| `FlickeringGrid` | Unused, canvas animation hurt INP |
+| `AnimatedList` | Caused scroll freeze — sequential JS timers blocked interaction |
+| `SectionLoader` | Dynamic imports caused jank on scroll — sections now imported directly |
 
 ## Section Flow
 
@@ -118,21 +112,19 @@ Navigation (fixed)
   ↓
 Hero — "Build once. Run forever."
   ↓
-TrustedBy — Platform logo strip (LINE, Lark, Notion, etc.)
+TrustedBy — Orbiting circles (LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe)
+  ↓
+Problem — Before/After (chaos notifications vs. system terminal)
+  ↓
+Process — "From chaos to system in two weeks." (4-phase pipeline)
+  ↓
+Progress — KOL Campaign Dashboard mockup
+  ↓
+Proof — 4 transformation cards + stats + quote marquee
+  ↓
+Contact — Dark CTA with dotted map + terminal + form
   ↓
 Marquee — "Build once. Run forever. • Systems, not slogans. • ..."
-  ↓
-Problem (01 THE PROBLEM) — Three pain states + truth bars
-  ↓
-Process (02 HOW IT WORKS) — Four phases + quote
-  ↓
-Progress (03 THE PROGRESS) — Milestones + outcomes + quote
-  ↓
-Proof (04 WHAT WE BUILD) — Carousel + Bento grid + stats + testimonials
-  ↓
-Marquee — "Build once. Run forever. • ..."
-  ↓
-Contact — Dark CTA with dotted map + form
   ↓
 Footer
 ```
@@ -144,32 +136,16 @@ Footer
 - All CTAs scroll to `#contact` or `#problem`
 - Email: `mailto:hello@adamant.asia`
 - Mobile menu links close menu on click (`closeMobile` callback)
-- `aria-hidden="true"` on all decorative elements (chapter markers, marquees)
-- All platform logos in TrustedBy open in `target="_blank"` with `rel="noopener noreferrer"`
+- `aria-hidden="true"` on all decorative elements (marquees, orbit paths)
+- All platform logos in TrustedBy are decorative (`aria-hidden`)
 
-## 3D BentoCard Architecture
+## Performance Rules
 
-Cards use a layered depth system:
-
-```
-Layer 0: Deep cast shadow (multi-layer box-shadow)
-Layer 1: Soft gradient wash (accent color, subtle)
-Layer 2: Frosted surface (bg-surface/88 + backdrop-blur)
-Layer 3: Noise grain overlay (SVG fractalNoise, 2.5% opacity)
-Layer 4: Top bevel highlight (gradient line, simulates light)
-Layer 5: Inner depth shadow (bottom-edge gradient, thickness)
-Layer 6: Border + hover glow (border-primary/20 on hover)
-Layer 7: Content (icon + title + body + CTA)
-```
-
-Hover interaction:
-- Card lifts: `translateY(-8px) rotateX(2deg) rotateY(-1deg)`
-- Icon floats: `scale(1.1) translateY(-2px)` with ambient glow
-- Shadow expands: 3-level shadow system (rest → hover)
-- CTA reveals: `opacity-0 → opacity-100` (desktop only)
-- Border glows: accent-colored inner highlight
-
-Props: `name`, `description`, `Icon`, `href`, `cta`, `gradient`, `accent`
+- **No dynamic imports** for below-fold sections — import directly in `page.tsx`
+- **No sequential JS animation timers** — use CSS animations or simple `BlurFade` entrance only
+- **Respect `prefers-reduced-motion`** — all animated components check this hook
+- **IntersectionObserver pause** for WebGL/canvas — `WaveCanvas` pauses when off-screen
+- `console.error` guarded by `NODE_ENV !== "production"`
 
 ## Build
 

@@ -1,71 +1,78 @@
 # Adamant Section Architecture
-## The Six-P Narrative Framework + QBDS Integration
+## Current State — May 2026
 
 ---
 
-## The Six-P Story Arc
-
-Every great story follows a pattern. We distilled the hero's journey into six P's — each a section, each a psychological beat:
+## Section Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  HERO     →  The Hook                                       │
-│  "Big vision determined doesn't need a big company."        │
+│  HERO     →  "Build once. Run forever."                     │
 │  Neuro: Identity mirror + dopamine priming                  │
 ├─────────────────────────────────────────────────────────────┤
-│  PROBLEM  →  The Fire (Ogilvy: open with the fire)          │
-│  "Most AI is built for corporations, not craftsmen."        │
-│  Neuro: Threat detection → empathy → relief                 │
+│  TRUSTEDBY →  Orbiting tool integrations                    │
+│  LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe│
 ├─────────────────────────────────────────────────────────────┤
-│  PROCESS  →  The Path                                       │
-│  "From conversation to workflow in two weeks."              │
-│  Neuro: Cognitive ease → action confidence                  │
+│  PROBLEM  →  "Your team asks you for everything."           │
+│  Before: Chaotic notifications (LINE, Email, Team, Orders)  │
+│  After: Terminal showing auto-responses                     │
 ├─────────────────────────────────────────────────────────────┤
-│  PROGRESS →  The Proof (measurable, not promised)           │
-│  "Momentum you can measure."                                │
-│  Neuro: Concrete numbers → credibility → trust              │
+│  PROCESS  →  "From chaos to system in two weeks."           │
+│  4 phases: Map → Design → Build → Run                       │
+│  Pipeline diagram + numbered phase cards                    │
 ├─────────────────────────────────────────────────────────────┤
-│  PROOF    →  The Product (what we actually build)           │
-│  "Tools that disappear into your day."                      │
-│  Neuro: Specificity → mental simulation → desire            │
+│  PROGRESS →  KOL Campaign Dashboard                         │
+│  "KOL campaigns used to take 6 hours. Now they take 6 min." │
+│  Pure CSS dashboard mockup + before/after stats             │
 ├─────────────────────────────────────────────────────────────┤
-│  PARTNER  →  The Invitation (not a demand)                  │
-│  "Your vision is adamant. So are we."                       │
-│  Neuro: Low friction → conversation → conversion            │
+│  PROOF    →  "Built for how you work."                      │
+│  4 transformation stories (Thida, Min, Sarin, Ploy)         │
+│  Stats bar + auto-scrolling quote marquee                   │
+├─────────────────────────────────────────────────────────────┤
+│  CONTACT  →  "Fix your workflow."                           │
+│  Terminal booking + contact form + dotted map               │
+├─────────────────────────────────────────────────────────────┤
+│  MARQUEE  →  "Build once. Run forever."                     │
+│  CSS-infinite editorial band                                │
+├─────────────────────────────────────────────────────────────┤
+│  FOOTER   →  Links + copyright                              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Why These Six P's Work
+## File Structure
 
-### 1. Hook → Problem (Tension)
-The hero section makes a bold claim. The problem section validates the reader's frustration. This creates narrative tension: "You feel this. We see it."
-
-### 2. Problem → Process (Relief)
-After acknowledging the pain, we immediately offer the path. Not a vague promise — a specific process. This releases tension.
-
-### 3. Process → Progress (Credibility)
-Anyone can describe a process. Progress adds numbers. "Two weeks" becomes real when paired with "12 hours saved."
-
-### 4. Progress → Proof (Specificity)
-Progress says "it works." Proof says "here's exactly what you get." Four concrete solutions. No abstraction.
-
-### 5. Proof → Partner (Conversion)
-After seeing the product, the reader is ready. Partner is not "Contact us" — it is "Your vision is adamant. So are we." Identity + invitation.
-
----
-
-## The P's We Rejected
-
-| Rejected P | Why | Replacement |
-|-----------|-----|-------------|
-| Promise | Too vague, too SaaS | **Progress** (measurable) |
-| Pricing | Too early in story | **Partner** (conversation first) |
-| Platform | Enterprise speak | **Proof** (specific tools) |
-| People | Social proof too soon | Integrated into Progress |
-| Philosophy | Abstract, not actionable | Integrated into Problem |
-| Product | Too broad | **Proof** (specific solutions) |
+```
+src/
+├── app/
+│   ├── globals.css          # Design system (Cora + QBDS)
+│   ├── layout.tsx           # Root layout (fonts, metadata)
+│   └── page.tsx             # Direct section imports (no lazy loading)
+├── components/
+│   ├── navigation.tsx       # Fixed nav (no glass, solid transitions)
+│   ├── scroll-reveal.tsx    # Framer Motion scroll animations
+│   ├── blur-fade.tsx        # Opacity + translateY entrance
+│   ├── scroll-parallax.tsx  # Scroll-driven y-transform
+│   ├── marquee.tsx          # CSS infinite scroll band
+│   ├── orbiting-circles.tsx # Dual-orbit animation component
+│   ├── terminal.tsx         # macOS terminal with typing animation
+│   ├── workflow-nodes.tsx   # SVG node graphs with connections
+│   ├── kol-dashboard-mockup.tsx  # Pure CSS dashboard UI
+│   ├── dotted-map.tsx       # SVG world map with pulse markers
+│   ├── text-3d-flip.tsx     # Per-character 3D flip animation
+│   ├── wave-canvas.tsx      # WebGL wave shader hero background
+│   ├── contact-form.tsx     # Dark-section contact form
+│   ├── platform-logos.tsx   # Monochrome SVG brand marks
+│   └── sections/
+│       ├── hero.tsx         # "Build once. Run forever."
+│       ├── problem.tsx      # Before/After notifications + terminal
+│       ├── process.tsx      # 4-phase pipeline + cards
+│       ├── progress.tsx     # KOL Dashboard mockup
+│       ├── proof.tsx        # Transformation stories + stats
+│       ├── contact.tsx      # Dark CTA + terminal + form
+│       └── footer.tsx       # Links + copyright
+```
 
 ---
 
@@ -93,78 +100,50 @@ After seeing the product, the reader is ready. Partner is not "Contact us" — i
 | Slate/Mist palette | Too cold, too corporate | Warm cream/ink |
 | Sharp radius default | Too harsh for editorial | 8px always |
 | `--bs-*` Bootstrap tokens | Tailwind v4 native | Custom tokens |
-| Dark mode emphasis | Warmth is our brand | Light-only |
+| Dark mode | Warmth is our brand, no toggle | **Light-only, removed entirely** |
 | Dashboard layouts | Marketing site, not app | Editorial sections |
-
----
-
-## File Structure
-
-```
-src/
-├── app/
-│   ├── globals.css          # Design system (Cora + QBDS + Neuro)
-│   ├── layout.tsx           # Root layout (fonts, metadata)
-│   └── page.tsx             # Six-P assembly
-├── components/
-│   ├── navigation.tsx       # Fixed nav (no glass, solid transitions)
-│   ├── scroll-reveal.tsx    # Framer Motion scroll animations
-│   └── sections/
-│       ├── hero.tsx         # The Hook
-│       ├── problem.tsx      # The Fire
-│       ├── process.tsx      # The Path
-│       ├── progress.tsx     # The Proof (measurable)
-│       ├── proof.tsx        # The Product (specific)
-│       ├── partner.tsx      # The Invitation
-│       └── footer.tsx       # The Close
-```
 
 ---
 
 ## Neuropsychology by Section
 
 ### Hero — Prefrontal Cortex + Dopamine
-- "Big vision" = aspiration (dopamine release)
-- "determined" = identity (prefrontal activation)
-- "doesn't need" = negative framing (amygdala + memory)
+- "Build once. Run forever." = aspiration (dopamine release)
+- "Systems for teams that move fast" = identity (prefrontal activation)
+- Wave shader background = visual novelty (attention capture)
 
-### Problem — Threat Detection + Empathy
-- "corporations" = out-group (threat)
-- "craftsmen" = in-group (identity)
-- "fifty seats" = specific, vivid (hippocampus encoding)
+### TrustedBy — Social Proof Through Motion
+- 8 tools orbiting central hub = "everything connects to us"
+- Dual-orbit animation = visual interest without cognitive load
+- Logos are recognizable channel marks = trust transfer
+
+### Problem — Threat Detection + Relief
+- "Your team asks you for everything" = pain recognition
+- Chaotic notifications = vivid threat (amygdala activation)
+- Terminal showing auto-responses = immediate relief
 
 ### Process — Cognitive Ease
 - 4 steps = optimal chunking (4±1 rule)
 - "Map → Design → Build → Run" = narrative arc
 - "two weeks" = specific timeframe (reduces uncertainty)
+- Numbered cards (01-04) = progressive disclosure
 
-### Progress — Credibility Through Numbers
-- "2 weeks / 30 days / 12 hrs / 1 person" = concrete
-- "I forgot the system was there" = social proof
-- Numbers = left brain validation
+### Progress — Concrete Proof
+- Dashboard mockup = mental simulation ("this could be mine")
+- "6 hours → 6 minutes" = concrete before/after
+- "1 dashboard" = specificity → credibility
 
-### Proof — Mental Simulation
-- "Conversations that know your business" = specific use case
-- "Your tools, talking" = vivid metaphor
-- 4 solutions = chunk limit respected
+### Proof — Social Validation
+- 4 real names (Thida, Min, Sarin, Ploy) = human-scale trust
+- Before/after per card = transformation story
+- Stats bar (47 teams, 4 countries) = social proof at scale
+- Quote marquee = continuous reinforcement
 
-### Partner — Low-Friction Conversion
-- "Your vision is adamant" = identity fusion
-- "So are we" = brand as mirror
-- "Talk it through" = conversation, not transaction
-
----
-
-## The Ogilvy Test: Section by Section
-
-| Section | Headline | Spouse Test |
-|---------|----------|-------------|
-| Hero | "Big vision determined doesn't need a big company." | ✓ Would say, ✓ Understands, ✓ Cares |
-| Problem | "Most AI is built for corporations, not craftsmen." | ✓ Would say, ✓ Understands, ✓ Cares |
-| Process | "From conversation to workflow in two weeks." | ✓ Would say, ✓ Understands, ✓ Cares |
-| Progress | "Momentum you can measure." | ✓ Would say, ✓ Understands, ✓ Cares |
-| Proof | "Tools that disappear into your day." | ✓ Would say, ✓ Understands, ✓ Cares |
-| Partner | "Your vision is adamant. So are we." | ✓ Would say, ✓ Understands, ✓ Cares |
+### Contact — Low-Friction Conversion
+- Terminal booking = novelty + system metaphor
+- "Fix your workflow" = problem-focused, not salesy
+- "No pitch" = removes friction
+- Dotted map (Bangkok + Singapore) = geographic credibility
 
 ---
 
@@ -174,21 +153,33 @@ src/
 |-----------|---------------|-------|
 | `--text-primary` | `--foreground` | #1b1b18 |
 | `--text-secondary` | `--stone` | #6b6560 |
-| `--text-tertiary` | `--dim` | #9c9c96 |
-| `--text-disabled` | `--dim` | #9c9c96 |
+| `--text-tertiary` | `--dim` | #7a746d |
+| `--text-disabled` | `--dim` | #7a746d |
 | `--text-primary-inverse` | `--background` | #f2f2ee |
 | `--fill-primary` | `--primary` | #0f766e |
 | `--fill-secondary` | `--secondary` | #e8e8e3 |
 | `--fill-muted` | `--muted` | #e8e8e3 |
-| `--border-divider` | `--border` | rgba(27,27,24,0.07) |
-| `--border-primary` | `--stroke-secondary` | rgba(27,27,24,0.12) |
+| `--border-divider` | `--border` | color-mix(...) |
+| `--border-primary` | `--stroke-secondary` | color-mix(...) |
 | `--surface-primary` | `--card` | #ffffff |
 | `--surface-secondary` | `--surface-raised` | #fafaf8 |
 | `--surface-base` | `--background` | #f2f2ee |
-| `--stateslayer-overlay-hover` | `--overlay-hover` | rgba(15,118,110,0.06) |
-| `--stateslayer-overlay-pressed` | `--overlay-pressed` | rgba(15,118,110,0.12) |
+| `--stateslayer-overlay-hover` | `--overlay-hover` | color-mix(...) |
+| `--stateslayer-overlay-pressed` | `--overlay-pressed` | color-mix(...) |
 
 ---
 
-*Architecture v3.0 — May 2026*
-*Six-P Narrative + QBDS Tokens + Neuropsychology*
+## Performance Architecture
+
+| Decision | Before | After | Why |
+|----------|--------|-------|-----|
+| Section loading | `dynamic()` lazy load | Direct import in `page.tsx` | Eliminated scroll jank |
+| Phase card animation | `AnimatedList` (JS timers) | Static grid + `BlurFade` | Removed 4s freeze |
+| Notification reveal | `AnimatedList` (JS timers) | Static list | Removed 8s freeze |
+| Terminal delays | 5s cumulative | 2.6s cumulative | Faster perceived load |
+| Dark mode | `prefers-color-scheme` block | **Removed entirely** | No toggle, no design, dead code |
+
+---
+
+*Architecture v4.0 — May 2026*
+*Light-mode only · No lazy loading · Static-first*
