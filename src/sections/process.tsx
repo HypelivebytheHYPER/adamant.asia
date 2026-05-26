@@ -1,7 +1,7 @@
 "use client";
 
 import { BlurFade } from "@/components/animations/blur-fade";
-import { DottedMap } from "@/components/ui/dotted-map";
+import { Safari } from "@/components/ui/safari";
 import { Map, PenTool, Hammer, Rocket } from "lucide-react";
 import type { SectionContent, ProcessPhaseContent } from "@/data/content";
 
@@ -17,45 +17,50 @@ const iconMap: Record<string, React.ElementType> = {
   Rocket,
 };
 
-// Thailand & Singapore coordinates
-const regionMarkers = [
-  { lat: 13.7563, lng: 100.5018, size: 1.2, pulse: true }, // Bangkok
-  { lat: 1.3521, lng: 103.8198, size: 1.2, pulse: true },  // Singapore
-];
-
 export function Process({ content, phases }: ProcessProps) {
   return (
     <section id="process" className="section-pad bg-gradient-warm relative overflow-hidden">
       <div className="container relative">
-        <div className="max-w-2xl space-block-sm">
+        {/* Headline */}
+        <div className="max-w-2xl mb-10">
           <BlurFade delay={0.1}>
             <h2 className="text-display text-foreground mb-4">{content.headline}</h2>
           </BlurFade>
           <BlurFade delay={0.18}>
-            <p className="text-body text-stone max-w-sm">{content.subheadline}</p>
+            <p className="text-body text-stone max-w-md">{content.subheadline}</p>
           </BlurFade>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 mt-8">
-          {/* Left: Phase cards */}
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          {/* Left: Steps as vertical timeline */}
           <BlurFade delay={0.2}>
-            <div className="grid grid-cols-2 gap-3">
-              {phases.map((p) => {
+            <div className="relative space-y-0">
+              {/* Vertical line */}
+              <div className="absolute left-[19px] top-8 bottom-8 w-px bg-border/60" />
+
+              {phases.map((p, i) => {
                 const IconComp = iconMap[p.icon] || Map;
+                const isLast = i === phases.length - 1;
                 return (
-                  <div
-                    key={p.title}
-                    className="group relative rounded-xl bg-surface border border-border p-5 hover:border-primary/30 transition-all duration-300"
-                  >
-                    <span className="absolute top-3 right-3 text-[2rem] font-serif leading-none text-foreground/[0.06] select-none">
-                      {p.num}
-                    </span>
-                    <div className="relative">
-                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-primary mb-3">
-                        <IconComp size={18} strokeWidth={1.5} />
+                  <div key={p.title} className="relative flex gap-5 pb-8 last:pb-0">
+                    {/* Step dot */}
+                    <div className="relative z-10 flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center">
+                        <IconComp size={16} strokeWidth={1.5} className="text-primary" />
                       </div>
-                      <p className="text-caption text-foreground font-medium mb-1">{p.title}</p>
-                      <p className="text-caption text-stone leading-snug">{p.detail}</p>
+                    </div>
+
+                    {/* Step content */}
+                    <div className="pt-1.5">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-[10px] text-stone font-medium uppercase tracking-wider">
+                          Step {p.num}
+                        </span>
+                      </div>
+                      <p className="text-body text-foreground font-medium mb-1">{p.title}</p>
+                      <p className="text-caption text-stone leading-snug max-w-xs">
+                        {p.detail}
+                      </p>
                     </div>
                   </div>
                 );
@@ -63,38 +68,16 @@ export function Process({ content, phases }: ProcessProps) {
             </div>
           </BlurFade>
 
-          {/* Right: Dotted Map */}
-          <BlurFade delay={0.3}>
-            <div className="rounded-xl bg-surface border border-border p-5 overflow-hidden h-full flex flex-col">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-micro text-stone uppercase tracking-wider">Built for</span>
-                <div className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-caption text-foreground font-medium">Thailand</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
-                  <span className="text-caption text-foreground font-medium">Singapore</span>
-                </div>
-              </div>
-
-              <div className="rounded-lg overflow-hidden flex-1 min-h-[200px] bg-foreground/[0.03]">
-                <DottedMap
-                  width={600}
-                  height={300}
-                  mapSamples={6000}
-                  markers={regionMarkers}
-                  dotColor="var(--stone)"
-                  dotRadius={0.25}
-                  markerColor="#0f766e"
-                  pulse
-                  stagger
-                  className="text-stone/40"
-                />
-              </div>
-
-              <p className="text-[10px] text-stone mt-3 leading-relaxed">
-                Delivered on-site or remote. Same two-week build time, wherever your team is.
+          {/* Right: Safari mockup */}
+          <BlurFade delay={0.35}>
+            <div className="rounded-xl bg-surface border border-border p-3 shadow-lg">
+              <Safari
+                url="adamant.asia"
+                imageSrc="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
+                className="w-full"
+              />
+              <p className="text-[10px] text-stone text-center mt-2">
+                Replace with your product demo video — contact us to set it up.
               </p>
             </div>
           </BlurFade>
