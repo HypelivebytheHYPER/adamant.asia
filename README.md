@@ -1,14 +1,15 @@
 # Adamant.asia
 
-Workflow systems for teams that move fast. Built in Bangkok & Singapore.
+Workflow systems for teams that move fast.
 
 **Live:** [adamantasia.vercel.app](https://adamantasia.vercel.app)
+**Production:** [adamantasia-q1tbs6s71-hypelives-projects.vercel.app](https://adamantasia-q1tbs6s71-hypelives-projects.vercel.app)
 
 ---
 
 ## What We Do
 
-We design workflows that run themselves — connecting LINE, Lark, WhatsApp, Shopify, Stripe, and the tools your team already uses into one automated system.
+We design workflows that run themselves — connecting your tools into one automated system.
 
 **Typical engagement:** 2 weeks from first conversation to running system.
 
@@ -18,21 +19,21 @@ We design workflows that run themselves — connecting LINE, Lark, WhatsApp, Sho
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 16 (App Router, ISR) |
-| Language | TypeScript |
+| Framework | Next.js 16.2.6 (App Router, ISR) |
+| Language | TypeScript 5.9 |
 | Styling | Tailwind CSS v4 |
-| Animation | Framer Motion |
+| Animation | Framer Motion 12 |
 | Fonts | Newsreader (editorial) + Geist Sans/Mono (UI) |
 | Content CMS | Lark Base (team-editable tables) |
 | Content Sync | `scripts/sync-from-lark.mjs` |
-| Package Manager | pnpm |
+| Package Manager | pnpm 9.15.4 |
 | Deploy | Vercel (ISR + deploy hooks) |
 
 ---
 
 ## Design System
 
-- **Light mode only** — warm cream (#f2f2ee) and ink (#1b1b18). No dark mode toggle, no `prefers-color-scheme` complexity.
+- **Light mode only** — warm cream (#f2f2ee) and ink (#1b1b18). No dark mode toggle.
 - **Tokens:** QBDS-inspired semantic naming (`--fg-*`, `--fill-*`, `--stroke-*`, `--surface-*`)
 - **Typography:** Newsreader serif for editorial voice, Geist Sans for functional text
 - **Motion:** CSS animations where possible (GPU-composited). `prefers-reduced-motion` respected everywhere.
@@ -81,6 +82,7 @@ pnpm run sync       # Pull content from Lark Base → content.ts
 pnpm run build      # Production build (uses latest content.ts)
 pnpm run build:sync # Sync then build
 pnpm run analyze    # Bundle analysis
+pnpm run lint       # ESLint
 ```
 
 ---
@@ -89,35 +91,85 @@ pnpm run analyze    # Bundle analysis
 
 ```
 src/
-├── app/
-│   ├── globals.css          # Design tokens + utilities
-│   ├── layout.tsx           # Root layout, fonts, metadata
-│   ├── page.tsx             # Section assembly (ISR 1h)
-│   └── api/
-│       └── deploy/route.ts  # POST to trigger Vercel redeploy
+├── app/                          # Next.js App Router
+│   ├── (home)/                   # Route group — homepage
+│   │   ├── page.tsx              # Section assembly (ISR 1h)
+│   │   ├── loading.tsx           # Suspense loading UI
+│   │   └── error.tsx             # Error boundary
+│   ├── api/
+│   │   └── deploy/
+│   │       └── route.ts          # POST to trigger Vercel redeploy
+│   ├── globals.css               # Design tokens + Tailwind
+│   ├── layout.tsx                # Root layout, fonts, metadata
+│   ├── not-found.tsx             # 404 page
+│   ├── opengraph-image.tsx       # Dynamic OG image (auto-discovered)
+│   ├── robots.ts                 # robots.txt (auto-generated)
+│   └── sitemap.ts                # sitemap.xml (auto-generated)
+│
+├── sections/                     # Page sections (co-located modules)
+│   ├── index.ts                  # Barrel export
+│   ├── hero.tsx
+│   ├── problem.tsx
+│   ├── solutions.tsx
+│   ├── process.tsx
+│   ├── proof.tsx
+│   ├── contact.tsx
+│   └── stats-bar.tsx
+│
+├── components/                   # Shared UI components
+│   ├── animations/               # Framer Motion animation primitives
+│   │   ├── blur-fade.tsx
+│   │   ├── scroll-parallax.tsx
+│   │   ├── scroll-reveal.tsx
+│   │   └── smooth-scroll.tsx
+│   ├── ui/                       # shadcn/ui components
+│   │   ├── button.tsx
+│   │   └── corner-plus.tsx
+│   ├── footer.tsx                # Shared footer
+│   ├── navigation.tsx            # Fixed nav
+│   ├── marquee.tsx               # CSS infinite scroll
+│   ├── scroll-progress.tsx       # Top reading progress bar
+│   ├── wave-canvas.tsx           # WebGL wave shader hero bg
+│   ├── workflow-nodes.tsx        # SVG pipeline diagrams
+│   └── contact-form.tsx          # Contact form
+│
 ├── data/
-│   └── content.ts           # Team-editable content source of truth
+│   └── content.ts                # Team-editable content source of truth
+│
 ├── lib/
-│   ├── lark-api.ts          # Lark Base REST API client
-│   ├── utils.ts             # cn() and helpers
-│   ├── animation.ts         # Framer Motion easings
-│   └── tokens.ts            # Design token mappings
-├── components/
-│   ├── navigation.tsx       # Fixed nav (accepts links prop)
-│   ├── sections/
-│   │   ├── hero.tsx         # Accepts content prop
-│   │   ├── problem.tsx      # Accepts content + notifications props
-│   │   ├── process.tsx      # Accepts content + phases + pipelineNodes props
-│   │   ├── progress.tsx     # Accepts content + rows props
-│   │   ├── proof.tsx        # Accepts content + testimonials + stats props
-│   │   ├── contact.tsx      # Accepts content + contactInfo props
-│   │   └── footer.tsx       # Accepts content + navLinks props
-│   ├── terminal.tsx         # macOS terminal with typing animation
-│   ├── orbiting-circles.tsx # Dual-orbit animation
-│   ├── workflow-nodes.tsx   # SVG pipeline diagrams
-│   └── ...
+│   ├── lark-api.ts               # Lark Base REST API client
+│   ├── utils.ts                  # cn() and helpers
+│   ├── animation.ts              # Framer Motion easings
+│   └── tokens.ts                 # Design token mappings
+│
 scripts/
-└── sync-from-lark.mjs       # Build-time Lark Base → content.ts sync
+└── sync-from-lark.mjs            # Build-time Lark Base → content.ts sync
+```
+
+---
+
+## Section Flow
+
+```
+Navigation (fixed)
+  ↓
+Hero — "Build once. Run forever."
+  ↓
+Problem — "Your team asks you for everything."
+  ↓
+Solutions — 4 feature cards
+  ↓
+Process — "How it works." (4-step pipeline)
+  ↓
+StatsBar — 47 teams, 2 weeks, 30 days, 0 spreadsheets
+  ↓
+Proof — Testimonials + stats + quote marquee
+  ↓
+Contact — Form + email
+  ↓
+Marquee — "Build once. Run forever. • Systems, not slogans. • ..."
+  ↓
+Footer
 ```
 
 ---
@@ -126,15 +178,24 @@ scripts/
 
 | Table | Purpose | Records |
 |-------|---------|---------|
-| Sections | Headlines, subheads, CTA text | 7 |
+| Sections | Headlines, subheads, body, CTA text | 7 |
+| Solutions | Feature cards (icon, title, description) | 4 |
 | Testimonials | Case study cards (Proof) | 4 |
-| Stats | Proof section stat bar | 4 |
+| Stats | Stats bar values | 4 |
 | Process Phases | 4-step pipeline cards | 4 |
-| Before After | Progress comparison rows | 3 |
-| Notifications | Problem section demo cards | 6 |
-| Marquee Items | Footer marquee text | 8 |
+| Marquee Items | Marquee text | 8 |
 
 **Base URL:** https://hypelive.sg.larksuite.com/base/XY8IbUHh3aNI2AsWI0tl0YllgSd
+
+---
+
+## Security
+
+PostCSS is pinned via `pnpm.overrides` to `>=8.5.10` to patch XSS vulnerability `GHSA-qx2v-qp2m-jg93`.
+
+```bash
+pnpm audit  # Run before deploy
+```
 
 ---
 

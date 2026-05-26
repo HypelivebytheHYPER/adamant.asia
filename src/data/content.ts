@@ -56,16 +56,16 @@ export const siteContent = {
   sections: {
     hero: {
       id: "hero",
-      headline: "Build once. Run forever.",
-      body: "Systems that answer questions so you don't have to.",
+      headline: "Your campaign. One dashboard.",
+      body: "We build the operating layer for influencer programs, dealer campaigns, and live commerce — without the spreadsheet chaos.",
       ctaText: "See how it works",
-      ctaLink: "#problem",
+      ctaLink: "#solutions",
       enabled: true,
     },
     problem: {
       id: "problem",
-      headline: "Your team asks you for everything.",
-      subheadline: "Every answer goes through you. Work waits. Revenue sits.",
+      headline: "Your campaign runs on six spreadsheets.",
+      subheadline: "Submissions in one file. Approvals in another. Rankings somewhere else. Someone always has the wrong version.",
       enabled: true,
     },
     solutions: {
