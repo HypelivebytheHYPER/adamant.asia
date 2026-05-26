@@ -11,6 +11,29 @@ interface NavigationProps {
   links: NavLinkContent[];
 }
 
+function NavItem({
+  link,
+  onClick,
+  className,
+}: {
+  link: NavLinkContent;
+  onClick?: () => void;
+  className: string;
+}) {
+  if (link.href.startsWith("#")) {
+    return (
+      <a href={link.href} onClick={onClick} className={className}>
+        {link.label}
+      </a>
+    );
+  }
+  return (
+    <Link href={link.href} onClick={onClick} className={className}>
+      {link.label}
+    </Link>
+  );
+}
+
 export function Navigation({ links }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,17 +61,16 @@ export function Navigation({ links }: NavigationProps) {
         </Link>
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <NavItem
               key={link.href}
-              href={link.href}
+              link={link}
               className="text-ui text-stone hover:text-foreground transition-colors duration-300"
-            >
-              {link.label}
-            </a>
+            />
           ))}
-          <a href={cta.href} className="btn-primary text-caption py-2 px-4">
-            {cta.label}
-          </a>
+          <NavItem
+            link={cta}
+            className="btn-primary text-caption py-2 px-4"
+          />
         </div>
         <button
           className="md:hidden p-2 touch-target-sm"
@@ -71,22 +93,18 @@ export function Navigation({ links }: NavigationProps) {
           >
             <div className="container py-4 flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a
+                <NavItem
                   key={link.href}
-                  href={link.href}
+                  link={link}
                   onClick={closeMobile}
                   className="text-ui text-stone hover:text-foreground touch-target"
-                >
-                  {link.label}
-                </a>
+                />
               ))}
-              <a
-                href={cta.href}
+              <NavItem
+                link={cta}
                 onClick={closeMobile}
                 className="text-ui text-primary touch-target"
-              >
-                {cta.label}
-              </a>
+              />
             </div>
           </motion.div>
         )}

@@ -20,9 +20,9 @@ export default function Home() {
   return (
     <>
       <JsonLd />
+      <Navigation links={sc.navLinks} />
       <main id="main" className="min-h-screen bg-background text-foreground isolation-auto">
         <ScrollProgress />
-        <Navigation links={sc.navLinks} />
         <Hero content={sc.sections.hero} />
         <Problem content={sc.sections.problem} />
         <Solutions content={sc.sections.solutions} solutions={sc.solutions} />
@@ -41,23 +41,23 @@ export default function Home() {
           content={sc.sections.contact}
           contactInfo={sc.contactInfo}
         />
-
-        <Marquee className="space-strip bg-foreground" speed={50} gap={48}>
-          <MarqueeText text="Build once. Run forever." className="text-inverse/[0.25]" />
-          <span className="text-inverse/[0.15] text-headline">•</span>
-          <MarqueeText text="Systems, not slogans." className="text-inverse/[0.25]" />
-          <span className="text-inverse/[0.15] text-headline">•</span>
-          <MarqueeText text="Your team should not need you for everything." className="text-inverse/[0.25]" />
-          <span className="text-inverse/[0.15] text-headline">•</span>
-          <MarqueeText text="Fix the workflow. Free the founder." className="text-inverse/[0.25]" />
-          <span className="text-inverse/[0.15] text-headline">•</span>
-        </Marquee>
-
-        <Footer
-          content={sc.sections.footer}
-          navLinks={sc.footerNavLinks}
-        />
       </main>
+
+      <Marquee className="space-strip bg-foreground" speed={50} gap={48}>
+        <MarqueeText text="Build once. Run forever." className="text-inverse/[0.25]" />
+        <span className="text-inverse/[0.15] text-headline">•</span>
+        <MarqueeText text="Systems, not slogans." className="text-inverse/[0.25]" />
+        <span className="text-inverse/[0.15] text-headline">•</span>
+        <MarqueeText text="Your team should not need you for everything." className="text-inverse/[0.25]" />
+        <span className="text-inverse/[0.15] text-headline">•</span>
+        <MarqueeText text="Fix the workflow. Free the founder." className="text-inverse/[0.25]" />
+        <span className="text-inverse/[0.15] text-headline">•</span>
+      </Marquee>
+
+      <Footer
+        content={sc.sections.footer}
+        navLinks={sc.footerNavLinks}
+      />
     </>
   );
 }

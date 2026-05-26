@@ -201,7 +201,7 @@ export const siteContent = {
   ] satisfies MarqueeItemContent[],
 
   navLinks: [
-    { label: "Home", href: "#main" },
+    { label: "Home", href: "/" },
     { label: "Problem", href: "#problem" },
     { label: "Solutions", href: "#solutions" },
     { label: "Process", href: "#process" },
@@ -214,7 +214,7 @@ export const siteContent = {
   } satisfies ContactInfoContent,
 
   footerNavLinks: [
-    { label: "Home", href: "#main" },
+    { label: "Home", href: "/" },
     { label: "Problem", href: "#problem" },
     { label: "Solutions", href: "#solutions" },
     { label: "Process", href: "#process" },

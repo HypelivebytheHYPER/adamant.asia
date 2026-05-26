@@ -1,10 +1,26 @@
 "use client";
 
+import Link from "next/link";
 import type { SectionContent, NavLinkContent } from "@/data/content";
 
 interface FooterProps {
   content: SectionContent;
   navLinks: NavLinkContent[];
+}
+
+function FooterLink({ link }: { link: NavLinkContent }) {
+  if (link.href.startsWith("#")) {
+    return (
+      <a href={link.href} className="hover:text-background transition-colors duration-300">
+        {link.label}
+      </a>
+    );
+  }
+  return (
+    <Link href={link.href} className="hover:text-background transition-colors duration-300">
+      {link.label}
+    </Link>
+  );
 }
 
 export function Footer({ content, navLinks }: FooterProps) {
@@ -21,13 +37,7 @@ export function Footer({ content, navLinks }: FooterProps) {
 
           <nav className="flex flex-wrap gap-6 text-ui text-inverse-weak">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="hover:text-background transition-colors duration-300"
-              >
-                {link.label}
-              </a>
+              <FooterLink key={link.href} link={link} />
             ))}
           </nav>
 
