@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { easeSpring } from "@/lib/animation";
 import { WaveCanvas } from "@/components/wave-canvas";
 import { ProjectShowcase } from "@/components/project-showcase";
+import { CyclingHeadline } from "@/components/cycling-headline";
 import type { SectionContent } from "@/data/content";
 
 interface HeroProps {
@@ -42,9 +43,15 @@ export function Hero({ content }: HeroProps) {
             transition={{ duration: 0.8, ease: easeSpring }}
             className="max-w-lg"
           >
-            <h1 className="text-hero text-foreground font-serif leading-[1.05]">
-              {content.headline}
-            </h1>
+            <CyclingHeadline
+              messages={[
+                "Your campaign. One dashboard.",
+                "Your spreadsheet chaos. Solved.",
+                "Built in two weeks. Runs forever.",
+              ]}
+              interval={4000}
+              className="text-hero text-foreground font-serif leading-[1.05]"
+            />
             <p className="mt-5 text-lead text-stone max-w-md leading-relaxed">
               {content.body}
             </p>
