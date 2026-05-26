@@ -31,7 +31,7 @@ export function Hero({ content }: HeroProps) {
       <div className="absolute inset-0 bg-gradient-hero pointer-events-none" />
 
       <motion.div
-        className="container relative z-10 py-20 md:py-24"
+        className="container relative z-10 pt-28 pb-16 md:pt-32 md:pb-20"
         style={{ opacity: contentOpacity, y: contentY }}
       >
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
