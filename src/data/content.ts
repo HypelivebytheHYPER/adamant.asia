@@ -64,14 +64,14 @@ export const siteContent = {
     },
     problem: {
       id: "problem",
-      headline: "You are too busy doing things a machine should do.",
-      subheadline: "Forgetting to follow up. Copy-pasting the same email. Chasing someone for a signature. Updating a spreadsheet no one reads. You did not start this to become your own assistant.",
+      headline: "When was the last time you...",
+      subheadline: "You did not start this to become your own assistant.",
       enabled: true,
     },
     solutions: {
       id: "solutions",
-      headline: "We build for the lazy.",
-      subheadline: "Not the do-nothing lazy. The 'I have better things to do with my mind' lazy. Automate the boring. Reclaim your time.",
+      headline: "You are too busy doing things a machine should do.",
+      subheadline: "We build for the lazy — the 'I have better things to do with my mind' kind. Automate the boring. Reclaim your time.",
       enabled: true,
     },
     process: {
