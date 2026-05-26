@@ -23,7 +23,7 @@ export function Hero({ content }: HeroProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center md:items-end pb-10 md:pb-16 overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center overflow-hidden"
     >
       <div className="absolute inset-0 -z-10">
         <WaveCanvas />
@@ -31,17 +31,16 @@ export function Hero({ content }: HeroProps) {
       <div className="absolute inset-0 bg-gradient-hero pointer-events-none" />
 
       <motion.div
-        className="container relative z-10"
+        className="container relative z-10 py-20 md:py-24"
         style={{ opacity: contentOpacity, y: contentY }}
       >
-        {/* Balanced 2-col: text ~45%, card ~55% */}
-        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-end">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           {/* Left: Text */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: easeSpring }}
-            className="lg:col-span-2 max-w-lg"
+            className="max-w-lg"
           >
             <h1 className="text-hero text-foreground font-serif leading-[1.05]">
               {content.headline}
@@ -60,7 +59,7 @@ export function Hero({ content }: HeroProps) {
           </motion.div>
 
           {/* Right: Showcase Carousel */}
-          <div className="hidden lg:block lg:col-span-3 pb-2">
+          <div className="hidden lg:flex justify-center">
             <ProjectShowcase />
           </div>
         </div>
