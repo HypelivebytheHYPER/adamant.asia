@@ -70,14 +70,14 @@ export const siteContent = {
     },
     solutions: {
       id: "solutions",
-      headline: "What we build.",
-      subheadline: "Purpose-built tools that replace chaos with clarity.",
+      headline: "We build for the lazy.",
+      subheadline: "Not the do-nothing lazy. The 'I have better things to do with my mind' lazy. Automate the boring. Reclaim your time.",
       enabled: true,
     },
     process: {
       id: "process",
       headline: "How it works.",
-      subheadline: "From first call to working system in two weeks.",
+      subheadline: "You tell us what drains you. We make it disappear. Two weeks from 'ugh' to 'already done'.",
       enabled: true,
     },
     proof: {
