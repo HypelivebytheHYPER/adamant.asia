@@ -45,11 +45,12 @@ export function Hero({ content }: HeroProps) {
           >
             <CyclingHeadline
               messages={[
+                "Think fast, we help build faster.",
                 "Your campaign. One dashboard.",
                 "Your spreadsheet chaos. Solved.",
                 "Built in two weeks. Runs forever.",
               ]}
-              interval={4000}
+              interval={3500}
               className="text-hero text-foreground font-serif leading-[1.05]"
             />
             <p className="mt-5 text-lead text-stone max-w-md leading-relaxed">
