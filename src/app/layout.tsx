@@ -27,7 +27,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://adamant.asia"),
+  metadataBase: new URL("https://adamantasia.vercel.app"),
   title: "Adamant — Systems for Teams That Move Fast",
   description:
     "We build systems that keep your business moving. Custom workflows, dashboards, and automations for teams that need to move fast. Built in 2 weeks.",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
       "We build systems that keep your business moving. Built in 2 weeks.",
     type: "website",
     locale: "en_US",
-    url: "https://adamant.asia",
+    url: "https://adamantasia.vercel.app",
     siteName: "Adamant",
     images: [
       {
