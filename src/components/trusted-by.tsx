@@ -11,7 +11,7 @@ import {
   StripeLogo,
 } from "@/components/platform-logos";
 import { OrbitingCircles, OrbitHub } from "@/components/orbiting-circles";
-import { BlurFade } from "@/components/blur-fade";
+import { BlurFade } from "@/components/animations/blur-fade";
 
 /**
  * TrustedBy — Integration capability showcase.

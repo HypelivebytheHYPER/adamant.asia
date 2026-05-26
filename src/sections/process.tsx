@@ -1,6 +1,6 @@
 "use client";
 
-import { BlurFade } from "@/components/blur-fade";
+import { BlurFade } from "@/components/animations/blur-fade";
 import { WorkflowDiagram } from "@/components/workflow-nodes";
 import { Map, PenTool, Hammer, Rocket } from "lucide-react";
 import type { SectionContent, ProcessPhaseContent } from "@/data/content";

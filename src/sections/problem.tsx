@@ -1,6 +1,6 @@
 "use client";
 
-import { BlurFade } from "@/components/blur-fade";
+import { BlurFade } from "@/components/animations/blur-fade";
 import type { SectionContent } from "@/data/content";
 
 interface ProblemProps {

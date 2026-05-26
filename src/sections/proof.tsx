@@ -1,6 +1,6 @@
 "use client";
 
-import { BlurFade } from "@/components/blur-fade";
+import { BlurFade } from "@/components/animations/blur-fade";
 import { Marquee } from "@/components/marquee";
 import type { SectionContent, TestimonialContent, StatContent } from "@/data/content";
 

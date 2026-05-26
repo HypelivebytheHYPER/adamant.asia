@@ -2,14 +2,16 @@ import { Navigation } from "@/components/navigation";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { Marquee, MarqueeText } from "@/components/marquee";
 import { JsonLd } from "@/components/json-ld";
-import { StatsBar } from "@/components/stats-bar";
-import { Hero } from "@/components/sections/hero";
-import { Problem } from "@/components/sections/problem";
-import { Solutions } from "@/components/sections/solutions";
-import { Process } from "@/components/sections/process";
-import { Proof } from "@/components/sections/proof";
-import { Contact } from "@/components/sections/contact";
-import { Footer } from "@/components/sections/footer";
+import { Footer } from "@/components/footer";
+import {
+  Contact,
+  Hero,
+  Problem,
+  Process,
+  Proof,
+  Solutions,
+  StatsBar,
+} from "@/sections";
 import { siteContent } from "@/data/content";
 
 /** ISR: Rebuild every 1 hour, or on-demand via /api/deploy */

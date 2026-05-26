@@ -1,7 +1,7 @@
 "use client";
 
-import { ScrollReveal } from "@/components/scroll-reveal";
-import { BlurFade } from "@/components/blur-fade";
+import { ScrollReveal } from "@/components/animations/scroll-reveal";
+import { BlurFade } from "@/components/animations/blur-fade";
 import { ContactForm } from "@/components/contact-form";
 import { Mail } from "lucide-react";
 import type { SectionContent, ContactInfoContent } from "@/data/content";

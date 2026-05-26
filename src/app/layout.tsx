@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { SmoothScroll } from "@/components/smooth-scroll";
+import { SmoothScroll } from "@/components/animations/smooth-scroll";
 import { TOKENS } from "@/lib/tokens";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
@@ -28,7 +28,10 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://adamantasia.vercel.app"),
-  title: "Adamant — Systems for Teams That Move Fast",
+  title: {
+    default: "Adamant — Systems for Teams That Move Fast",
+    template: "%s | Adamant",
+  },
   description:
     "We build systems that keep your business moving. Custom workflows, dashboards, and automations for teams that need to move fast. Built in 2 weeks.",
   keywords: [
@@ -45,17 +48,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Adamant" }],
   creator: "Adamant",
   publisher: "Adamant",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
   alternates: {
     canonical: "/",
   },
@@ -67,21 +59,12 @@ export const metadata: Metadata = {
     locale: "en_SG",
     url: "https://adamantasia.vercel.app",
     siteName: "Adamant",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "Adamant — Systems for teams that move fast",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Adamant — Systems for Teams That Move Fast",
     description:
       "We build systems that keep your business moving. Built in 2 weeks.",
-    images: ["/og-image.svg"],
   },
   icons: {
     icon: "/favicon.svg",
