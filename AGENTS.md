@@ -8,6 +8,52 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Adamant.asia — Agent Design Reference
 
+## Data Architecture (Lark Base → Content Layer)
+
+### Content Source of Truth
+
+All user-facing marketing copy lives in **Lark Base**, not hardcoded. The single source of truth in code is `src/data/content.ts`.
+
+**Rule:** Never hardcode marketing text inside section components. Extract it into `content.ts` via interfaces.
+
+**Workflow:**
+```
+Lark Base tables (team edits)
+    ↓
+scripts/sync-from-lark.mjs (build-time pull)
+    ↓
+src/data/content.ts (typed, committed)
+    ↓
+Components consume via props — Hero({ content }), Proof({ testimonials, stats })
+```
+
+### Component Props Pattern
+
+Every section component now accepts its content via props:
+
+| Component | File | Props |
+|-----------|------|-------|
+| `Hero` | `sections/hero.tsx` | `{ content: SectionContent }` |
+| `Problem` | `sections/problem.tsx` | `{ content, notifications }` |
+| `Process` | `sections/process.tsx` | `{ content, phases, pipelineNodes }` |
+| `Progress` | `sections/progress.tsx` | `{ content, rows }` |
+| `Proof` | `sections/proof.tsx` | `{ content, testimonials, stats }` |
+| `Contact` | `sections/contact.tsx` | `{ content, contactInfo }` |
+| `Footer` | `sections/footer.tsx` | `{ content, navLinks }` |
+| `Navigation` | `navigation.tsx` | `{ links: NavLinkContent[] }` |
+
+**Interface locations:** `src/data/content.ts` exports all content types.
+
+### Adding New Content Fields
+
+1. Add field to Lark Base table
+2. Add field to `scripts/sync-from-lark.mjs` field mapping
+3. Add field to `src/data/content.ts` interface
+4. Run `pnpm run sync` to regenerate
+5. Wire into component props
+
+---
+
 ## Typography System
 
 All text MUST use design tokens. Never hardcode font sizes, weights, or families.
@@ -108,29 +154,30 @@ Raw Tailwind spacing (`p-5`, `gap-4`, `mb-5`) is acceptable for **micro-layout w
 ## Section Flow
 
 ```
-Navigation (fixed)
+Navigation (fixed, accepts links prop)
   ↓
-Hero — "Build once. Run forever."
+Hero — "Build once. Run forever." (content-driven)
   ↓
 TrustedBy — Orbiting circles (LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe)
   ↓
-Problem — Before/After (chaos notifications vs. system terminal)
+Problem — Before/After (chaos notifications vs. system terminal) (content + notifications)
   ↓
-Process — "From chaos to system in two weeks." (4-phase pipeline)
+Process — "From chaos to system in two weeks." (4-phase pipeline) (content + phases)
   ↓
-Progress — KOL Campaign Dashboard mockup
+Progress — KOL Campaign Dashboard mockup (content + before/after rows)
   ↓
-Proof — 4 transformation cards + stats + quote marquee
+Proof — 4 transformation cards + stats + quote marquee (content + testimonials + stats)
   ↓
-Contact — Dark CTA with dotted map + terminal + form
+Contact — Dark CTA with dotted map + terminal + form (content + contact info)
   ↓
 Marquee — "Build once. Run forever. • Systems, not slogans. • ..."
   ↓
-Footer
+Footer (content + nav links)
 ```
 
 ## Wire Logic Rules
 
+- All section content comes from `src/data/content.ts`
 - Nav links: `#problem`, `#process`, `#proof`, `#contact`
 - Footer nav: `#main` (Home), `#problem`, `#process`, `#proof`, `#contact`
 - All CTAs scroll to `#contact` or `#problem`
@@ -147,10 +194,14 @@ Footer
 - **IntersectionObserver pause** for WebGL/canvas — `WaveCanvas` pauses when off-screen
 - `console.error` guarded by `NODE_ENV !== "production"`
 
-## Build
+## Build & Deploy
 
 ```bash
-npm run build
+pnpm install        # Install dependencies
+pnpm run sync       # Pull content from Lark Base
+pnpm run build      # Production build
 ```
 
-Must produce clean static export with zero errors.
+**ISR:** Page auto-rebuilds every 1 hour. On-demand rebuild via `/api/deploy`.
+
+Must produce clean build with zero errors.

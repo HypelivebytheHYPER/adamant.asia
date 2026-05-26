@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
-  output: "export",
+  // REMOVED: output: "export" (required for ISR)
   images: {
     unoptimized: true,
   },

@@ -5,8 +5,13 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { easeSpring } from "@/lib/animation";
+import type { NavLinkContent } from "@/data/content";
 
-export function Navigation() {
+interface NavigationProps {
+  links: NavLinkContent[];
+}
+
+export function Navigation({ links }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -17,6 +22,9 @@ export function Navigation() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const cta = links[links.length - 1];
+  const navLinks = links.slice(0, -1);
 
   return (
     <nav
@@ -29,26 +37,17 @@ export function Navigation() {
           Adamant
         </Link>
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#problem"
-            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
-          >
-            Problem
-          </a>
-          <a
-            href="#process"
-            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
-          >
-            Process
-          </a>
-          <a
-            href="#proof"
-            className="text-ui text-stone hover:text-foreground transition-colors duration-300"
-          >
-            Proof
-          </a>
-          <a href="#contact" className="btn-primary text-caption py-2 px-4">
-            Contact us
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-ui text-stone hover:text-foreground transition-colors duration-300"
+            >
+              {link.label}
+            </a>
+          ))}
+          <a href={cta.href} className="btn-primary text-caption py-2 px-4">
+            {cta.label}
           </a>
         </div>
         <button
@@ -71,33 +70,22 @@ export function Navigation() {
             className="md:hidden bg-background border-b border-border"
           >
             <div className="container py-4 flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMobile}
+                  className="text-ui text-stone hover:text-foreground touch-target"
+                >
+                  {link.label}
+                </a>
+              ))}
               <a
-                href="#problem"
-                onClick={closeMobile}
-                className="text-ui text-stone hover:text-foreground touch-target"
-              >
-                Problem
-              </a>
-              <a
-                href="#process"
-                onClick={closeMobile}
-                className="text-ui text-stone hover:text-foreground touch-target"
-              >
-                Process
-              </a>
-              <a
-                href="#proof"
-                onClick={closeMobile}
-                className="text-ui text-stone hover:text-foreground touch-target"
-              >
-                Proof
-              </a>
-              <a
-                href="#contact"
+                href={cta.href}
                 onClick={closeMobile}
                 className="text-ui text-primary touch-target"
               >
-                Contact us
+                {cta.label}
               </a>
             </div>
           </motion.div>

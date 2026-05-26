@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "sync": "node scripts/sync-from-lark.mjs",
     "build": "next build",
+    "build:sync": "npm run sync && next build",
     "start": "next start",
     "lint": "eslint",
     "analyze": "ANALYZE=true next build"
@@ -38,5 +40,6 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@9.15.4"
 }

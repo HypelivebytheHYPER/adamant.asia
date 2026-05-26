@@ -672,6 +672,16 @@
     animation: marquee-vertical var(--duration, 40s) linear infinite;
   }
 
+  /* Pipeline stepper animation */
+  @keyframes pipeline-flow {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .motion-safe\:animate-pipeline-flow {
+    animation: pipeline-flow 2.5s ease-in-out infinite;
+  }
+
   /* Orbit animations — handled inline by OrbitingCircles component */
 
 @media (prefers-reduced-motion: reduce) {

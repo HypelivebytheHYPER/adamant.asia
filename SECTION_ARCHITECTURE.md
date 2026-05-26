@@ -3,39 +3,112 @@
 
 ---
 
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Lark Base (Team-editable Content CMS)                          │
+│  ├─ Sections        (headlines, subheads, CTA)                  │
+│  ├─ Testimonials    (case studies, quotes)                      │
+│  ├─ Stats           (proof numbers)                             │
+│  ├─ Process Phases  (4-step pipeline cards)                     │
+│  ├─ Before After    (progress comparisons)                      │
+│  ├─ Notifications   (problem demo cards)                        │
+│  └─ Marquee Items   (footer text strips)                        │
+│                      ↓                                          │
+│  scripts/sync-from-lark.mjs (build-time sync)                   │
+│                      ↓                                          │
+│  src/data/content.ts (typed data layer)                        │
+│                      ↓                                          │
+│  Sections accept content via props (Hero, Problem, Process...)  │
+│                      ↓                                          │
+│  Next.js ISR (revalidate=1h) + Vercel deploy hooks            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Data Flow
+
+### 1. Content Editing (Team)
+```
+Lark Base URL: https://hypelive.sg.larksuite.com/base/XY8IbUHh3aNI2AsWI0tl0YllgSd
+Tables: 7 (Sections, Testimonials, Stats, Process Phases, Before After, Notifications, Marquee Items)
+Permission: Team members edit text directly in Lark UI
+```
+
+### 2. Sync to Code (Developer)
+```bash
+pnpm run sync
+# Runs: node scripts/sync-from-lark.mjs
+# Pulls all 7 tables via lark-cli or Lark REST API
+# Generates: src/data/content.ts with typed interfaces
+```
+
+### 3. Component Consumption
+```typescript
+// page.tsx — wires data to sections
+import { siteContent } from "@/data/content";
+
+<Hero content={siteContent.sections.hero} />
+<Problem content={siteContent.sections.problem} notifications={siteContent.notifications} />
+<Proof content={siteContent.sections.proof} testimonials={siteContent.testimonials} stats={siteContent.stats} />
+```
+
+### 4. Deployment Triggers
+- **Auto:** ISR revalidates every 1 hour (`export const revalidate = 3600`)
+- **Git push:** Vercel auto-deploys on `main` push
+- **Manual:** POST to `/api/deploy` → triggers Vercel deploy hook
+
+---
+
 ## Section Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  HERO     →  "Build once. Run forever."                     │
+│  Source: Sections table | Prop: content                     │
 │  Neuro: Identity mirror + dopamine priming                  │
 ├─────────────────────────────────────────────────────────────┤
 │  TRUSTEDBY →  Orbiting tool integrations                    │
+│  Source: Hardcoded (brand logos don't change)               │
 │  LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe│
 ├─────────────────────────────────────────────────────────────┤
 │  PROBLEM  →  "Your team asks you for everything."           │
+│  Source: Sections + Notifications tables                    │
+│  Props: content, notifications                              │
 │  Before: Chaotic notifications (LINE, Email, Team, Orders)  │
 │  After: Terminal showing auto-responses                     │
 ├─────────────────────────────────────────────────────────────┤
 │  PROCESS  →  "From chaos to system in two weeks."           │
+│  Source: Sections + Process Phases tables                   │
+│  Props: content, phases, pipelineNodes                      │
 │  4 phases: Map → Design → Build → Run                       │
 │  Pipeline diagram + numbered phase cards                    │
 ├─────────────────────────────────────────────────────────────┤
 │  PROGRESS →  KOL Campaign Dashboard                         │
+│  Source: Sections + Before After tables                     │
+│  Props: content, rows                                       │
 │  "KOL campaigns used to take 6 hours. Now they take 6 min." │
 │  Pure CSS dashboard mockup + before/after stats             │
 ├─────────────────────────────────────────────────────────────┤
 │  PROOF    →  "Built for how you work."                      │
+│  Source: Sections + Testimonials + Stats tables             │
+│  Props: content, testimonials, stats                        │
 │  4 transformation stories (Thida, Min, Sarin, Ploy)         │
 │  Stats bar + auto-scrolling quote marquee                   │
 ├─────────────────────────────────────────────────────────────┤
 │  CONTACT  →  "Fix your workflow."                           │
+│  Source: Sections table                                     │
+│  Props: content, contactInfo                                │
 │  Terminal booking + contact form + dotted map               │
 ├─────────────────────────────────────────────────────────────┤
 │  MARQUEE  →  "Build once. Run forever."                     │
+│  Source: Marquee Items table | Prop: marqueeItems           │
 │  CSS-infinite editorial band                                │
 ├─────────────────────────────────────────────────────────────┤
 │  FOOTER   →  Links + copyright                              │
+│  Source: Sections table | Props: content, navLinks          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -48,30 +121,32 @@ src/
 ├── app/
 │   ├── globals.css          # Design system (Cora + QBDS)
 │   ├── layout.tsx           # Root layout (fonts, metadata)
-│   └── page.tsx             # Direct section imports (no lazy loading)
+│   ├── page.tsx             # Section assembly + ISR config
+│   └── api/
+│       └── deploy/route.ts  # POST to trigger Vercel redeploy
+├── data/
+│   └── content.ts           # Typed content source of truth (synced from Lark)
+├── lib/
+│   ├── lark-api.ts          # Lark Base REST API client
+│   ├── utils.ts             # cn() and helpers
+│   ├── animation.ts         # Framer Motion easings
+│   └── tokens.ts            # Design token mappings
 ├── components/
-│   ├── navigation.tsx       # Fixed nav (no glass, solid transitions)
-│   ├── scroll-reveal.tsx    # Framer Motion scroll animations
-│   ├── blur-fade.tsx        # Opacity + translateY entrance
-│   ├── scroll-parallax.tsx  # Scroll-driven y-transform
+│   ├── navigation.tsx       # Fixed nav (accepts links prop)
+│   ├── sections/
+│   │   ├── hero.tsx         # Accepts content: SectionContent
+│   │   ├── problem.tsx      # Accepts content + notifications
+│   │   ├── process.tsx      # Accepts content + phases + pipelineNodes
+│   │   ├── progress.tsx     # Accepts content + rows
+│   │   ├── proof.tsx        # Accepts content + testimonials + stats
+│   │   ├── contact.tsx      # Accepts content + contactInfo
+│   │   └── footer.tsx       # Accepts content + navLinks
 │   ├── marquee.tsx          # CSS infinite scroll band
-│   ├── orbiting-circles.tsx # Dual-orbit animation component
+│   ├── orbiting-circles.tsx # Dual-orbit animation
 │   ├── terminal.tsx         # macOS terminal with typing animation
-│   ├── workflow-nodes.tsx   # SVG node graphs with connections
-│   ├── kol-dashboard-mockup.tsx  # Pure CSS dashboard UI
-│   ├── dotted-map.tsx       # SVG world map with pulse markers
-│   ├── text-3d-flip.tsx     # Per-character 3D flip animation
-│   ├── wave-canvas.tsx      # WebGL wave shader hero background
-│   ├── contact-form.tsx     # Dark-section contact form
-│   ├── platform-logos.tsx   # Monochrome SVG brand marks
-│   └── sections/
-│       ├── hero.tsx         # "Build once. Run forever."
-│       ├── problem.tsx      # Before/After notifications + terminal
-│       ├── process.tsx      # 4-phase pipeline + cards
-│       ├── progress.tsx     # KOL Dashboard mockup
-│       ├── proof.tsx        # Transformation stories + stats
-│       ├── contact.tsx      # Dark CTA + terminal + form
-│       └── footer.tsx       # Links + copyright
+│   └── ...
+scripts/
+└── sync-from-lark.mjs       # Build-time Lark Base → content.ts sync
 ```
 
 ---
@@ -173,6 +248,10 @@ src/
 
 | Decision | Before | After | Why |
 |----------|--------|-------|-----|
+| Content delivery | Hardcoded in components | Lark Base + data layer | Team can edit without code |
+| Rendering mode | Static export (`output: "export"`) | ISR (revalidate=1h) | Static HTML + periodic refresh |
+| Deploy triggers | Git push only | Git + webhook + API | Multiple entry points |
+| Package manager | npm | pnpm | Faster, deterministic |
 | Section loading | `dynamic()` lazy load | Direct import in `page.tsx` | Eliminated scroll jank |
 | Phase card animation | `AnimatedList` (JS timers) | Static grid + `BlurFade` | Removed 4s freeze |
 | Notification reveal | `AnimatedList` (JS timers) | Static list | Removed 8s freeze |
@@ -181,5 +260,5 @@ src/
 
 ---
 
-*Architecture v4.0 — May 2026*
-*Light-mode only · No lazy loading · Static-first*
+*Architecture v4.1 — May 2026*
+*Data-driven · ISR · Lark Base CMS · pnpm*

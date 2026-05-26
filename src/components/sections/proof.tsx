@@ -1,95 +1,53 @@
 "use client";
 
 import { BlurFade } from "@/components/blur-fade";
-import { Marquee, MarqueeText } from "@/components/marquee";
+import { Marquee } from "@/components/marquee";
+import type { SectionContent, TestimonialContent, StatContent } from "@/data/content";
 
-const transformations = [
-  {
-    who: "Thida",
-    industry: "Manufacturing",
-    location: "Bangkok",
-    before: "20 questions a day",
-    after: "Team self-serves",
-    quote: "I stopped answering questions and started building again.",
-  },
-  {
-    who: "Min",
-    industry: "Retail",
-    location: "Chiang Mai",
-    before: "3 months, no system",
-    after: "Dashboard in 3 days",
-    quote: "We had a working prototype in three days. Not three months.",
-  },
-  {
-    who: "Sarin",
-    industry: "Education",
-    location: "Phuket",
-    before: "$15K quote, unused",
-    after: "Fixed in one week",
-    quote: "They fixed what was actually broken. Nothing more.",
-  },
-  {
-    who: "Ploy",
-    industry: "F&B",
-    location: "Bangkok",
-    before: "Orders in 3 notebooks",
-    after: "LINE + Lark flow",
-    quote: "No more lost orders.",
-  },
-];
+interface ProofProps {
+  content: SectionContent;
+  testimonials: TestimonialContent[];
+  stats: StatContent[];
+}
 
-const stats = [
-  { value: "2 weeks", label: "to first system" },
-  { value: "47", label: "teams" },
-  { value: "4", label: "countries" },
-  { value: "30 days", label: "support" },
-];
-
-export function Proof() {
+export function Proof({ content, testimonials, stats }: ProofProps) {
   return (
     <section id="proof" className="section-pad bg-background relative overflow-hidden">
       <div className="container relative">
         <div className="max-w-2xl space-block-sm">
           <BlurFade delay={0.08}>
-            <h2 className="text-display text-foreground mb-4">
-              Built for how <em className="italic">you</em> work.
-            </h2>
+            <h2 className="text-display text-foreground mb-4">{content.headline}</h2>
           </BlurFade>
           <BlurFade delay={0.14}>
-            <p className="text-body text-stone max-w-md">
-              Nothing added that you do not need.
-            </p>
+            <p className="text-body text-stone max-w-md">{content.subheadline}</p>
           </BlurFade>
         </div>
 
         <BlurFade delay={0.2} className="space-block">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-            {transformations.map((t) => (
+            {testimonials.map((t) => (
               <div
-                key={t.who}
+                key={t.name}
                 className="group relative rounded-lg bg-surface border border-border overflow-hidden transition-all duration-300 hover:border-primary/20"
               >
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-primary/30 via-accent/20 to-transparent" />
                 <div className="p-3">
-                  {/* Name row */}
                   <div className="flex items-center gap-1.5 mb-2">
                     <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-foreground text-inverse text-[10px] font-medium">
-                      {t.who[0]}
+                      {t.name[0]}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-caption text-foreground font-medium leading-tight truncate">{t.who}</p>
-                      <p className="text-[10px] text-stone leading-tight truncate">{t.industry}, {t.location}</p>
+                      <p className="text-caption text-foreground font-medium leading-tight truncate">{t.name}</p>
+                      <p className="text-[10px] text-stone leading-tight truncate">{t.industry}</p>
                     </div>
                   </div>
 
-                  {/* Before → After */}
                   <div className="flex items-center gap-1 mb-2">
                     <span className="text-[10px] text-stone truncate">{t.before}</span>
                     <span className="text-[10px] text-primary flex-shrink-0">→</span>
                     <span className="text-[10px] text-foreground truncate">{t.after}</span>
                   </div>
 
-                  {/* Quote */}
                   <p className="text-[10px] italic text-foreground/80 leading-snug">
                     &ldquo;{t.quote}&rdquo;
                   </p>
@@ -99,7 +57,6 @@ export function Proof() {
           </div>
         </BlurFade>
 
-        {/* Stats — compact row */}
         <BlurFade delay={0.1} className="space-block">
           <div className="flex items-center justify-between gap-2 rounded-lg bg-surface border border-border px-4 py-3">
             {stats.map((s) => (
@@ -111,13 +68,12 @@ export function Proof() {
           </div>
         </BlurFade>
 
-        {/* Auto-scrolling quote marquee */}
         <BlurFade delay={0.1}>
           <Marquee className="space-strip bg-foreground" speed={40} gap={32}>
-            {transformations.map((t) => (
-              <span key={t.who} className="inline-flex items-center gap-2 text-inverse/60 text-caption whitespace-nowrap">
+            {testimonials.map((t) => (
+              <span key={t.name} className="inline-flex items-center gap-2 text-inverse/60 text-caption whitespace-nowrap">
                 <span className="text-primary/60">&ldquo;{t.quote}&rdquo;</span>
-                <span className="text-inverse/30">— {t.who}, {t.location}</span>
+                <span className="text-inverse/30">— {t.name}</span>
                 <span className="text-inverse/20 mx-2">•</span>
               </span>
             ))}

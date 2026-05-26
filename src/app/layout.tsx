@@ -28,20 +28,19 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://adamant.asia"),
-  title: "Adamant — Workflows for Small Teams in Southeast Asia",
+  title: "Adamant — Systems for Teams That Move Fast",
   description:
-    "We build systems that keep your business moving. Custom workflows, CRM setup, dashboards, and websites for small teams in Bangkok, Singapore, and across Southeast Asia. Built in 2 weeks.",
+    "We build systems that keep your business moving. Custom workflows, dashboards, and automations for teams that need to move fast. Built in 2 weeks.",
   keywords: [
     "workflow automation",
     "small business automation",
     "CRM setup",
-    "Southeast Asia",
-    "Bangkok",
-    "Singapore",
     "LarkSuite",
     "LINE integration",
     "business workflow",
     "process automation",
+    "internal tools",
+    "dashboard",
   ],
   authors: [{ name: "Adamant" }],
   creator: "Adamant",
@@ -61,9 +60,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Adamant — Workflows for Small Teams in Southeast Asia",
+    title: "Adamant — Systems for Teams That Move Fast",
     description:
-      "We build systems that keep your business moving. Built in 2 weeks. For teams in Bangkok, Singapore, and across SEA.",
+      "We build systems that keep your business moving. Built in 2 weeks.",
     type: "website",
     locale: "en_US",
     url: "https://adamant.asia",
@@ -73,13 +72,13 @@ export const metadata: Metadata = {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Adamant — Workflows for small teams in Southeast Asia",
+        alt: "Adamant — Systems for teams that move fast",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adamant — Workflows for Small Teams in Southeast Asia",
+    title: "Adamant — Systems for Teams That Move Fast",
     description:
       "We build systems that keep your business moving. Built in 2 weeks.",
     images: ["/og-image.svg"],
