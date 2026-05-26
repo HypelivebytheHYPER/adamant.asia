@@ -31,7 +31,6 @@ export default function Home() {
         <Process
           content={sc.sections.process}
           phases={sc.processPhases}
-          pipelineNodes={sc.pipelineNodes}
         />
         <StatsBar stats={sc.stats} />
         <Proof
