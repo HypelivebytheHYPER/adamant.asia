@@ -64,8 +64,8 @@ export const siteContent = {
     },
     problem: {
       id: "problem",
-      headline: "Your campaign runs on six spreadsheets.",
-      subheadline: "Submissions in one file. Approvals in another. Rankings somewhere else. Someone always has the wrong version.",
+      headline: "You are too busy doing things a machine should do.",
+      subheadline: "Forgetting to follow up. Copy-pasting the same email. Chasing someone for a signature. Updating a spreadsheet no one reads. You did not start this to become your own assistant.",
       enabled: true,
     },
     solutions: {
