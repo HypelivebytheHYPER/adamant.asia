@@ -65,13 +65,12 @@ export const siteContent = {
     problem: {
       id: "problem",
       headline: "When was the last time you...",
-      subheadline: "You did not start this to become your own assistant.",
       enabled: true,
     },
     solutions: {
       id: "solutions",
       headline: "You are too busy doing things a machine should do.",
-      subheadline: "We build for the lazy — the 'I have better things to do with my mind' kind. Automate the boring. Reclaim your time.",
+      subheadline: "You did not start this to become your own assistant.",
       enabled: true,
     },
     process: {
@@ -105,22 +104,22 @@ export const siteContent = {
     {
       icon: "Network",
       title: "Workflow Systems",
-      description: "Connect your team, data, and processes in one place.",
+      description: "One place where nothing gets forgotten. Follow-ups happen without you remembering.",
     },
     {
       icon: "LayoutDashboard",
       title: "Live Dashboards",
-      description: "Replace spreadsheets with real-time views your team trusts.",
+      description: "No more spreadsheets no one reads. Your team sees what matters, in real time.",
     },
     {
       icon: "Zap",
       title: "Automations",
-      description: "Connect your tools. Eliminate busywork.",
+      description: "Answer once. The system repeats it. Emails send themselves. Status updates flow automatically.",
     },
     {
       icon: "Wrench",
       title: "Bespoke Tools",
-      description: "Internal apps and portals built in weeks, not months.",
+      description: "Get signatures tracked. Approvals routed. No more chasing people down for a yes.",
     },
   ] satisfies SolutionContent[],
 
