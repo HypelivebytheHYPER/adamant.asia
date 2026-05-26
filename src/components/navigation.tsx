@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { easeSpring } from "@/lib/animation";
 import type { NavLinkContent } from "@/data/content";
@@ -67,10 +68,19 @@ export function Navigation({ links }: NavigationProps) {
               className="text-ui text-stone hover:text-foreground transition-colors duration-300"
             />
           ))}
-          <NavItem
-            link={cta}
-            className="btn-primary text-caption py-2 px-4"
-          />
+          <motion.a
+            href={cta.href}
+            className="group hidden md:inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3.5 py-1.5 text-ui text-foreground transition-all duration-300 hover:bg-foreground hover:text-background hover:border-foreground"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {cta.label}
+            <ArrowRight
+              size={13}
+              strokeWidth={2}
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            />
+          </motion.a>
         </div>
         <button
           className="md:hidden p-2 touch-target-sm"
@@ -100,11 +110,14 @@ export function Navigation({ links }: NavigationProps) {
                   className="text-ui text-stone hover:text-foreground touch-target"
                 />
               ))}
-              <NavItem
-                link={cta}
+              <a
+                href={cta.href}
                 onClick={closeMobile}
-                className="text-ui text-primary touch-target"
-              />
+                className="flex items-center gap-1.5 text-ui text-primary touch-target"
+              >
+                {cta.label}
+                <ArrowRight size={13} strokeWidth={2} />
+              </a>
             </div>
           </motion.div>
         )}
