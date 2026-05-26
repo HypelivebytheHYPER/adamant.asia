@@ -13,7 +13,10 @@ interface HeroProps {
 
 export function Hero({ content }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -30]);
 
@@ -31,18 +34,19 @@ export function Hero({ content }: HeroProps) {
         className="container relative z-10"
         style={{ opacity: contentOpacity, y: contentY }}
       >
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-end">
+        {/* Balanced 2-col: text ~45%, card ~55% */}
+        <div className="grid lg:grid-cols-5 gap-10 lg:gap-12 items-end">
           {/* Left: Text */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: easeSpring }}
-            className="max-w-xl"
+            className="lg:col-span-2 max-w-lg"
           >
-            <h1 className="text-hero text-foreground font-serif">
+            <h1 className="text-hero text-foreground font-serif leading-[1.05]">
               {content.headline}
             </h1>
-            <p className="mt-5 text-lead text-stone max-w-md">
+            <p className="mt-5 text-lead text-stone max-w-md leading-relaxed">
               {content.body}
             </p>
             <motion.a
@@ -55,13 +59,9 @@ export function Hero({ content }: HeroProps) {
             </motion.a>
           </motion.div>
 
-          {/* Right: Showcase Card */}
-          <div className="hidden lg:block pb-4">
-            <ProjectShowcase
-              imageUrl="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-              title="Campaign Dashboard"
-              description="Live submissions, approvals, and rankings — all in one view."
-            />
+          {/* Right: Showcase Carousel */}
+          <div className="hidden lg:block lg:col-span-3 pb-2">
+            <ProjectShowcase />
           </div>
         </div>
       </motion.div>
