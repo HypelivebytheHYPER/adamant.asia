@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     description:
       "We build systems that keep your business moving. Built in 2 weeks.",
     type: "website",
-    locale: "en_US",
+    locale: "en_SG",
     url: "https://adamantasia.vercel.app",
     siteName: "Adamant",
     images: [
