@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
       console.error("[pricing-lead] Telegram error:", err instanceof Error ? err.message : err);
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, telegram: { configured: !!process.env.TELEGRAM_BOT_TOKEN && !!process.env.TELEGRAM_CHAT_ID } });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[pricing-lead] error:", message);
