@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SmoothScroll } from "@/components/animations/smooth-scroll";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { VoiceAgentProvider } from "@/components/voice-agent-provider";
+import { VoiceAgentController } from "@/components/voice-agent-controller";
+import { FloatingVoiceWidget } from "@/components/floating-voice-widget";
 import { TOKENS } from "@/lib/tokens";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { siteContent } from "@/data/content";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,44 +34,58 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://adamantasia.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Adamant — Systems for Teams That Move Fast",
-    template: "%s | Adamant",
+    default: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
-    "We build systems that keep your business moving. Custom workflows, dashboards, and automations for teams that need to move fast. Built in 2 weeks.",
+    "Custom SaaS tools and marketing systems built in two weeks. AI-powered workflows, campaign dashboards, and automation that your team actually uses.",
   keywords: [
-    "workflow automation",
-    "small business automation",
-    "CRM setup",
-    "LarkSuite",
-    "LINE integration",
-    "business workflow",
+    "SaaS mini build",
+    "custom SaaS tools",
+    "marketing systems",
+    "AI workflow automation",
+    "campaign dashboard",
+    "business operations",
+    "workflow design",
     "process automation",
     "internal tools",
-    "dashboard",
+    "CRM setup",
+    "campaign tracking",
+    "team productivity",
   ],
   authors: [{ name: "Adamant" }],
   creator: "Adamant",
   publisher: "Adamant",
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Adamant — Systems for Teams That Move Fast",
+    title: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
     description:
-      "We build systems that keep your business moving. Built in 2 weeks.",
+      "Custom SaaS tools and marketing systems built in two weeks. Working code, not prototypes.",
     type: "website",
-    locale: "en_SG",
-    url: "https://adamantasia.vercel.app",
-    siteName: "Adamant",
+    url: SITE_URL,
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adamant — Systems for Teams That Move Fast",
+    title: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
     description:
-      "We build systems that keep your business moving. Built in 2 weeks.",
+      "Custom SaaS tools and marketing systems built in two weeks. Working code, not prototypes.",
   },
   icons: {
     icon: "/favicon.svg",
@@ -88,15 +109,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const sc = siteContent;
   return (
     <html
       lang="en"
       dir="ltr"
       className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}
     >
-      <body className="min-h-screen bg-background text-foreground">
+      <body className="bg-background text-foreground">
         <a href="#main" className="skip-link">Skip to content</a>
-        <SmoothScroll>{children}</SmoothScroll>
+        <Navigation links={sc.navLinks} />
+        <VoiceAgentProvider>
+          <VoiceAgentController>
+            <SmoothScroll>
+              <div id="main">{children}</div>
+            </SmoothScroll>
+            <Footer
+              content={sc.sections.footer}
+              navLinks={sc.footerNavLinks}
+              year={new Date().getFullYear()}
+            />
+            <FloatingVoiceWidget />
+          </VoiceAgentController>
+        </VoiceAgentProvider>
         <SpeedInsights />
       </body>
     </html>

@@ -57,17 +57,28 @@ async function larkFetch<T>(path: string, init?: RequestInit, auth?: LarkAuth): 
 
 /** Get tenant_access_token from app credentials */
 export async function getTenantToken(appId: string, appSecret: string): Promise<LarkAuth> {
-  const data = await larkFetch<{ tenant_access_token: string; expire: number }>(
-    "/auth/v3/tenant_access_token/internal",
-    {
-      method: "POST",
-      body: JSON.stringify({ app_id: appId, app_secret: appSecret }),
-    }
-  );
+  const res = await fetch(`${BASE_URL}/auth/v3/tenant_access_token/internal`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ app_id: appId, app_secret: appSecret }),
+  });
+  const body = (await res.json()) as {
+    code: number;
+    msg: string;
+    tenant_access_token?: string;
+    expire?: number;
+    error?: { log_id?: string };
+  };
+  if (body.code !== 0) {
+    throw new LarkAPIError(body.code, body.msg, body.error?.log_id);
+  }
+  if (!body.tenant_access_token) {
+    throw new LarkAPIError(-1, "tenant_access_token missing in auth response");
+  }
   return {
     type: "tenant",
-    token: data.tenant_access_token,
-    expiresAt: Date.now() + data.expire * 1000,
+    token: body.tenant_access_token,
+    expiresAt: Date.now() + (body.expire || 7200) * 1000,
   };
 }
 
@@ -77,6 +88,29 @@ export class BitableClient {
 
   constructor(auth: LarkAuth) {
     this.auth = auth;
+  }
+
+  /**
+   * Search records with structured filter + sort (POST /records/search).
+   * Supports: filter, sort, field_names, page_size, page_token.
+   * Use this over listRecords when you need filtering/sorting at query time.
+   */
+  async searchRecords(
+    appToken: string,
+    tableId: string,
+    body: {
+      filter?: unknown;
+      sort?: Array<{ field_name: string; desc?: boolean }>;
+      field_names?: string[];
+      page_size?: number;
+      page_token?: string;
+    }
+  ): Promise<{ items: LarkRecord[]; total: number; has_more: boolean; page_token?: string }> {
+    return larkFetch(
+      `/bitable/v1/apps/${appToken}/tables/${tableId}/records/search`,
+      { method: "POST", body: JSON.stringify(body) },
+      this.auth
+    );
   }
 
   /** List all records in a table (auto-paginated) */

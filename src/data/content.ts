@@ -181,7 +181,7 @@ export const siteContent = {
     },
     {
       name: "Ploy",
-      industry: "F&B",
+      industry: "Hospitality",
       before: "Orders in 3 notebooks",
       after: "Fully handled",
       quote: "No more lost orders.",
@@ -252,7 +252,7 @@ export const siteContent = {
   ] satisfies NavLinkContent[],
 
   contactInfo: {
-    email: "hello@adamant.asia",
+    email: "sam@adamant.asia",
     location: "Remote-first",
   } satisfies ContactInfoContent,
 

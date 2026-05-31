@@ -1,14 +1,26 @@
 "use client";
 
-import { motion, useScroll } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ScrollProgressProps {
   className?: string;
 }
 
+/**
+ * ScrollProgress — Smooth progress bar that follows scroll position.
+ *
+ * Uses useSpring for buttery interpolation instead of direct scroll mapping,
+ * so the bar feels fluid rather than sticky during fast scrolls.
+ */
 export function ScrollProgress({ className }: ScrollProgressProps) {
   const { scrollYProgress } = useScroll();
+
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   return (
     <motion.div
@@ -17,9 +29,7 @@ export function ScrollProgress({ className }: ScrollProgressProps) {
         "bg-linear-to-r from-primary via-accent to-primary",
         className
       )}
-      style={{
-        scaleX: scrollYProgress,
-      }}
+      style={{ scaleX }}
     />
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { BlurFade } from "@/components/animations/blur-fade";
-import { Safari } from "@/components/ui/safari";
-import { Map, PenTool, Hammer, Rocket } from "lucide-react";
+import { ContactForm } from "@/components/contact-form";
+import { Map, PenTool, Hammer, Rocket, ArrowRight } from "lucide-react";
 import type { SectionContent, ProcessPhaseContent } from "@/data/content";
 
 interface ProcessProps {
@@ -19,7 +19,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export function Process({ content, phases }: ProcessProps) {
   return (
-    <section id="process" className="section-pad bg-gradient-warm relative overflow-hidden">
+    <section id="process" className="section-pad bg-gradient-warm relative overflow-hidden scroll-mt-16 cv-section">
       <div className="container relative">
         {/* Headline */}
         <div className="max-w-2xl mb-10">
@@ -36,11 +36,10 @@ export function Process({ content, phases }: ProcessProps) {
           <BlurFade delay={0.2}>
             <div className="relative space-y-0">
               {/* Vertical line */}
-              <div className="absolute left-[19px] top-8 bottom-8 w-px bg-border/60" />
+              <div className="absolute left-5 top-8 bottom-8 w-px bg-border/60" />
 
-              {phases.map((p, i) => {
+              {phases.map((p) => {
                 const IconComp = iconMap[p.icon] || Map;
-                const isLast = i === phases.length - 1;
                 return (
                   <div key={p.title} className="relative flex gap-5 pb-8 last:pb-0">
                     {/* Step dot */}
@@ -53,7 +52,7 @@ export function Process({ content, phases }: ProcessProps) {
                     {/* Step content */}
                     <div className="pt-1.5">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-[10px] text-stone font-medium uppercase tracking-wider">
+                        <span className="text-xs text-stone font-medium uppercase tracking-wider">
                           Step {p.num}
                         </span>
                       </div>
@@ -68,17 +67,44 @@ export function Process({ content, phases }: ProcessProps) {
             </div>
           </BlurFade>
 
-          {/* Right: Safari mockup */}
+          {/* Right: Contact form card */}
           <BlurFade delay={0.35}>
-            <div className="rounded-xl bg-surface border border-border p-3 shadow-lg">
-              <Safari
-                url="adamant.asia"
-                imageSrc="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-                className="w-full"
-              />
-              <p className="text-[10px] text-stone text-center mt-2">
-                Replace with your product demo video — contact us to set it up.
-              </p>
+            <div className="rounded-xl bg-surface border border-border shadow-lg overflow-hidden">
+              {/* Card header */}
+              <div className="px-6 pt-6 pb-2 border-b border-border/50">
+                <span className="text-micro text-primary uppercase tracking-wider font-medium">
+                  Get started
+                </span>
+                <h3 className="text-body text-foreground font-medium mt-1">
+                  Book your free scope call
+                </h3>
+                <p className="text-caption text-stone mt-0.5">
+                  Tell us what is broken. We will tell you if we can fix it.
+                </p>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <ContactForm inline />
+              </div>
+
+              {/* Trust microcopy + quick WhatsApp */}
+              <div className="px-6 pb-5 pt-0 space-y-2">
+                <div className="flex items-center gap-2 text-xs text-stone/70">
+                  <ArrowRight size={12} className="text-primary" />
+                  <span>Reply within 24 hours &middot; No sales pressure &middot; Free</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-stone/70">
+                  <span>Prefer WhatsApp?</span>
+                  <a
+                    href="https://wa.me/6589211191"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline underline-offset-2"
+                  >
+                    +65 8921 1191
+                  </a>
+                </div>
+              </div>
             </div>
           </BlurFade>
         </div>

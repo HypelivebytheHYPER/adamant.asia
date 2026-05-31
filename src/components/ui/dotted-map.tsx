@@ -1,5 +1,5 @@
 import * as React from "react"
-import { createMap } from "svg-dotted-map"
+import { createMap } from "piri"
 
 import { cn } from "@/lib/utils"
 
@@ -58,7 +58,7 @@ export function DottedMap<M extends Marker = Marker>({
     height,
     mapSamples,
   })
-  const processedMarkers = addMarkers(markers)
+  const processedMarkers = addMarkers(markers as unknown as Parameters<typeof addMarkers>[0]) as MapMarker<M>[]
 
   // Compute stagger helpers in a single, simple pass
   const { xStep, yToRowIndex } = React.useMemo(() => {

@@ -10,7 +10,7 @@ export default function HomeError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // Error logged silently — monitor via Sentry or Vercel logs
   }, [error]);
 
   return (

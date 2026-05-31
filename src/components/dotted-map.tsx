@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { createMap } from "svg-dotted-map";
+import { createMap } from "piri";
 import { cn } from "@/lib/utils";
 
 export interface Marker {
@@ -56,7 +56,10 @@ export function DottedMap<M extends Marker = Marker>({
     () => createMap({ width, height, mapSamples }),
     [width, height, mapSamples]
   );
-  const processedMarkers = React.useMemo(() => addMarkers(markers), [addMarkers, markers]);
+  const processedMarkers = React.useMemo(
+    () => addMarkers(markers as unknown as Parameters<typeof addMarkers>[0]) as MapMarker<M>[],
+    [addMarkers, markers]
+  );
 
   // Compute stagger helpers in a single, simple pass
   const { xStep, yToRowIndex } = React.useMemo(() => {

@@ -31,14 +31,14 @@ export function WorkflowDiagram({
       <div className="relative flex items-start justify-between">
         {/* Background track */}
         <div
-          className="absolute top-[11px] left-0 right-0 h-px bg-border"
+          className="absolute top-3 left-0 right-0 h-px bg-border"
           aria-hidden="true"
         />
 
         {/* Animated gradient flow */}
         {!reducedMotion && (
           <div
-            className="motion-safe:animate-pipeline-flow absolute top-[11px] left-0 h-px w-full"
+            className="motion-safe:animate-pipeline-flow absolute top-3 left-0 h-px w-full"
             style={{
               background:
                 "linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%)",
@@ -56,7 +56,7 @@ export function WorkflowDiagram({
               {/* Step dot */}
               <div
                 className={cn(
-                  "flex h-[22px] w-[22px] items-center justify-center rounded-full border-2",
+                  "flex h-6 w-6 items-center justify-center rounded-full border-2",
                   isLast
                     ? "border-teal bg-teal"
                     : "border-primary bg-primary"
@@ -77,7 +77,7 @@ export function WorkflowDiagram({
 
               {/* Sub-label */}
               {node.sublabel && (
-                <span className="mt-0.5 text-[10px] text-stone">
+                <span className="mt-0.5 text-xs text-stone">
                   {node.sublabel}
                 </span>
               )}

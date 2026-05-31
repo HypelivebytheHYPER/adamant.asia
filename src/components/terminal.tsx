@@ -30,7 +30,7 @@ export function Terminal({ children, className, title = "adamant" }: TerminalPro
           <div className="h-2.5 w-2.5 rounded-full bg-accent/70" />
           <div className="h-2.5 w-2.5 rounded-full bg-primary/70" />
         </div>
-        <span className="text-[11px] text-inverse-muted font-mono ml-2">{title}</span>
+        <span className="text-xs text-inverse-muted font-mono ml-2">{title}</span>
       </div>
       {/* Terminal body */}
       <div className="p-4 font-mono text-sm">

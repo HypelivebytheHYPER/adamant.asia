@@ -1,9 +1,8 @@
 "use client";
 
-import { ScrollReveal } from "@/components/animations/scroll-reveal";
 import { BlurFade } from "@/components/animations/blur-fade";
 import { ContactForm } from "@/components/contact-form";
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 import type { SectionContent, ContactInfoContent } from "@/data/content";
 
 interface ContactProps {
@@ -13,15 +12,16 @@ interface ContactProps {
 
 export function Contact({ content, contactInfo }: ContactProps) {
   return (
-    <section id="contact" className="section-pad bg-foreground relative overflow-hidden">
+    <section id="contact" className="section-pad bg-foreground relative overflow-hidden scroll-mt-16">
       <div className="relative container">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* Left: Copy + contact methods */}
           <div>
             <BlurFade delay={0.1}>
               <h2 className="text-display text-background mb-5">{content.headline}</h2>
             </BlurFade>
             <BlurFade delay={0.18}>
-              <p className="text-body text-inverse-weak max-w-sm mb-8">{content.subheadline}</p>
+              <p className="text-body text-inverse-weak max-w-md mb-8">{content.subheadline}</p>
             </BlurFade>
 
             <BlurFade delay={0.26}>
@@ -40,13 +40,32 @@ export function Contact({ content, contactInfo }: ContactProps) {
                     </a>
                   </div>
                 </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center">
+                    <MessageCircle size={16} className="text-background" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-caption text-inverse-muted">WhatsApp</p>
+                    <a
+                      href="https://wa.me/6589211191"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-body text-background hover:text-primary transition-colors"
+                    >
+                      +65 8921 1191
+                    </a>
+                  </div>
+                </div>
               </div>
             </BlurFade>
           </div>
 
-          <ScrollReveal delay={0.2}>
-            <ContactForm />
-          </ScrollReveal>
+          {/* Right: Shared ContactForm */}
+          <BlurFade delay={0.34}>
+            <div className="rounded-xl border border-background/15 bg-background/[0.07] p-6 lg:p-8">
+              <ContactForm variant="dark" />
+            </div>
+          </BlurFade>
         </div>
       </div>
     </section>

@@ -20,12 +20,15 @@ export interface SafariProps extends HTMLAttributes<HTMLDivElement> {
   imageSrc?: string
   videoSrc?: string
   mode?: SafariMode
+  /** Alt text for the image inside the browser frame. Pass "" for decorative. */
+  alt?: string
 }
 
 export function Safari({
   imageSrc,
   videoSrc,
   url,
+  alt,
   mode = "default",
   className,
   style,
@@ -78,7 +81,10 @@ export function Safari({
         >
           <img
             src={imageSrc}
-            alt=""
+            alt={alt ?? ""}
+            width={1200}
+            height={700}
+            loading="lazy"
             className="block size-full object-cover object-top"
           />
         </div>

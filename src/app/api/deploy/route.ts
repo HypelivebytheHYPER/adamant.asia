@@ -11,8 +11,8 @@ import { NextRequest, NextResponse } from "next/server";
  * Get deploy hook from: Vercel Dashboard → adamant.asia → Settings → Git → Deploy Hooks
  *
  * Usage:
- *   curl -X GET  https://adamantasia.vercel.app/api/deploy
- *   curl -X POST https://adamantasia.vercel.app/api/deploy \
+ *   curl -X GET  https://adamant.asia/api/deploy
+ *   curl -X POST https://adamant.asia/api/deploy \
  *     -H "Authorization: Bearer YOUR_SECRET" \
  *     -H "Content-Type: application/json"
  */

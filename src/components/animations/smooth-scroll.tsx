@@ -1,30 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
+/**
+ * SmoothScroll — 2026 pattern:
+ * Native CSS scroll-behavior only.
+ * Lenis removed: it creates momentum bounce on iOS, conflicts with
+ * reduced-motion, and adds unnecessary JS payload for static sites.
+ */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (reducedMotion) return;
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      touchMultiplier: 2,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+    if (reducedMotion) {
+      document.documentElement.style.scrollBehavior = "auto";
+    } else {
+      document.documentElement.style.scrollBehavior = "smooth";
     }
-    const rafId = requestAnimationFrame(raf);
-
     return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
+      document.documentElement.style.scrollBehavior = "auto";
     };
   }, [reducedMotion]);
 

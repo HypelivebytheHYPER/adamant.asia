@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { easeSpring } from "@/lib/animation";
 import { altPortfolio } from "@/lib/seo-image-protocol";
@@ -92,7 +93,7 @@ export function ShowcaseCards() {
         >
           <div className="rounded-xl border border-border/60 bg-surface overflow-hidden shadow-md">
             {/* Image */}
-            <div className="relative w-full aspect-[16/9] overflow-hidden bg-foreground/[0.03]">
+            <div className="relative w-full aspect-[21/9] overflow-hidden bg-surface-raised">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={index}
@@ -103,13 +104,13 @@ export function ShowcaseCards() {
                   transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
                   className="absolute inset-0"
                 >
-                  <img
+                  <Image
                     src={current.imageUrl}
                     alt={altPortfolio(current.title, current.tag1, current.description)}
-                    width={1200}
-                    height={675}
-                    className="w-full h-full object-cover"
-                    loading="eager"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 672px"
+                    className="object-contain"
+                    priority={index === 0}
                   />
                 </motion.div>
               </AnimatePresence>
@@ -123,10 +124,10 @@ export function ShowcaseCards() {
                       setDirection(i > index ? 1 : -1);
                       setIndex(i);
                     }}
-                    className={`h-[3px] rounded-full transition-all duration-300 ${
+                    className={`h-2 rounded-full transition-all duration-300 min-h-[16px] min-w-[16px] touch-target-sm ${
                       i === index
-                        ? "w-4 bg-background/80"
-                        : "w-1.5 bg-background/40 hover:bg-background/60"
+                        ? "w-6 bg-background/80"
+                        : "w-2 bg-background/40 hover:bg-background/60"
                     }`}
                     aria-label={`Go to slide ${i + 1}`}
                   />
@@ -145,10 +146,10 @@ export function ShowcaseCards() {
                   transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
                 >
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-medium text-primary uppercase tracking-wider">
+                    <span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[9px] font-medium text-primary-foreground uppercase tracking-wider">
                       {current.tag1}
                     </span>
-                    <span className="inline-flex items-center rounded-full bg-accent/10 px-2 py-0.5 text-[9px] font-medium text-accent uppercase tracking-wider">
+                    <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[9px] font-medium text-accent-foreground uppercase tracking-wider">
                       {current.tag2}
                     </span>
                   </div>

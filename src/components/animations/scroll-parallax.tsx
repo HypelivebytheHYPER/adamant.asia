@@ -12,16 +12,19 @@ interface ScrollParallaxProps {
   className?: string;
 }
 
+/** Default offset tuned for smooth, jank-free parallax. */
+const DEFAULT_OFFSET = 20;
+
 /**
  * Scroll-driven parallax wrapper inspired by Magic UI's FeatureScroll.
  * Applies a subtle y-transform based on scroll progress for depth.
  *
- * Default offset: 30px (subtle editorial feel)
- * Use 40-60px for decorative backgrounds, 15-25px for content elements.
+ * Default offset: 20px (gentle editorial feel)
+ * Use 30-40px for decorative backgrounds, 12-18px for content elements.
  */
 export function ScrollParallax({
   children,
-  offset = 30,
+  offset = DEFAULT_OFFSET,
   direction = "up",
   className = "",
 }: ScrollParallaxProps) {
@@ -41,7 +44,10 @@ export function ScrollParallax({
 
   return (
     <div ref={ref} className={cn(className)}>
-      <motion.div style={{ y }} className="will-change-transform motion-reduce:will-change-auto">
+      <motion.div
+        style={{ y }}
+        className="will-change-transform motion-reduce:will-change-auto"
+      >
         {children}
       </motion.div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useLayoutEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface LensProps {
@@ -22,18 +22,29 @@ export function Lens({
 }: LensProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const posRef = useRef({ x: 0, y: 0 });
-  const [, render] = useState(0);
+  const [dims, setDims] = useState({ w: 0, h: 0 });
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  /* Read dimensions outside render cycle */
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0].contentRect;
+      setDims({ w: cr.width, h: cr.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (isStatic || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      posRef.current = {
+      setPos({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
-      };
-      render((n) => n + 1);
+      });
     },
     [isStatic]
   );
@@ -41,7 +52,8 @@ export function Lens({
   const handleMouseEnter = () => setIsVisible(true);
   const handleMouseLeave = () => setIsVisible(false);
 
-  const { x, y } = posRef.current;
+  const { x, y } = pos;
+  const { w, h } = dims;
 
   return (
     <div
@@ -56,7 +68,7 @@ export function Lens({
       {children}
 
       {/* Magnified lens overlay */}
-      {!isStatic && isVisible && containerRef.current && (
+      {!isStatic && isVisible && w > 0 && h > 0 && (
         <div
           className="pointer-events-none absolute rounded-full border border-primary/40 shadow-2xl overflow-hidden"
           style={{
@@ -72,8 +84,8 @@ export function Lens({
           <div
             className="absolute inset-0 flex items-center justify-center"
             style={{
-              width: containerRef.current.offsetWidth * zoomFactor,
-              height: containerRef.current.offsetHeight * zoomFactor,
+              width: w * zoomFactor,
+              height: h * zoomFactor,
               transform: `translate(${-x * zoomFactor + lensSize / 2}px, ${-y * zoomFactor + lensSize / 2}px)`,
             }}
           >

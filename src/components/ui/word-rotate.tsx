@@ -1,15 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AnimatePresence, motion, type MotionProps } from "motion/react"
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, type MotionProps } from "motion/react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 interface WordRotateProps {
-  words: string[]
-  duration?: number
-  motionProps?: MotionProps
-  className?: string
+  words: string[];
+  duration?: number;
+  motionProps?: MotionProps;
+  className?: string;
 }
 
 export function WordRotate({
@@ -23,28 +24,29 @@ export function WordRotate({
   },
   className,
 }: WordRotateProps) {
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reducedMotion) return;
     const interval = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % words.length)
-    }, duration)
+      setIndex((prevIndex) => (prevIndex + 1) % words.length);
+    }, duration);
 
-    // Clean up interval on unmount
-    return () => clearInterval(interval)
-  }, [words, duration])
+    return () => clearInterval(interval);
+  }, [words, duration, reducedMotion]);
 
   return (
     <div className="overflow-hidden py-2">
       <AnimatePresence mode="wait">
-        <motion.h1
+        <motion.div
           key={words[index]}
-          className={cn(className)}
+          className={cn("whitespace-nowrap", className)}
           {...motionProps}
         >
           {words[index]}
-        </motion.h1>
+        </motion.div>
       </AnimatePresence>
     </div>
-  )
+  );
 }

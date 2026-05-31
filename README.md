@@ -2,8 +2,8 @@
 
 Workflow systems for teams that move fast.
 
-**Live:** [adamantasia.vercel.app](https://adamantasia.vercel.app)
-**Production:** [adamantasia-q1tbs6s71-hypelives-projects.vercel.app](https://adamantasia-q1tbs6s71-hypelives-projects.vercel.app)
+**Live:** [adamant.asia](https://adamant.asia)
+**Contact:** sam@adamant.asia / WhatsApp +65 8921 1191
 
 ---
 
@@ -26,6 +26,9 @@ We design workflows that run themselves — connecting your tools into one autom
 | Fonts | Newsreader (editorial) + Geist Sans/Mono (UI) |
 | Content CMS | Lark Base (team-editable tables) |
 | Content Sync | `scripts/sync-from-lark.mjs` |
+| Map Rendering | `piri` (SVG dotted world map) |
+| Voice AI | ElevenLabs ConvAI (`@elevenlabs/react`) + webhook ingestion |
+| WebRTC | `livekit-client@2.16.1` (pinned) |
 | Package Manager | pnpm 9.15.4 |
 | Deploy | Vercel (ISR + deploy hooks) |
 
@@ -83,6 +86,7 @@ pnpm run build      # Production build (uses latest content.ts)
 pnpm run build:sync # Sync then build
 pnpm run analyze    # Bundle analysis
 pnpm run lint       # ESLint
+pnpm test           # Vitest (requires: pnpm install)
 ```
 
 ---
@@ -97,10 +101,15 @@ src/
 │   │   ├── loading.tsx           # Suspense loading UI
 │   │   └── error.tsx             # Error boundary
 │   ├── api/
-│   │   └── deploy/
-│   │       └── route.ts          # POST to trigger Vercel redeploy
+│   │   ├── deploy/
+│   │   │   └── route.ts          # POST to trigger Vercel redeploy
+│   │   └── webhook/
+│   │       └── elevenlabs/
+│   │           └── route.ts      # ElevenLabs webhook (HMAC verified)
+│   ├── dashboard/
+│   │   └── page.tsx              # Mobile preview dashboard
 │   ├── globals.css               # Design tokens + Tailwind
-│   ├── layout.tsx                # Root layout, fonts, metadata
+│   ├── layout.tsx                # Root layout, fonts, metadata, VoiceAgentController
 │   ├── not-found.tsx             # 404 page
 │   ├── opengraph-image.tsx       # Dynamic OG image (auto-discovered)
 │   ├── robots.ts                 # robots.txt (auto-generated)
@@ -108,13 +117,16 @@ src/
 │
 ├── sections/                     # Page sections (co-located modules)
 │   ├── index.ts                  # Barrel export
-│   ├── hero.tsx
-│   ├── problem.tsx
-│   ├── solutions.tsx
-│   ├── process.tsx
-│   ├── proof.tsx
-│   ├── contact.tsx
-│   └── stats-bar.tsx
+│   ├── hero.tsx                  # id="hero"
+│   ├── platforms.tsx             # id="platforms" — TrustedBy orbiting circles
+│   ├── showcase.tsx              # id="showcase" — Model/showcase section
+│   ├── problem.tsx               # id="problem"
+│   ├── solutions.tsx             # id="solutions" — AnimatedBeam diagrams
+│   ├── process.tsx               # id="process"
+│   ├── model.tsx                 # id="model"
+│   ├── reviews.tsx               # id="reviews" — Tweet-card carousel
+│   ├── faq.tsx                   # id="faq" — FAQ + marquee
+│   └── contact.tsx               # id="contact"
 │
 ├── components/                   # Shared UI components
 │   ├── animations/               # Framer Motion animation primitives
@@ -123,15 +135,23 @@ src/
 │   │   ├── scroll-reveal.tsx
 │   │   └── smooth-scroll.tsx
 │   ├── ui/                       # shadcn/ui components
+│   │   ├── animated-beam.tsx     # SVG animated path between DOM nodes
 │   │   ├── button.tsx
-│   │   └── corner-plus.tsx
-│   ├── footer.tsx                # Shared footer
-│   ├── navigation.tsx            # Fixed nav
-│   ├── marquee.tsx               # CSS infinite scroll
-│   ├── scroll-progress.tsx       # Top reading progress bar
-│   ├── wave-canvas.tsx           # WebGL wave shader hero bg
-│   ├── workflow-nodes.tsx        # SVG pipeline diagrams
-│   └── contact-form.tsx          # Contact form
+│   │   ├── corner-plus.tsx
+│   │   ├── tweet-card.tsx        # Twitter/X-style testimonial card
+│   │   └── client-tweet-card.tsx # react-tweet wrapper
+│   ├── voice-agent-controller.tsx   # Persistent useConversation session (layout)
+│   ├── voice-agent-context.tsx      # React context for voice state sharing
+│   ├── floating-voice-widget.tsx    # Mini orb on non-home pages
+│   ├── elevenlabs-orb.tsx           # Hero page voice orb (visual only)
+│   ├── orb-visualizer.tsx           # Frequency data visualization
+│   ├── footer.tsx                   # Shared footer
+│   ├── logos.tsx                    # SVG brand logos
+│   ├── navigation.tsx               # Fixed nav
+│   ├── scroll-progress.tsx          # Top reading progress bar
+│   ├── wave-canvas.tsx              # WebGL wave shader hero bg
+│   ├── workflow-nodes.tsx           # SVG pipeline diagrams
+│   └── contact-form.tsx             # Multi-step contact form
 │
 ├── data/
 │   └── content.ts                # Team-editable content source of truth
@@ -140,7 +160,8 @@ src/
 │   ├── lark-api.ts               # Lark Base REST API client
 │   ├── utils.ts                  # cn() and helpers
 │   ├── animation.ts              # Framer Motion easings
-│   └── tokens.ts                 # Design token mappings
+│   ├── tokens.ts                 # Design token mappings
+│   └── elevenlabs-config.ts      # Agent ID, voice constants
 │
 scripts/
 └── sync-from-lark.mjs            # Build-time Lark Base → content.ts sync
@@ -150,24 +171,30 @@ scripts/
 
 ## Section Flow
 
+Each section has a stable `id` for deep-linking and voice agent navigation:
+
 ```
 Navigation (fixed)
   ↓
-Hero — "Build once. Run forever."
+#hero       — "Think fast, we help build faster." (cycling headline + WebGL wave bg)
   ↓
-Problem — "Your team asks you for everything."
+#platforms  — TrustedBy — Orbiting circles (LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe)
   ↓
-Solutions — 4 feature cards
+#showcase   — Model/Showcase section
   ↓
-Process — "How it works." (4-step pipeline)
+#problem    — "Sipped champagne in Paris?" (rotating dream phrases)
   ↓
-StatsBar — 47 teams, 2 weeks, 30 days, 0 spreadsheets
+#solutions  — AnimatedBeam diagrams (pain → system → outcomes)
   ↓
-Proof — Testimonials + stats + quote marquee
+#process    — "How it works." (4-step timeline + Safari mockup)
   ↓
-Contact — Form + email
+#model      — KOL Campaign Dashboard mockup
   ↓
-Marquee — "Build once. Run forever. • Systems, not slogans. • ..."
+#reviews    — Tweet-card carousel (auto-scroll, play/pause, before→after badges)
+  ↓
+#faq        — FAQ + marquee
+  ↓
+#contact    — Multi-step form + email
   ↓
 Footer
 ```
@@ -179,19 +206,67 @@ Footer
 | Table | Purpose | Records |
 |-------|---------|---------|
 | Sections | Headlines, subheads, body, CTA text | 7 |
-| Solutions | Feature cards (icon, title, description) | 4 |
-| Testimonials | Case study cards (Proof) | 4 |
-| Stats | Stats bar values | 4 |
+| Testimonials | Case study cards (Reviews section) | 4 |
 | Process Phases | 4-step pipeline cards | 4 |
-| Marquee Items | Marquee text | 8 |
+| Call Transcripts | ElevenLabs webhook data (conversations, transcripts, costs) | dynamic |
 
 **Base URL:** https://hypelive.sg.larksuite.com/base/XY8IbUHh3aNI2AsWI0tl0YllgSd
 
 ---
 
+## Voice AI (ElevenLabs)
+
+### Architecture
+
+The voice agent uses a **persistent session** architecture. `VoiceAgentController` lives in `layout.tsx` and never unmounts, so the WebRTC call survives cross-page navigation.
+
+```
+layout.tsx
+  ↓
+VoiceAgentController (useConversation — persistent)
+  ├─ VoiceAgentContextProvider
+  │   ├─ {children} (all pages)
+  │   └─ FloatingVoiceWidget (mini orb when connected)
+  └─ ElevenLabsOrb (hero page visual)
+```
+
+### Agent Details
+
+- **Agent ID:** `agent_5901ksshk9j6e1ft19n7ye6hm16k` ("Adamant Receptionist")
+- **Voice:** George (`JBFqnCBsd6RMkjVDRZzb`)
+- **Model:** `eleven_multilingual_v2`
+- **LLM:** `gemini-2.0-flash`
+- **Package:** `@elevenlabs/react@1.6.4`
+
+### Client Tools (5)
+
+The agent can trigger browser-side actions:
+
+| Tool | Action |
+|------|--------|
+| `book_call` | Opens contact form |
+| `show_pricing` | Navigates to `/pricing` |
+| `show_services` | Scrolls to `#solutions` |
+| `show_process` | Scrolls to `#process` |
+| `scroll_to_section` | Scrolls to any homepage section by ID |
+
+### Webhook
+
+`POST /api/webhook/elevenlabs`:
+- HMAC verified via `@elevenlabs/elevenlabs-js` (`constructEvent`)
+- Returns 200 immediately; heavy work via `after()`
+- Dedup: 5-min TTL by `conversation_id:event_timestamp`
+- Writes transcripts to Lark Base "Call Transcripts" table
+
+### Dashboard
+
+`/dashboard` — Mobile preview page using `DeviceFrame`
+
+---
+
 ## Security
 
-PostCSS is pinned via `pnpm.overrides` to `>=8.5.10` to patch XSS vulnerability `GHSA-qx2v-qp2m-jg93`.
+PostCSS is pinned to `>=8.5.10` via `.npmrc` to patch XSS vulnerability `GHSA-qx2v-qp2m-jg93`.
 
 ```bash
 pnpm audit  # Run before deploy

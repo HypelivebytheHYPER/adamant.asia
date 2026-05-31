@@ -58,6 +58,7 @@ export function CyclingHeadline({
   className,
 }: CyclingHeadlineProps) {
   const [index, setIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const pauseRef = useRef(false);
 
   const next = useCallback(() => {
@@ -65,14 +66,26 @@ export function CyclingHeadline({
   }, [messages.length]);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const timer = setInterval(() => {
       if (!pauseRef.current) next();
     }, interval);
     return () => clearInterval(timer);
-  }, [interval, next]);
+  }, [interval, next, mounted]);
+
+  // Render plain text on SSR + initial client render to avoid
+  // framer-motion initial={{ opacity: 0 }} hiding the headline.
+  // Use <span> because the parent (hero.tsx) already wraps us in <h1>.
+  if (!mounted) {
+    return <span className={className}>{messages[0]}</span>;
+  }
 
   return (
-    <h1
+    <span
       className={className}
       onMouseEnter={() => (pauseRef.current = true)}
       onMouseLeave={() => (pauseRef.current = false)}
@@ -89,6 +102,6 @@ export function CyclingHeadline({
           <AnimatedText text={messages[index]} />
         </motion.span>
       </AnimatePresence>
-    </h1>
+    </span>
   );
 }

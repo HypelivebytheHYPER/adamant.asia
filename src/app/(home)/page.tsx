@@ -1,64 +1,64 @@
-import { Navigation } from "@/components/navigation";
 import { ScrollProgress } from "@/components/scroll-progress";
-import { Marquee, MarqueeText } from "@/components/marquee";
+
 import { JsonLd } from "@/components/json-ld";
-import { Footer } from "@/components/footer";
 import {
   Contact,
+  FAQ,
   Hero,
+  Model,
   Problem,
   Process,
-  Proof,
+  Reviews,
   Solutions,
-  StatsBar,
+  ShowcaseCards,
 } from "@/sections";
+import { TrustedPlatforms } from "@/sections/trusted-platforms";
 import { siteContent } from "@/data/content";
+import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { SITE_URL } from "@/lib/site";
 
-/** ISR: Rebuild every 1 hour, or on-demand via /api/deploy */
-export const revalidate = 3600;
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: SITE_URL,
+  },
+};
 
 export default function Home() {
   const sc = siteContent;
   return (
     <>
       <JsonLd />
-      <Navigation links={sc.navLinks} />
-      <main id="main" className="min-h-screen bg-background text-foreground isolation-auto">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: `${SITE_URL}/` },
+        ]}
+      />
+      <main className="min-h-screen bg-background text-foreground isolation-auto">
         <ScrollProgress />
         <Hero content={sc.sections.hero} />
+        <TrustedPlatforms />
+        <ShowcaseCards />
         <Problem content={sc.sections.problem} />
-        <Solutions content={sc.sections.solutions} solutions={sc.solutions} />
+        <Solutions content={sc.sections.solutions} />
         <Process
           content={sc.sections.process}
           phases={sc.processPhases}
         />
-        <StatsBar stats={sc.stats} />
-        <Proof
+        <Model content={sc.sections.model} />
+        <Reviews
           content={sc.sections.proof}
           testimonials={sc.testimonials}
-          stats={sc.stats}
         />
+        <FAQ items={sc.faq} />
         <Contact
           content={sc.sections.contact}
           contactInfo={sc.contactInfo}
         />
       </main>
-
-      <Marquee className="space-strip bg-foreground" speed={50} gap={48}>
-        <MarqueeText text="Build once. Run forever." className="text-inverse/[0.25]" />
-        <span className="text-inverse/[0.15] text-headline">•</span>
-        <MarqueeText text="Systems, not slogans." className="text-inverse/[0.25]" />
-        <span className="text-inverse/[0.15] text-headline">•</span>
-        <MarqueeText text="Your team should not need you for everything." className="text-inverse/[0.25]" />
-        <span className="text-inverse/[0.15] text-headline">•</span>
-        <MarqueeText text="Fix the workflow. Free the founder." className="text-inverse/[0.25]" />
-        <span className="text-inverse/[0.15] text-headline">•</span>
-      </Marquee>
-
-      <Footer
-        content={sc.sections.footer}
-        navLinks={sc.footerNavLinks}
-      />
     </>
   );
 }

@@ -95,9 +95,6 @@ function compileShader(gl: WebGLRenderingContext, type: number, source: string) 
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    if (process.env.NODE_ENV !== "production") {
-      console.error(gl.getShaderInfoLog(shader));
-    }
     gl.deleteShader(shader);
     return null;
   }
@@ -113,12 +110,25 @@ function createProgram(gl: WebGLRenderingContext, vs: string, fs: string) {
   gl.attachShader(prog, fShader);
   gl.linkProgram(prog);
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-    if (process.env.NODE_ENV !== "production") {
-      console.error(gl.getProgramInfoLog(prog));
-    }
+    gl.deleteProgram(prog);
     return null;
   }
   return prog;
+}
+
+function hexToRgbFloat(hex: string): [number, number, number] {
+  const clean = hex.replace("#", "");
+  const bigint = parseInt(clean, 16);
+  const r = ((bigint >> 16) & 255) / 255;
+  const g = ((bigint >> 8) & 255) / 255;
+  const b = (bigint & 255) / 255;
+  return [r, g, b];
+}
+
+function getCssColor(el: HTMLElement, prop: string, fallback: string): [number, number, number] {
+  const raw = getComputedStyle(el).getPropertyValue(prop).trim();
+  const hex = raw || fallback;
+  return hexToRgbFloat(hex);
 }
 
 /** Warm atmospheric wave background — vanilla WebGL, no deps.
@@ -132,7 +142,11 @@ export function WaveCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const gl = canvas.getContext("webgl", { alpha: false, antialias: false });
+    const gl = canvas.getContext("webgl", {
+      alpha: false,
+      antialias: false,
+      powerPreference: "low-power",
+    }) as WebGLRenderingContext | null;
     if (!gl) return;
 
     const program = createProgram(gl, VERT, FRAG);
@@ -154,13 +168,13 @@ export function WaveCanvas() {
     const uColor2 = gl.getUniformLocation(program, "uColor2");
     const uColor3 = gl.getUniformLocation(program, "uColor3");
 
-    const color1 = [0.95, 0.95, 0.93];
-    const color2 = [0.82, 0.90, 0.88];
-    const color3 = [0.94, 0.92, 0.86];
+    const color1 = getCssColor(canvas, "--wave-c1", "#f2f2ee");
+    const color2 = getCssColor(canvas, "--wave-c2", "#d1e6e2");
+    const color3 = getCssColor(canvas, "--wave-c3", "#efece0");
 
-    let scrollY = 0;
+    const scrollRef = { y: 0 };
     const onScroll = () => {
-      scrollY = window.scrollY || 0;
+      scrollRef.y = window.scrollY || 0;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -169,10 +183,14 @@ export function WaveCanvas() {
     let isVisible = true;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = canvas.clientWidth * dpr;
-      canvas.height = canvas.clientHeight * dpr;
-      gl!.viewport(0, 0, canvas.width, canvas.height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const w = Math.round(canvas.clientWidth * dpr);
+      const h = Math.round(canvas.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        gl!.viewport(0, 0, w, h);
+      }
     };
 
     resize();
@@ -187,7 +205,7 @@ export function WaveCanvas() {
 
       gl!.uniform2f(uResolution, canvas.width, canvas.height);
       gl!.uniform1f(uTime, t);
-      gl!.uniform1f(uScroll, scrollY);
+      gl!.uniform1f(uScroll, scrollRef.y);
       gl!.uniform3f(uColor1, color1[0], color1[1], color1[2]);
       gl!.uniform3f(uColor2, color2[0], color2[1], color2[2]);
       gl!.uniform3f(uColor3, color3[0], color3[1], color3[2]);
@@ -196,36 +214,33 @@ export function WaveCanvas() {
     };
 
     const render = (now: number) => {
-      if (!isVisible && !reducedMotion) {
-        // When off-screen, skip drawing but keep loop alive to resume quickly
-        animId = requestAnimationFrame(render);
+      if (!isVisible || reducedMotion) {
+        // Do NOT schedule next frame — let IntersectionObserver restart us
+        animId = 0;
         return;
       }
 
       const t = (now - startTime) * 0.001;
       drawFrame(t);
-
-      if (reducedMotion) {
-        // Static frame only — no continuous animation
-        return;
-      }
-
       animId = requestAnimationFrame(render);
     };
 
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
-        isVisible = entry.isIntersecting;
-        // If becoming visible again, restart the loop
+        const nowVisible = entry.isIntersecting;
+        if (nowVisible === isVisible) return;
+        isVisible = nowVisible;
+
         if (isVisible && !reducedMotion && animId === 0) {
           animId = requestAnimationFrame(render);
         }
+        // When hidden, the next render() tick will see !isVisible and stop scheduling
       },
       { threshold: 0 }
     );
     intersectionObserver.observe(canvas);
 
-    // Draw initial frame
+    // Draw initial frame (static even if reduced motion)
     drawFrame(0);
 
     if (!reducedMotion) {
@@ -233,7 +248,8 @@ export function WaveCanvas() {
     }
 
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
+      animId = 0;
       ro.disconnect();
       intersectionObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
@@ -247,6 +263,8 @@ export function WaveCanvas() {
       ref={canvasRef}
       className="absolute inset-0 w-full h-full"
       style={{ zIndex: 0 }}
+      aria-hidden="true"
+      role="presentation"
     />
   );
 }
