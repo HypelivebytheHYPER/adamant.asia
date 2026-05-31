@@ -72,7 +72,7 @@ Anyone with the deploy hook URL or secret can trigger a rebuild:
 curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_JkiUov6OBpXqwzpcDBqBpmoXTD00/ff5StTdzDA
 
 # Via /api/deploy (requires DEPLOY_SECRET)
-curl -X POST https://adamantasia.vercel.app/api/deploy \
+curl -X POST https://adamant.asia/api/deploy \
   -H "Authorization: Bearer YOUR_SECRET" \
   -H "Content-Type: application/json"
 ```
