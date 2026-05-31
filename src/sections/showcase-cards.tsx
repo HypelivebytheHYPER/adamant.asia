@@ -36,6 +36,13 @@ const slides: Slide[] = [
     tag1: "Multi-brand",
     tag2: "Live",
   },
+  {
+    imageUrl: "/images/showcase/ecommerce-full-stack.png",
+    title: "E-commerce Full Stack",
+    description: "End-to-end online store with inventory, payments, and fulfillment.",
+    tag1: "E-commerce",
+    tag2: "Live",
+  },
 ];
 
 const AUTO_INTERVAL = 4000;
