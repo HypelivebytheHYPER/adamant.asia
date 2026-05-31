@@ -137,8 +137,10 @@ export async function POST(req: NextRequest) {
         message: safeMessage,
         source: safeSource,
       })
-    ).catch(() => {
-      // Silently fail — Telegram is best-effort
+    ).then((ok) => {
+      console.log("[pricing-lead] Telegram:", ok ? "sent" : "failed");
+    }).catch((err) => {
+      console.error("[pricing-lead] Telegram error:", err instanceof Error ? err.message : err);
     });
 
     return NextResponse.json({ ok: true });
