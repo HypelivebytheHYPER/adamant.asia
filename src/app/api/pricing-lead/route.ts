@@ -127,23 +127,27 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Fire-and-forget Telegram notification (don't block response)
-    sendTelegramMessage(
-      formatLeadNotification({
-        name: safeName,
-        email: safeEmail,
-        company: safeCompany,
-        phone: safePhone,
-        message: safeMessage,
-        source: safeSource,
-      })
-    ).then((ok) => {
-      console.log("[pricing-lead] Telegram:", ok ? "sent" : "failed");
-    }).catch((err) => {
-      console.error("[pricing-lead] Telegram error:", err instanceof Error ? err.message : err);
-    });
+    // Send Telegram notification (await so errors are surfaced)
+    let telegramOk = false;
+    let telegramError: string | null = null;
+    try {
+      telegramOk = await sendTelegramMessage(
+        formatLeadNotification({
+          name: safeName,
+          email: safeEmail,
+          company: safeCompany,
+          phone: safePhone,
+          message: safeMessage,
+          source: safeSource,
+        })
+      );
+      console.log("[pricing-lead] Telegram:", telegramOk ? "sent" : "failed");
+    } catch (err) {
+      telegramError = err instanceof Error ? err.message : String(err);
+      console.error("[pricing-lead] Telegram error:", telegramError);
+    }
 
-    return NextResponse.json({ ok: true, telegram: { configured: !!process.env.TELEGRAM_BOT_TOKEN && !!process.env.TELEGRAM_CHAT_ID } });
+    return NextResponse.json({ ok: true, telegram: { sent: telegramOk, error: telegramError } });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[pricing-lead] error:", message);
