@@ -232,7 +232,13 @@ async function processPostCallTranscription(payload: WebhookPayload) {
 
 export async function POST(request: NextRequest) {
   const signature = request.headers.get("x-elevenlabs-signature");
-  const bodyText = await request.text();
+  let bodyText: string;
+  try {
+    bodyText = await request.text();
+  } catch (err) {
+    console.error("[webhook/elevenlabs] failed to read body:", err);
+    return NextResponse.json({ ok: false, error: "Bad body" }, { status: 400 });
+  }
   console.log("[webhook/elevenlabs] hit — signature present:", !!signature, "length:", bodyText.length);
 
   // Verify signature (constructEvent validates signature + timestamp + parses JSON)
