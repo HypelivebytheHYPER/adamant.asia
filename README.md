@@ -25,10 +25,10 @@ We design workflows that run themselves — connecting your tools into one autom
 | Animation | Framer Motion 12 |
 | Fonts | Newsreader (editorial) + Geist Sans/Mono (UI) |
 | Content CMS | Lark Base (team-editable tables) |
-| Content Sync | `scripts/sync-from-lark.mjs` |
+| Voice Integration | `@elevenlabs/react@1.6.4` + webhook |
 | Map Rendering | `piri` (SVG dotted world map) |
 | Voice AI | ElevenLabs ConvAI (`@elevenlabs/react`) + webhook ingestion |
-| WebRTC | `livekit-client@2.16.1` (pinned) |
+| Voice SDK | `@elevenlabs/react` (ConvAI) |
 | Package Manager | pnpm 9.15.4 |
 | Deploy | Vercel (ISR + deploy hooks) |
 
@@ -118,15 +118,18 @@ src/
 ├── sections/                     # Page sections (co-located modules)
 │   ├── index.ts                  # Barrel export
 │   ├── hero.tsx                  # id="hero"
-│   ├── platforms.tsx             # id="platforms" — TrustedBy orbiting circles
-│   ├── showcase.tsx              # id="showcase" — Model/showcase section
-│   ├── problem.tsx               # id="problem"
-│   ├── solutions.tsx             # id="solutions" — AnimatedBeam diagrams
-│   ├── process.tsx               # id="process"
-│   ├── model.tsx                 # id="model"
-│   ├── reviews.tsx               # id="reviews" — Tweet-card carousel
-│   ├── faq.tsx                   # id="faq" — FAQ + marquee
-│   └── contact.tsx               # id="contact"
+│   ├── trusted-platforms.tsx     # id="platforms" — Platform logos
+│   ├── showcase-cards.tsx        # id="showcase" — Editorial showcase
+│   ├── problem.tsx               # id="problem" — Before/after
+│   ├── solutions.tsx             # id="solutions" — Device frame showcase
+│   ├── process.tsx               # id="process" — Timeline + contact form
+│   ├── model.tsx                 # id="model" — Editorial model
+│   ├── stats-bar.tsx             # Stats row
+│   ├── reviews.tsx               # id="reviews" — Testimonial carousel
+│   ├── faq.tsx                   # id="faq" — Accordion + marquee
+│   ├── contact.tsx               # id="contact" — Dark CTA + form
+│   ├── proof.tsx                 # Social proof section
+│   └── service-page.tsx          # Solution detail template
 │
 ├── components/                   # Shared UI components
 │   ├── animations/               # Framer Motion animation primitives
@@ -164,7 +167,8 @@ src/
 │   └── elevenlabs-config.ts      # Agent ID, voice constants
 │
 scripts/
-└── sync-from-lark.mjs            # Build-time Lark Base → content.ts sync
+├── test-webhook.mjs              # Test ElevenLabs webhook endpoint
+└── sync-from-lark.mjs            # Archived — content now static in content.ts
 ```
 
 ---
@@ -178,9 +182,9 @@ Navigation (fixed)
   ↓
 #hero       — "Think fast, we help build faster." (cycling headline + WebGL wave bg)
   ↓
-#platforms  — TrustedBy — Orbiting circles (LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe)
+#platforms  — Trusted platforms bar (LINE, Lark, WhatsApp, Slack, Google, Notion, Shopify, Stripe)
   ↓
-#showcase   — Model/Showcase section
+#showcase   — Editorial image showcase
   ↓
 #problem    — "Sipped champagne in Paris?" (rotating dream phrases)
   ↓
@@ -253,7 +257,7 @@ The agent can trigger browser-side actions:
 ### Webhook
 
 `POST /api/webhook/elevenlabs`:
-- HMAC verified via `@elevenlabs/elevenlabs-js` (`constructEvent`)
+- HMAC verified via Web Crypto API (manual HMAC-SHA256)
 - Returns 200 immediately; heavy work via `after()`
 - Dedup: 5-min TTL by `conversation_id:event_timestamp`
 - Writes transcripts to Lark Base "Call Transcripts" table
