@@ -21,13 +21,16 @@ export default function Error({
           Something went wrong
         </h1>
         <p className="text-body text-stone mb-6">
-          {error.message || "An unexpected error occurred. Please try again."}
+          An unexpected error occurred. Please try again.
         </p>
+
+        {process.env.NODE_ENV === "development" && (
+          <pre className="mt-4 text-xs text-red-500 font-mono whitespace-pre-wrap">
+            {error.message}
+          </pre>
+        )}
         <div className="flex items-center justify-center gap-3">
-          <button
-            onClick={reset}
-            className="btn-primary"
-          >
+          <button onClick={reset} className="btn-primary">
             Try again
           </button>
           <Link
@@ -37,7 +40,7 @@ export default function Error({
             Go home
           </Link>
         </div>
-        {error.digest && (
+        {process.env.NODE_ENV === "development" && error.digest && (
           <p className="mt-6 text-xs text-stone/50 font-mono">
             Error ID: {error.digest}
           </p>

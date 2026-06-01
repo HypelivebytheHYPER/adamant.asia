@@ -12,8 +12,8 @@
  * Falls back to defaults if Base is unreachable.
  */
 
-import { BitableClient, authFromEnv, type LarkRecord } from "./lark-api";
-import { execSync } from "child_process";
+import { BitableClient, authFromEnv } from "./lark-api";
+import { execFileSync } from "child_process";
 
 const CONFIG_TABLE_ID = "tblyBVeyrV6ttqNd";
 
@@ -28,7 +28,8 @@ function isLarkCLIAuthError(err: unknown): boolean {
 async function fetchViaApi(): Promise<Record<string, string>> {
   const auth = await authFromEnv();
   const client = new BitableClient(auth);
-  const appToken = process.env.LARK_BASE_APP_TOKEN || process.env.LARK_BASE_TOKEN;
+  const appToken =
+    process.env.LARK_BASE_APP_TOKEN || process.env.LARK_BASE_TOKEN;
   if (!appToken) {
     throw new Error("No LARK_BASE_APP_TOKEN or LARK_BASE_TOKEN set");
   }
@@ -47,13 +48,26 @@ async function fetchViaApi(): Promise<Record<string, string>> {
  * Works when lark-cli is authenticated but REST API creds are not set.
  */
 function fetchViaCLI(): Record<string, string> {
-  const baseToken = process.env.LARK_BASE_APP_TOKEN || process.env.LARK_BASE_TOKEN;
+  const baseToken =
+    process.env.LARK_BASE_APP_TOKEN || process.env.LARK_BASE_TOKEN;
   if (!baseToken) {
     throw new Error("No LARK_BASE_APP_TOKEN or LARK_BASE_TOKEN set");
   }
-  const out = execSync(
-    `lark-cli base +record-list --base-token "${baseToken}" --table-id "${CONFIG_TABLE_ID}" --limit 500 --format json`,
-    { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }
+  const out = execFileSync(
+    "lark-cli",
+    [
+      "base",
+      "+record-list",
+      "--base-token",
+      baseToken,
+      "--table-id",
+      CONFIG_TABLE_ID,
+      "--limit",
+      "500",
+      "--format",
+      "json",
+    ],
+    { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
   );
   const body = JSON.parse(out) as {
     data?: {
@@ -103,7 +117,10 @@ let _requestCache: Record<string, string> | null = null;
  * - At build time: fetches from Lark Base (cached for the request).
  * - Falls back to `defaultValue` if the key is missing or Base is unreachable.
  */
-export async function getConfig(key: string, defaultValue?: string): Promise<string> {
+export async function getConfig(
+  key: string,
+  defaultValue?: string,
+): Promise<string> {
   if (_requestCache === null) {
     _requestCache = await fetchConfigRecords();
   }

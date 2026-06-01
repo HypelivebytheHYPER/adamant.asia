@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { BitableClient, authFromEnv } from "@/lib/lark-api";
-import { sendTelegramMessage, formatVoiceCallNotification } from "@/lib/telegram";
+import {
+  sendTelegramMessage,
+  formatVoiceCallNotification,
+} from "@/lib/telegram";
 import { getWebhookSecret } from "@/lib/elevenlabs-config";
 
 /**
@@ -59,7 +62,7 @@ function isDuplicate(conversationId: string, eventTimestamp: number): boolean {
 
 async function verifySignature(
   payload: string,
-  signature: string | null
+  signature: string | null,
 ): Promise<Record<string, unknown> | null> {
   if (!WEBHOOK_SECRET || !signature) {
     console.warn("[webhook/elevenlabs] missing secret or signature");
@@ -85,7 +88,7 @@ async function verifySignature(
       encoder.encode(WEBHOOK_SECRET),
       { name: "HMAC", hash: "SHA-256" },
       false,
-      ["sign"]
+      ["sign"],
     );
 
     const signedPayload = encoder.encode(`${timestamp}.${payload}`);
@@ -156,9 +159,10 @@ interface WebhookPayload {
 
 async function processPostCallTranscription(payload: WebhookPayload) {
   const data = payload.data;
-  const meta = data.metadata ?? {} as typeof data.metadata;
-  const analysis = data.analysis ?? {} as typeof data.analysis;
-  const dynamicVars = data.conversation_initiation_client_data?.dynamic_variables;
+  const meta = data.metadata ?? ({} as typeof data.metadata);
+  const analysis = data.analysis ?? ({} as typeof data.analysis);
+  const dynamicVars =
+    data.conversation_initiation_client_data?.dynamic_variables;
 
   // Defensive extraction — ElevenLabs may omit fields in edge cases
   const duration = meta.call_duration_secs ?? 0;
@@ -177,12 +181,22 @@ async function processPostCallTranscription(payload: WebhookPayload) {
     summary,
     terminationReason,
   });
-  console.log("[elevenlabs:post_call] sending Telegram notification for", data.conversation_id);
-  sendTelegramMessage(telegramMsg).then((ok) => {
-    console.log("[elevenlabs:post_call] Telegram notification:", ok ? "sent" : "failed");
-  }).catch((err) => {
-    console.error("[elevenlabs:post_call] Telegram error:", err instanceof Error ? err.message : err);
-  });
+  console.log(
+    "[elevenlabs:post_call] sending Telegram notification for",
+    data.conversation_id,
+  );
+  try {
+    const ok = await sendTelegramMessage(telegramMsg);
+    console.log(
+      "[elevenlabs:post_call] Telegram notification:",
+      ok ? "sent" : "failed",
+    );
+  } catch (err) {
+    console.error(
+      "[elevenlabs:post_call] Telegram error:",
+      err instanceof Error ? err.message : err,
+    );
+  }
 
   const record = {
     "Conversation ID": data.conversation_id,
@@ -206,7 +220,9 @@ async function processPostCallTranscription(payload: WebhookPayload) {
   });
 
   if (!BASE_APP_TOKEN || !TABLE_ID_CALLS) {
-    console.log("[elevenlabs:post_call] skipping Base write — LARK_BASE_APP_TOKEN or LARK_TABLE_ID_CALLS not set");
+    console.log(
+      "[elevenlabs:post_call] skipping Base write — LARK_BASE_APP_TOKEN or LARK_TABLE_ID_CALLS not set",
+    );
     return;
   }
 
@@ -221,7 +237,7 @@ async function processPostCallTranscription(payload: WebhookPayload) {
       table: TABLE_ID_CALLS,
     });
     return;
-  } catch (err: any) {
+  } catch (err) {
     console.error("[elevenlabs:post_call] Base write failed", err);
   }
 }
@@ -239,12 +255,20 @@ export async function POST(request: NextRequest) {
     console.error("[webhook/elevenlabs] failed to read body:", err);
     return NextResponse.json({ ok: false, error: "Bad body" }, { status: 400 });
   }
-  console.log("[webhook/elevenlabs] hit — signature present:", !!signature, "length:", bodyText.length);
+  console.log(
+    "[webhook/elevenlabs] hit — signature present:",
+    !!signature,
+    "length:",
+    bodyText.length,
+  );
 
   // Verify signature (constructEvent validates signature + timestamp + parses JSON)
   const event = await verifySignature(bodyText, signature);
   if (!event) {
-    return NextResponse.json({ ok: false, error: "Invalid signature" }, { status: 401 });
+    return NextResponse.json(
+      { ok: false, error: "Invalid signature" },
+      { status: 401 },
+    );
   }
 
   const payload = event as unknown as WebhookPayload;
@@ -256,7 +280,11 @@ export async function POST(request: NextRequest) {
 
   // Deduplicate using conversation_id + event_timestamp
   if (conversationId && isDuplicate(conversationId, eventTimestamp)) {
-    console.log("[webhook/elevenlabs] duplicate event, skipping", { eventType, conversationId, eventTimestamp });
+    console.log("[webhook/elevenlabs] duplicate event, skipping", {
+      eventType,
+      conversationId,
+      eventTimestamp,
+    });
     return NextResponse.json({ ok: true, dedup: true });
   }
 
@@ -277,7 +305,9 @@ export async function POST(request: NextRequest) {
     }
     case "conversation_initiated": {
       after(() => {
-        console.log("[webhook/elevenlabs] conversation initiated", { conversationId });
+        console.log("[webhook/elevenlabs] conversation initiated", {
+          conversationId,
+        });
       });
       break;
     }
@@ -292,7 +322,9 @@ export async function POST(request: NextRequest) {
     }
     case "conversation_ended": {
       after(() => {
-        console.log("[webhook/elevenlabs] conversation ended", { conversationId });
+        console.log("[webhook/elevenlabs] conversation ended", {
+          conversationId,
+        });
       });
       break;
     }
