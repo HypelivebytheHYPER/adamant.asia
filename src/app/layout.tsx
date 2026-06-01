@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { DebugTelemetry } from "@/components/debug-telemetry";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SmoothScroll } from "@/components/animations/smooth-scroll";
 import { Navigation } from "@/components/navigation";
@@ -118,7 +117,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}
     >
       <body className="bg-background text-foreground">
-        <DebugTelemetry />
         <a href="#main" className="skip-link">Skip to content</a>
         <Navigation links={sc.navLinks} />
         <VoiceAgentProvider>
