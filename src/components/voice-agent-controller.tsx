@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useConversation, useConversationClientTool } from "@elevenlabs/react";
+import type { ConnectionType } from "@elevenlabs/client";
 import { useRouter, usePathname } from "next/navigation";
 import { AGENT_ID } from "@/lib/elevenlabs-config";
 import { VoiceAgentContextProvider, type VoiceAgentState } from "./voice-agent-context";
@@ -39,6 +40,7 @@ export function VoiceAgentController({
     getOutputByteFrequencyData,
   } = useConversation({
     micMuted,
+    onConnect: () => console.log("[ConvAI] connected"),
     onError: (error) => console.error("[ConvAI] error:", error),
     onDisconnect: () => console.log("[ConvAI] disconnected"),
   });
@@ -226,7 +228,7 @@ export function VoiceAgentController({
     isMuted,
     getOutputByteFrequencyData,
     startSession: useCallback(
-      (opts: { agentId: string }) => startSession(opts),
+      (opts: { agentId: string; connectionType?: ConnectionType }) => startSession(opts),
       [startSession]
     ),
     endSession: useCallback(() => endSession(), [endSession]),

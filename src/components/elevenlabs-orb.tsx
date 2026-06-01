@@ -46,7 +46,7 @@ export function ElevenLabsOrb({ onBookCall }: ElevenLabsOrbProps) {
     if (isConnected) {
       endSession();
     } else {
-      startSession({ agentId: AGENT_ID });
+      startSession({ agentId: AGENT_ID, connectionType: "webrtc" });
     }
   }, [isConnected, startSession, endSession]);
 

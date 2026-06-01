@@ -1,5 +1,6 @@
 "use client";
 
+import type { ConnectionType } from "@elevenlabs/client";
 import { createContext, useContext } from "react";
 
 export interface VoiceAgentState {
@@ -8,7 +9,7 @@ export interface VoiceAgentState {
   isListening: boolean;
   isMuted: boolean;
   getOutputByteFrequencyData: () => Uint8Array;
-  startSession: (opts: { agentId: string }) => void;
+  startSession: (opts: { agentId: string; connectionType?: ConnectionType }) => void;
   endSession: () => void;
   setMuted: (muted: boolean) => void;
 }
