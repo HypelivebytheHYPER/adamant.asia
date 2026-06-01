@@ -31,11 +31,23 @@ export function AgentVoice() {
     return () => clearInterval(interval);
   }, [reducedMotion]);
 
+  // Cleanup blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current?.src?.startsWith("blob:")) {
+        URL.revokeObjectURL(audioRef.current.src);
+      }
+    };
+  }, []);
+
   const playCurrentPhrase = useCallback(async () => {
     const text = VOICE_PHRASES[index];
 
     if (isPlaying) {
       audioRef.current?.pause();
+      if (audioRef.current?.src?.startsWith("blob:")) {
+        URL.revokeObjectURL(audioRef.current.src);
+      }
       audioRef.current = null;
       setIsPlaying(false);
       return;
