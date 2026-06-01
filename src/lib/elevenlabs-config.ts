@@ -40,12 +40,12 @@ export const AGENT_ID =
 
 /** API key for TTS and other server-side ElevenLabs calls. */
 export function getApiKey(): string | undefined {
-  return process.env.ELEVENLABS_API_KEY_ADAMANT || process.env.ELEVENLABS_API_KEY;
+  return process.env.ELEVENLABS_API_KEY_ADAMANT;
 }
 
 /** Secret for verifying incoming ElevenLabs webhooks. */
 export function getWebhookSecret(): string | undefined {
-  return process.env.WEBHOOK_SECRET_ELEVENLABS_ADAMANT || process.env.WEBHOOK_SECRET_ELEVENLABS;
+  return process.env.WEBHOOK_SECRET_ELEVENLABS_ADAMANT;
 }
 
 /** Voice ID for TTS — falls back to a default if not configured. */
