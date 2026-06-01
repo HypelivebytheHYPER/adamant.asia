@@ -14,7 +14,7 @@ import {
  * Body: { text: string }
  * Returns: audio/mpeg stream
  *
- * Requires ELEVENLABS_API_KEY environment variable.
+ * Requires ELEVENLABS_API_KEY_ADAMANT (or legacy ELEVENLABS_API_KEY) environment variable.
  */
 
 const MAX_TEXT_LENGTH = 5000;
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   if (!apiKey) {
     return NextResponse.json(
-      { ok: false, error: "ELEVENLABS_API_KEY not configured" },
+      { ok: false, error: "ELEVENLABS_API_KEY_ADAMANT not configured" },
       { status: 500 },
     );
   }

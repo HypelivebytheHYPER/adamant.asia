@@ -30,15 +30,23 @@ export const VOICE_SETTINGS = {
 /* ------------------------------------------------------------------ */
 
 /** ConvAI agent ID — exposed to the browser via NEXT_PUBLIC_ prefix. */
-export const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || "agent_5901ksshk9j6e1ft19n7ye6hm16k";
+export const AGENT_ID =
+  process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ||
+  "agent_5901ksshk9j6e1ft19n7ye6hm16k";
 
 /* ------------------------------------------------------------------ */
 // Server-only helpers (runtime, undefined in client bundles)
 /* ------------------------------------------------------------------ */
 
-/** API key for TTS and other server-side ElevenLabs calls. */
+/** API key for TTS and other server-side ElevenLabs calls.
+ *
+ * Checks `ELEVENLABS_API_KEY_ADAMANT` first (project-specific),
+ * then falls back to `ELEVENLABS_API_KEY` (legacy / shared).
+ */
 export function getApiKey(): string | undefined {
-  return process.env.ELEVENLABS_API_KEY;
+  return (
+    process.env.ELEVENLABS_API_KEY_ADAMANT || process.env.ELEVENLABS_API_KEY
+  );
 }
 
 /** Secret for verifying incoming ElevenLabs webhooks. */
