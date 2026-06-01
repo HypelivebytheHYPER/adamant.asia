@@ -40,9 +40,13 @@ export function VoiceAgentController({
     getOutputByteFrequencyData,
   } = useConversation({
     micMuted,
-    onConnect: () => console.log("[ConvAI] connected"),
+    onConnect: () => console.log("[ConvAI] connected — agent ready"),
     onError: (error) => console.error("[ConvAI] error:", error),
-    onDisconnect: () => console.log("[ConvAI] disconnected"),
+    onDisconnect: (details) =>
+      console.log("[ConvAI] disconnected", details ? `reason: ${JSON.stringify(details)}` : ""),
+    onModeChange: (mode) => console.log("[ConvAI] mode:", mode),
+    onStatusChange: (status) => console.log("[ConvAI] status:", status),
+    onDebug: (info) => console.log("[ConvAI] debug:", info),
   });
 
   /* ------------------------------------------------------------------ */
