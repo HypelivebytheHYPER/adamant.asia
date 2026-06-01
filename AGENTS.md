@@ -333,6 +333,27 @@ layout.tsx
 | LLM | gemini-2.0-flash |
 | First message | "Hello! I'm Adamant's AI receptionist. How can I help you today?" |
 
+### ⚠️ Critical Dashboard Setting — `text_only` Override
+
+**This is a PER-AGENT setting in the ElevenLabs dashboard, NOT code.** Each agent ID has its own independent configuration. Changing this for the Adamant agent does NOT affect other projects.
+
+| Setting | Location | Required Value | Why |
+|---------|----------|----------------|-----|
+| `text_only` | Dashboard → Overrides → Conversation config override | `false` (or removed) | If `true`, the agent rejects WebRTC voice audio and only accepts text input. The orb will connect then immediately disconnect. |
+
+**Where to check:**
+1. ElevenLabs Dashboard → Conversational AI → Adamant Receptionist
+2. Tab: **Overrides**
+3. Section: **"Conversation config override"**
+4. Field: `conversation.text_only` → must be `false` or absent
+
+**Symptom of wrong setting:**
+- User clicks orb → orb shows "listening" → immediately disconnects
+- Browser console shows WebRTC connection closed by server
+- No error in application code — the agent config itself blocks voice
+
+**Other projects using the same codebase:** Each project uses a different `NEXT_PUBLIC_ELEVENLABS_AGENT_ID`. Agent overrides are per-ID and completely isolated.
+
 ---
 
 ## Pricing
