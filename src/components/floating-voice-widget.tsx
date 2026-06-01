@@ -33,7 +33,7 @@ export function FloatingVoiceWidget() {
     if (isConnected) {
       endSession();
     } else {
-      startSession({ agentId: AGENT_ID, connectionType: "webrtc" });
+      startSession({ agentId: AGENT_ID });
     }
   }, [isConnected, startSession, endSession]);
 
