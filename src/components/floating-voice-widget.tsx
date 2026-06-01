@@ -28,11 +28,17 @@ export function FloatingVoiceWidget() {
   const isConnected = status === "connected";
   const isConnecting = status === "connecting";
 
-  const handleCall = useCallback(() => {
+  const handleCall = useCallback(async () => {
     if (!AGENT_ID) return;
     if (isConnected) {
       endSession();
     } else {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        console.error("[ConvAI] microphone permission denied:", err);
+        return;
+      }
       startSession({ agentId: AGENT_ID, connectionType: "webrtc" as const });
     }
   }, [isConnected, startSession, endSession]);

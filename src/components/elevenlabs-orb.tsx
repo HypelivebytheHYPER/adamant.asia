@@ -38,7 +38,7 @@ export function ElevenLabsOrb({ onBookCall }: ElevenLabsOrbProps) {
   const isConnected = status === "connected";
   const isConnecting = status === "connecting";
 
-  const handleCall = useCallback(() => {
+  const handleCall = useCallback(async () => {
     if (!AGENT_ID) {
       console.error("[ConvAI] AGENT_ID not configured");
       return;
@@ -46,6 +46,12 @@ export function ElevenLabsOrb({ onBookCall }: ElevenLabsOrbProps) {
     if (isConnected) {
       endSession();
     } else {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        console.error("[ConvAI] microphone permission denied:", err);
+        return;
+      }
       startSession({ agentId: AGENT_ID, connectionType: "webrtc" as const });
     }
   }, [isConnected, startSession, endSession]);
