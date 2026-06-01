@@ -39,7 +39,7 @@ export function FloatingVoiceWidget() {
         console.error("[ConvAI] microphone permission denied:", err);
         return;
       }
-      startSession({ agentId: AGENT_ID, connectionType: "webrtc" as const });
+      startSession({ agentId: AGENT_ID, connectionType: "websocket" as const });
     }
   }, [isConnected, startSession, endSession]);
 
