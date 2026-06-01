@@ -21,7 +21,7 @@ import { getWebhookSecret } from "@/lib/elevenlabs-config";
  *   - post_call_transcription
  *
  * Requires:
- *   WEBHOOK_SECRET_ELEVENLABS — used to verify the X-ElevenLabs-Signature header
+ *   WEBHOOK_SECRET_ELEVENLABS_ADAMANT — used to verify the X-ElevenLabs-Signature header
  * Optional:
  *   LARK_BASE_APP_TOKEN + LARK_TABLE_ID_CALLS — writes transcripts to Lark Base
  */

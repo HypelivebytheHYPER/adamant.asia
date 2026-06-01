@@ -14,7 +14,7 @@ import {
  * Body: { text: string }
  * Returns: audio/mpeg stream
  *
- * Requires ELEVENLABS_API_KEY_ADAMANT (or legacy ELEVENLABS_API_KEY) environment variable.
+ * Requires ELEVENLABS_API_KEY_ADAMANT environment variable.
  */
 
 const MAX_TEXT_LENGTH = 5000;
