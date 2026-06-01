@@ -122,7 +122,7 @@ export default function RootLayout({
         <VoiceAgentProvider>
           <VoiceAgentController>
             <SmoothScroll>
-              <div id="main">{children}</div>
+              <div id="main" tabIndex={-1}>{children}</div>
             </SmoothScroll>
             <Footer
               content={sc.sections.footer}
