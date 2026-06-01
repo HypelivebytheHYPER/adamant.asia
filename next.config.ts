@@ -50,6 +50,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data: blob:",
               "font-src 'self'",
+              "media-src 'self' blob:",
               "connect-src 'self' https://api.elevenlabs.io wss://api.elevenlabs.io wss://livekit.rtc.elevenlabs.io https://livekit.rtc.elevenlabs.io https://open.larksuite.com https://api.telegram.org",
               "frame-ancestors 'none'",
               "base-uri 'self'",
