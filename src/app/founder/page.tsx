@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
-import { JsonLd } from "@/components/json-ld";
+import { WebPageJsonLd } from "@/components/webpage-json-ld";
+import { PersonJsonLd } from "@/components/person-json-ld";
 import { BlurFade } from "@/components/animations/blur-fade";
 import { EditorialImage } from "@/components/editorial-image";
 import { ArrowRight } from "lucide-react";
@@ -28,11 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description: `Why ${founderName} built ${company} and who we are.`,
       type: "article",
       url: `${SITE_URL}${canonical}`,
+      images: [`${SITE_URL}/opengraph-image`],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: `Why ${founderName} built ${company} and who we are.`,
+      images: [`${SITE_URL}/opengraph-image`],
     },
   };
 }
@@ -44,35 +48,40 @@ export default async function FounderPage() {
   const founderTitle = cfg.founder_title || "Founder";
   const linkedIn = cfg.founder_linkedin_url || "https://www.linkedin.com/in/sstng";
   const company = cfg.founder_company_name || "Adamant";
+  const bio = cfg.founder_bio_short || `${founderName} is the ${founderTitle} of ${company}, an AI agency that builds real products — SaaS tools and marketing systems that ship in two weeks.`;
   const heroHeadline = cfg.founder_hero_headline || "We started this because we were tired of watching good teams drown.";
   const heroKicker = cfg.founder_hero_kicker || `Behind ${company}`;
   const canonical = cfg.founder_canonical_url || "/founder";
 
+  const founderUrl = `${SITE_URL}${canonical}`;
+
   return (
     <>
+      <WebPageJsonLd
+        url={founderUrl}
+        title={`${founderName} — ${founderTitle}`}
+        description={bio}
+        pageType="AboutPage"
+      />
+      <PersonJsonLd
+        name={founderName}
+        jobTitle={founderTitle}
+        description={bio}
+        url={founderUrl}
+        image={`${SITE_URL}/opengraph-image`}
+        sameAs={linkedIn ? [linkedIn] : []}
+        knowsAbout={[
+          "SaaS Development",
+          "AI Workflow Automation",
+          "Marketing Systems",
+          "Business Process Automation",
+        ]}
+      />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: `${SITE_URL}/` },
-          { name: "Founder", url: `${SITE_URL}${canonical}` },
+          { name: "Founder", url: founderUrl },
         ]}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Person",
-            name: founderName,
-            jobTitle: founderTitle,
-            url: `${SITE_URL}${canonical}`,
-            sameAs: linkedIn ? [linkedIn] : undefined,
-            worksFor: {
-              "@type": "Organization",
-              name: company,
-              url: SITE_URL,
-            },
-          }),
-        }}
       />
       <main className="min-h-screen bg-background text-foreground">
         {/* ── HERO ── full-bleed editorial with image ── */}
@@ -397,13 +406,13 @@ export default async function FounderPage() {
                 </p>
               </BlurFade>
               <BlurFade delay={0.12}>
-                <a
+                <Link
                   href="/#contact"
                   className="mt-8 inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors duration-200 underline underline-offset-4 decoration-border hover:decoration-primary"
                 >
                   Book a free intro call
                   <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </BlurFade>
             </div>
           </div>

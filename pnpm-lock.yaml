@@ -38,6 +38,9 @@ importers:
       geist:
         specifier: ^1.7.1
         version: 1.7.1(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+      googleapis:
+        specifier: ^173.0.0
+        version: 173.0.0
       lucide-react:
         specifier: ^1.16.0
         version: 1.16.0(react@19.2.4)
@@ -2106,6 +2109,10 @@ packages:
     resolution: {integrity: sha512-XF8DM30ODhDu0Ng5S2kOS8j4ZkG/6z2fKWAiFJA7wG0Hc92ZXgjYLrwbD9bVU4nGVzwboPtG+QtaPGsfgnXLaA==}
     peerDependencies:
       next: '>=13.2.0'
+
+  googleapis@173.0.0:
+    resolution: {integrity: sha512-32Kmfd6OJt1gdJFQB02CmyOET/3L3oG9+0jW+Q1XzC1Mf7V3Y5hW+Q1XzC1Mf7V3Y5hW+Q1XzC1Mf7V3Y5hW+Q1Xz==}
+    engines: {node: '>=14.0.0'}
 
   generator-function@2.0.1:
     resolution: {integrity: sha512-SFdFmIJi+ybC0vjlHN0ZGVGHc3lgE0DxPAT0djjVg+kjOnSqclqmj0KQ7ykTOLP6YxoqOvuAODGdcHJn+43q3g==}
