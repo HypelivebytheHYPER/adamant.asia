@@ -19,6 +19,8 @@
  *   "Adamant vs traditional agency"
  */
 
+import generatedPostsJson from "./generated-posts.json";
+
 export interface BlogPostContent {
   slug: string;
   title: string;
@@ -77,6 +79,14 @@ export interface ComparisonTable {
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
+/**
+ * Auto-generated posts, written by the /api/cron/generate-blog job and
+ * committed back to this repo as plain JSON. Never hand-edit this file to add
+ * a generated post — the cron rewrites generated-posts.json wholesale.
+ */
+export const generatedPosts = generatedPostsJson as unknown as BlogPostContent[];
+
+/** Hand-written, editorially owned posts. */
 export const blogPosts: BlogPostContent[] = [
   {
     slug: "best-saas-mini-build-agency",
@@ -802,12 +812,15 @@ export const blogPosts: BlogPostContent[] = [
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
+/** Every post the site serves — hand-written first, generated appended. */
+const allPosts: BlogPostContent[] = [...blogPosts, ...generatedPosts];
+
 export function getPostBySlug(slug: string): BlogPostContent | undefined {
-  return blogPosts.find((p) => p.slug === slug);
+  return allPosts.find((p) => p.slug === slug);
 }
 
 export function getAllPosts(): BlogPostContent[] {
-  return [...blogPosts].sort(
+  return [...allPosts].sort(
     (a, b) =>
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
