@@ -79,7 +79,9 @@ export async function fetchNewsArticles(
   url.searchParams.set("from", from);
   url.searchParams.set("language", "en");
   url.searchParams.set("sortBy", "publishedAt");
-  url.searchParams.set("pageSize", String(limit));
+  // Overfetch — syndicated duplicates get stripped below, and asking for
+  // exactly `limit` would leave the feed short.
+  url.searchParams.set("pageSize", String(Math.min(limit * 3, 100)));
 
   const res = await fetch(url, {
     headers: { "X-Api-Key": apiKey, "User-Agent": "adamant.asia-blog-cron" },
@@ -109,8 +111,19 @@ export async function fetchNewsArticles(
     throw new NewsError(`NewsAPI returned status "${data.status}"`, res.status, body);
   }
 
+  // NewsAPI returns syndicated reprints of the same story across outlets.
+  // Keep the earliest-seen copy (the list is already newest-first).
+  const seen = new Set<string>();
+  const isDuplicate = (title: string) => {
+    const key = title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (seen.has(key)) return true;
+    seen.add(key);
+    return false;
+  };
+
   const articles = (data.articles ?? [])
     .filter((a) => a.title && a.title !== "[Removed]")
+    .filter((a) => !isDuplicate(a.title as string))
     .map((a) => ({
       title: a.title as string,
       description: a.description ?? "",
@@ -123,5 +136,5 @@ export async function fetchNewsArticles(
     throw new NewsError(`NewsAPI returned no usable articles for "${query}"`, 200, body);
   }
 
-  return articles;
+  return articles.slice(0, limit);
 }
