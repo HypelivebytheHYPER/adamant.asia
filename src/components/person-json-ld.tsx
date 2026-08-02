@@ -1,20 +1,27 @@
 /**
- * Person JSON-LD — author/founder entity for E-E-A-T signals
- * https://developers.google.com/search/docs/appearance/structured-data/article#author
+ * Person JSON-LD — Author entity for E-E-A-T
+ *
+ * P0 for GEO: AI engines need to verify the person behind the content.
+ * Same name, same bio, same photo everywhere = entity consolidation.
+ *
+ * 2026 update: Add knowsAbout, alumniOf, hasCredential for
+ * expertise verification in AI citations.
+ *
+ * @see https://developers.google.com/search/docs/appearance/structured-data/person
  */
 
-import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { SITE_URL, SOCIAL_PROFILES } from "@/lib/site";
 
 interface PersonJsonLdProps {
   name: string;
-  jobTitle?: string;
-  description?: string;
+  jobTitle: string;
+  description: string;
   url: string;
   image?: string;
-  /** Profile URLs that corroborate the identity (LinkedIn, X, …) */
   sameAs?: string[];
-  /** Topical expertise — feeds E-E-A-T evaluation */
   knowsAbout?: string[];
+  alumniOf?: string;
+  hasCredential?: string;
 }
 
 export function PersonJsonLd({
@@ -23,33 +30,57 @@ export function PersonJsonLd({
   description,
   url,
   image,
-  sameAs = [],
-  knowsAbout = [],
+  sameAs,
+  knowsAbout,
+  alumniOf,
+  hasCredential,
 }: PersonJsonLdProps) {
-  const schema = {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": `${url}#person`,
+    "@id": url,
     name,
+    jobTitle,
+    description,
     url,
-    ...(jobTitle && { jobTitle }),
-    ...(description && { description }),
-    ...(image && { image }),
-    ...(sameAs.length > 0 && { sameAs }),
-    ...(knowsAbout.length > 0 && { knowsAbout }),
+    ...(image ? { image } : {}),
+    sameAs: [
+      SOCIAL_PROFILES.linkedin,
+      ...(sameAs || []),
+    ],
+    knowsAbout: knowsAbout || [
+      "SaaS Development",
+      "AI Workflow Automation",
+      "Marketing Systems",
+      "Campaign Management",
+      "Business Process Automation",
+    ],
     worksFor: {
       "@type": "Organization",
-      name: SITE_NAME,
+      "@id": `${SITE_URL}/#organization`,
+      name: "Adamant",
       url: SITE_URL,
     },
   };
 
+  if (alumniOf) {
+    schema.alumniOf = {
+      "@type": "Organization",
+      name: alumniOf,
+    };
+  }
+
+  if (hasCredential) {
+    schema.hasCredential = {
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: hasCredential,
+    };
+  }
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(schema),
-      }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
 }

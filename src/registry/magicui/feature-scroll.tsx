@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BlurFade } from "@/components/animations/blur-fade";
 import { DeviceFrame } from "@/components/ui/iphone";
 import {
   SaasBuildScreen,
@@ -11,6 +10,7 @@ import {
   AiWorkflowScreen,
   KolScreen,
 } from "@/components/device-screens";
+import type { SolutionContent } from "@/data/content";
 
 /* ------------------------------------------------------------------ */
 /*  FeatureScrollContainer — sticky 2-col layout                      */
@@ -134,15 +134,27 @@ function TextBlock({ num, title, subtitle, detail, href, pills }: TextBlockProps
 }
 
 /* ------------------------------------------------------------------ */
+/*  Screen map                                                        */
+/* ------------------------------------------------------------------ */
+
+const screenMap: Record<SolutionContent["screen"], React.ReactNode> = {
+  saas: <SaasBuildScreen />,
+  marketing: <MarketingScreen />,
+  aiworkflow: <AiWorkflowScreen />,
+  kol: <KolScreen />,
+};
+
+/* ------------------------------------------------------------------ */
 /*  Section export                                                    */
 /* ------------------------------------------------------------------ */
 
 interface ShowcaseProps {
   headline: string;
   subheadline: string;
+  solutions: SolutionContent[];
 }
 
-export function SolutionScrollShowcase({ headline, subheadline }: ShowcaseProps) {
+export function SolutionScrollShowcase({ headline, subheadline, solutions }: ShowcaseProps) {
   return (
     <div className="flex flex-col gap-16 lg:gap-20">
       {/* Headline — centered, compact */}
@@ -155,85 +167,33 @@ export function SolutionScrollShowcase({ headline, subheadline }: ShowcaseProps)
         </p>
       </div>
 
-      {/* Row 1 — RTL: text left (sticky), visual right (scrolls) */}
-      <FeatureScrollContainer
-        direction="rtl"
-        topPosition="10%"
-        visual={
-          <DeviceFrame rotate="right">
-            <SaasBuildScreen />
-          </DeviceFrame>
-        }
-      >
-        <TextBlock
-          num="01"
-          title="SaaS Mini Build"
-          subtitle="Custom tools shipped in two weeks. You get working code, not a prototype."
-          detail="We scope in one call, build in one sprint, and hand over deployable code with documentation. Most projects start at SGD 13,000."
-          href="/solutions/marketing-strategy"
-          pills={["2-week sprint", "Full source code", "React + Node"]}
-        />
-      </FeatureScrollContainer>
+      {solutions.map((solution, index) => {
+        const num = String(index + 1).padStart(2, "0");
+        const direction = index % 2 === 0 ? "rtl" : "ltr";
+        const rotate = index % 2 === 0 ? "right" : "left";
 
-      {/* Row 2 — LTR: visual left (scrolls), text right (sticky) */}
-      <FeatureScrollContainer
-        direction="ltr"
-        topPosition="10%"
-        visual={
-          <DeviceFrame rotate="left">
-            <MarketingScreen />
-          </DeviceFrame>
-        }
-      >
-        <TextBlock
-          num="02"
-          title="Marketing System"
-          subtitle="Influencer campaigns, content pipelines, and performance tracking — all in one system."
-          detail="From first contact to final report. We set up the pipeline, automate the repetitive parts, and train your team to run it independently."
-          href="/solutions/campaign-systems"
-          pills={["End-to-end pipeline", "Team training", "Lark + Meta"]}
-        />
-      </FeatureScrollContainer>
-
-      {/* Row 3 — RTL: text left (sticky), visual right (scrolls) */}
-      <FeatureScrollContainer
-        direction="rtl"
-        topPosition="10%"
-        visual={
-          <DeviceFrame rotate="right">
-            <AiWorkflowScreen />
-          </DeviceFrame>
-        }
-      >
-        <TextBlock
-          num="03"
-          title="AI Workflow"
-          subtitle="The 40 tasks you repeat every day? Done before you open your laptop."
-          detail="No new apps to learn. No disruption. Just the manual work you hate, handled automatically — with full visibility and control."
-          href="/solutions/productivity-ai"
-          pills={["Zero new tools", "Full audit trail", "OpenAI + Lark"]}
-        />
-      </FeatureScrollContainer>
-
-      {/* Row 4 — LTR: visual left (scrolls), text right (sticky) */}
-      <FeatureScrollContainer
-        direction="ltr"
-        topPosition="10%"
-        visual={
-          <DeviceFrame rotate="left">
-            <KolScreen />
-          </DeviceFrame>
-        }
-      >
-        <TextBlock
-          num="04"
-          title="KOL Leaderboard"
-          subtitle="Gamified creator rankings with real-time scoring."
-          detail="Dealer Program — track performance across platforms, rank creators by engagement and conversion, and reward top performers automatically."
-          href="/solutions/campaign-systems"
-          pills={["Dealer Program", "Real-time scoring", "Multi-platform"]}
-        />
-      </FeatureScrollContainer>
+        return (
+          <FeatureScrollContainer
+            key={solution.title}
+            direction={direction}
+            topPosition="10%"
+            visual={
+              <DeviceFrame rotate={rotate}>
+                {screenMap[solution.screen]}
+              </DeviceFrame>
+            }
+          >
+            <TextBlock
+              num={num}
+              title={solution.title}
+              subtitle={solution.subtitle}
+              detail={solution.detail}
+              href={solution.href}
+              pills={solution.pills}
+            />
+          </FeatureScrollContainer>
+        );
+      })}
     </div>
   );
 }

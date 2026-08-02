@@ -118,9 +118,10 @@ export async function POST(req: NextRequest) {
 
     try {
       await client.batchCreateRecords(BASE_TOKEN, TABLE_ID, [{ fields: fullFields }]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // 1254045 = FieldNameNotFound — table doesn't have Phone column
-      if (err?.code === 1254045 || err?.message?.includes("FieldNameNotFound")) {
+      const e = err as { code?: number; message?: string };
+      if (e?.code === 1254045 || e?.message?.includes("FieldNameNotFound")) {
         await client.batchCreateRecords(BASE_TOKEN, TABLE_ID, [{ fields: baseFields }]);
       } else {
         throw err;

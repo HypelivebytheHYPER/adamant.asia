@@ -28,7 +28,6 @@ export function OrbitingCircles({
   path = true,
 }: OrbitingCirclesProps) {
   const items = React.Children.toArray(children);
-  const angleStep = 360 / items.length;
 
   return (
     <div

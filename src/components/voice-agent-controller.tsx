@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useConversation, useConversationClientTool } from "@elevenlabs/react";
 import type { ConnectionType } from "@elevenlabs/client";
 import { useRouter, usePathname } from "next/navigation";
-import { AGENT_ID } from "@/lib/elevenlabs-config";
 import { VoiceAgentContextProvider, type VoiceAgentState } from "./voice-agent-context";
 
 /**
@@ -28,6 +27,8 @@ export function VoiceAgentController({
   const pathname = usePathname();
   const [micMuted, setMicMuted] = useState(false);
   const scrollTargetRef = useRef<string | null>(null);
+  const callStartRef = useRef<number | null>(null);
+  const [callDurationSecInternal, setCallDurationSecInternal] = useState(0);
 
   const {
     startSession,
@@ -44,6 +45,18 @@ export function VoiceAgentController({
     onError: (error) => console.error("[ConvAI] error:", error),
     onDisconnect: () => console.log("[ConvAI] disconnected"),
   });
+
+  const scrollToSection = useCallback((id: string, _message: string) => {
+    // Always try current page first — sections may exist on /founder, /pricing, etc.
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    // Fall back to home page with hash
+    scrollTargetRef.current = id;
+    router.push(`/#${id}`);
+  }, [router]);
 
   /* ------------------------------------------------------------------ */
   // Client tools
@@ -69,6 +82,11 @@ export function VoiceAgentController({
     return "This is how we work.";
   });
 
+  useConversationClientTool("show_founder", async () => {
+    router.push("/founder");
+    return "Taking you to our founder page.";
+  });
+
   useConversationClientTool("scroll_to_section", async (parameters) => {
     const section = (parameters as Record<string, string>).section;
     const validSections = ["hero", "platforms", "showcase", "problem", "solutions", "process", "model", "reviews", "faq", "contact"];
@@ -90,28 +108,30 @@ export function VoiceAgentController({
     return "Handed off to the Adamant team. We will reach out within 24 hours.";
   });
 
-  function scrollToSection(id: string, message: string) {
-    if (pathname === "/") {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-        return;
-      }
-    }
-    scrollTargetRef.current = id;
-    router.push(`/#${id}`);
-  }
-
   /* ------------------------------------------------------------------ */
   // Timeout guards — prevent runaway / stuck calls
   /* ------------------------------------------------------------------ */
 
-  const INACTIVITY_TIMEOUT_MS = 20_000; // end if user is silent while listening for 20s
-  const MAX_CALL_DURATION_MS = 5 * 60_000; // hard cap at 5 minutes
+  const INACTIVITY_TIMEOUT_MS = 12_000; // end if user is silent while listening for 12s
+  const MAX_CALL_DURATION_MS = 3 * 60_000; // hard cap at 3 minutes
   const CONNECT_TIMEOUT_MS = 15_000; // abort if stuck connecting for 15s
+  const NO_ACTIVITY_TIMEOUT_MS = 18_000; // end if absolutely no activity for 18s
   const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const maxDurationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const connectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const noActivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastActivityRef = useRef<number>(0);
+
+  // Track call duration via an interval callback (setState inside callbacks is allowed).
+  useEffect(() => {
+    if (status !== "connected") return;
+    callStartRef.current = Date.now();
+    const interval = setInterval(() => {
+      const start = callStartRef.current ?? Date.now();
+      setCallDurationSecInternal(Math.floor((Date.now() - start) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [status]);
 
   useEffect(() => {
     const isConnected = status === "connected";
@@ -122,9 +142,6 @@ export function VoiceAgentController({
       connectTimerRef.current = setTimeout(() => {
         console.log("[ConvAI] connection timeout, ending session");
         endSession();
-        window.dispatchEvent(new CustomEvent("adamant:silent-handoff", {
-          detail: { reason: "connection_timeout", timestamp: Date.now() },
-        }));
       }, CONNECT_TIMEOUT_MS);
     }
     if (!isConnecting && connectTimerRef.current) {
@@ -137,14 +154,32 @@ export function VoiceAgentController({
       maxDurationTimerRef.current = setTimeout(() => {
         console.log("[ConvAI] max call duration reached, ending session");
         endSession();
-        window.dispatchEvent(new CustomEvent("adamant:silent-handoff", {
-          detail: { reason: "max_duration_reached", timestamp: Date.now() },
-        }));
       }, MAX_CALL_DURATION_MS);
     }
     if (!isConnected && maxDurationTimerRef.current) {
       clearTimeout(maxDurationTimerRef.current);
       maxDurationTimerRef.current = null;
+    }
+
+    // Absolute activity tracker: end if neither side has done anything for a while
+    if (isConnected && (isSpeaking || isListening)) {
+      lastActivityRef.current = Date.now();
+      if (noActivityTimerRef.current) {
+        clearTimeout(noActivityTimerRef.current);
+        noActivityTimerRef.current = null;
+      }
+    } else if (isConnected && !isSpeaking && !isListening) {
+      // No one is doing anything — potential dead air
+      if (!noActivityTimerRef.current) {
+        noActivityTimerRef.current = setTimeout(() => {
+          console.log("[ConvAI] no-activity timeout, ending session");
+          endSession();
+        }, NO_ACTIVITY_TIMEOUT_MS);
+      }
+    }
+    if (!isConnected && noActivityTimerRef.current) {
+      clearTimeout(noActivityTimerRef.current);
+      noActivityTimerRef.current = null;
     }
 
     // Inactivity: if agent is listening and user stays silent, end call
@@ -153,9 +188,6 @@ export function VoiceAgentController({
       silenceTimerRef.current = setTimeout(() => {
         console.log("[ConvAI] user inactivity timeout, ending session");
         endSession();
-        window.dispatchEvent(new CustomEvent("adamant:silent-handoff", {
-          detail: { reason: "user_inactivity", timestamp: Date.now() },
-        }));
       }, INACTIVITY_TIMEOUT_MS);
     } else {
       if (silenceTimerRef.current) {
@@ -169,11 +201,8 @@ export function VoiceAgentController({
         clearTimeout(silenceTimerRef.current);
         silenceTimerRef.current = null;
       }
-      // max-duration and connect timers are singletons that survive across
-      // effect re-runs; we clear them only on disconnect (handled above)
-      // or in the component-unmount case below.
     };
-  }, [status, isListening, isSpeaking, endSession]);
+  }, [status, isListening, isSpeaking, endSession, MAX_CALL_DURATION_MS, CONNECT_TIMEOUT_MS, NO_ACTIVITY_TIMEOUT_MS, INACTIVITY_TIMEOUT_MS]);
 
   // Unmount safety: clean up all timers so a stale endSession never fires
   useEffect(() => {
@@ -181,6 +210,7 @@ export function VoiceAgentController({
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (maxDurationTimerRef.current) clearTimeout(maxDurationTimerRef.current);
       if (connectTimerRef.current) clearTimeout(connectTimerRef.current);
+      if (noActivityTimerRef.current) clearTimeout(noActivityTimerRef.current);
     };
   }, []);
 
@@ -221,11 +251,14 @@ export function VoiceAgentController({
   // Expose state
   /* ------------------------------------------------------------------ */
 
+  const callDurationSec = status === "connected" ? callDurationSecInternal : 0;
+
   const state: VoiceAgentState = {
     status,
     isSpeaking,
     isListening,
     isMuted,
+    callDurationSec,
     getOutputByteFrequencyData,
     startSession: useCallback(
       (opts: { agentId: string; connectionType?: ConnectionType }) => startSession(opts),

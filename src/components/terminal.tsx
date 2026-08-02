@@ -78,9 +78,11 @@ export function TypingAnimation({
     if (!started) return;
 
     if (reducedMotion) {
-      setDisplayedText(children);
-      onComplete?.();
-      return;
+      const id = setTimeout(() => {
+        setDisplayedText(children);
+        onComplete?.();
+      }, 0);
+      return () => clearTimeout(id);
     }
 
     let i = 0;

@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Marketing System Demo",
-  description: "Interactive preview of a KOL campaign dashboard \u2014 influencer roster, pipeline tracking, activity feed, and approval queue.",
+  title: "Marketing System Demo | Adamant",
+  description:
+    "Interactive preview of a KOL campaign dashboard \u2014 influencer roster, pipeline tracking, activity feed, and approval queue.",
   alternates: {
     canonical: "/demo",
   },
@@ -13,13 +14,16 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/demo`,
     title: "Campaign Hub \u2014 Demo | Adamant",
-    description: "See what a working campaign system looks like. No spreadsheets, no chasing.",
+    description:
+      "See what a working campaign system looks like. No spreadsheets, no chasing.",
     type: "article",
+    images: [`${SITE_URL}/opengraph-image`],
   },
   twitter: {
     card: "summary_large_image",
     title: "Campaign Hub \u2014 Demo | Adamant",
     description: "See what a working campaign system looks like.",
+    images: [`${SITE_URL}/opengraph-image`],
   },
 };
 

@@ -5,7 +5,9 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { VoiceAgentProvider } from "@/components/voice-agent-provider";
 import { VoiceAgentController } from "@/components/voice-agent-controller";
-import { FloatingVoiceWidget } from "@/components/floating-voice-widget";
+import { DeferredVoiceWidget } from "@/components/deferred-voice-widget";
+import { GoogleAnalytics } from "@/components/google-analytics";
+import { HreflangTags } from "@/components/hreflang-tags";
 import { TOKENS } from "@/lib/tokens";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { siteContent } from "@/data/content";
@@ -36,24 +38,51 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
-    template: `%s | ${SITE_NAME}`,
+    default: `${SITE_NAME} \u2014 Verification Intelligence & AI Solutions`,
+    template: `%s`,
   },
   description:
-    "Custom SaaS tools and marketing systems built in two weeks. AI-powered workflows, campaign dashboards, and automation that your team actually uses.",
+    "Adamant is a Singapore advisory house: Adamant Verify (KYC/KYB, AML screening, due diligence) and Adamant AI (custom SaaS, marketing systems, automation).",
   keywords: [
+    "KYC verification Singapore",
+    "KYB verification",
+    "AML screening",
+    "sanctions screening",
+    "due diligence Southeast Asia",
+    "counterparty verification",
+    "adverse media screening",
+    "ongoing monitoring compliance",
+    /* ── Pillar 1: SaaS Mini Build ── */
     "SaaS mini build",
-    "custom SaaS tools",
-    "marketing systems",
+    "custom SaaS development",
+    "build SaaS in 2 weeks",
+    "rapid SaaS prototyping",
+    "internal tool development",
+    "custom dashboard builder",
+    "workflow tool development",
+    "SaaS product agency",
+    /* ── Pillar 2: Marketing System Solution ── */
+    "marketing automation system",
+    "campaign management platform",
+    "influencer marketing tools",
+    "KOL leaderboard platform",
+    "campaign tracking system",
+    "performance marketing dashboard",
+    "content pipeline automation",
+    "marketing operations system",
+    /* ── Pillar 3: AI Agency ── */
+    "AI agency",
+    "AI agency Singapore",
     "AI workflow automation",
-    "campaign dashboard",
-    "business operations",
-    "workflow design",
-    "process automation",
-    "internal tools",
-    "CRM setup",
-    "campaign tracking",
-    "team productivity",
+    "AI business solutions",
+    "enterprise AI implementation",
+    "AI process automation",
+    "AI integration services",
+    /* ── Cross-pillar / Long-tail ── */
+    "AI-powered SaaS",
+    "AI marketing system",
+    "fixed price SaaS development",
+    "no-code low-code agency",
   ],
   authors: [{ name: "Adamant" }],
   creator: "Adamant",
@@ -70,22 +99,30 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "YYewbbczakgTRNwsuHktshHKKZPyLQDTaVI90rTukpE",
+  },
   alternates: {
     canonical: "/",
+    types: {
+      "application/rss+xml": `${SITE_URL}/rss.xml`,
+    },
   },
   openGraph: {
-    title: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
+    title: `${SITE_NAME} \u2014 Verification Intelligence & AI Solutions`,
     description:
-      "Custom SaaS tools and marketing systems built in two weeks. Working code, not prototypes.",
+      "Two practices, one advisory house: Adamant Verify (KYC/KYB, AML, due diligence) and Adamant AI (custom SaaS & automation). Singapore \u00b7 Southeast Asia.",
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
+    images: [`${SITE_URL}/opengraph-image`],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} \u2014 AI Agency for SaaS Mini Build & Marketing Systems`,
+    title: `${SITE_NAME} \u2014 Verification Intelligence & AI Solutions`,
     description:
-      "Custom SaaS tools and marketing systems built in two weeks. Working code, not prototypes.",
+      "Two practices, one advisory house: Adamant Verify (KYC/KYB, AML, due diligence) and Adamant AI (custom SaaS & automation). Singapore \u00b7 Southeast Asia.",
+    images: [`${SITE_URL}/opengraph-image`],
   },
   icons: {
     icon: "/favicon.svg",
@@ -116,7 +153,23 @@ export default function RootLayout({
       dir="ltr"
       className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}
     >
+      <head>
+        <HreflangTags />
+      </head>
       <body className="bg-background text-foreground">
+        <GoogleAnalytics />
+        {/* GTM noscript fallback */}
+        {process.env.NEXT_PUBLIC_GTM_ID && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+              title="GTM"
+            />
+          </noscript>
+        )}
         <a href="#main" className="skip-link">Skip to content</a>
         <Navigation links={sc.navLinks} />
         <VoiceAgentProvider>
@@ -126,10 +179,10 @@ export default function RootLayout({
             </SmoothScroll>
             <Footer
               content={sc.sections.footer}
-              navLinks={sc.footerNavLinks}
+              navLinks={sc.navLinks}
               year={new Date().getFullYear()}
             />
-            <FloatingVoiceWidget />
+            <DeferredVoiceWidget />
           </VoiceAgentController>
         </VoiceAgentProvider>
         <SpeedInsights />

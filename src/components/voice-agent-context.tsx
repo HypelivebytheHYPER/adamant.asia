@@ -8,6 +8,7 @@ export interface VoiceAgentState {
   isSpeaking: boolean;
   isListening: boolean;
   isMuted: boolean;
+  callDurationSec: number;
   getOutputByteFrequencyData: () => Uint8Array;
   startSession: (opts: { agentId: string; connectionType?: ConnectionType }) => void;
   endSession: () => void;

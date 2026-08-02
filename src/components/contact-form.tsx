@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Check, Loader2 } from "lucide-react";
 import { easeSmooth } from "@/lib/animation";
+import { trackFormSubmit, trackFormSuccess } from "@/lib/analytics";
 
 interface ContactFormProps {
   /** Render without outer card styling — used inside ContactModal */
@@ -21,6 +22,7 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
     email: "",
     company: "",
     phone: "",
+    practice: "",
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
@@ -32,6 +34,7 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
+    trackFormSubmit(inline ? "Contact Modal" : "Contact Section");
     try {
       const res = await fetch("/api/pricing-lead", {
         method: "POST",
@@ -42,7 +45,9 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
           company: form.company.trim(),
           phone: form.phone.trim(),
           message: form.message.trim(),
-          source: "Contact Section",
+          source: form.practice
+            ? `Contact Section — ${form.practice}`
+            : "Contact Section",
         }),
       });
       const result = await res.json();
@@ -51,6 +56,7 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
       console.warn("[contact] Submission error:", err);
     }
     setStatus("success");
+    trackFormSuccess(inline ? "Contact Modal" : "Contact Section");
     onSuccess?.();
   };
 
@@ -125,7 +131,7 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
 
         <div>
           <label htmlFor="cf-company" className={labelClass}>
-            Company or project name
+            Company
           </label>
           <input
             id="cf-company"
@@ -141,7 +147,7 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
 
         <div>
           <label htmlFor="cf-phone" className={labelClass}>
-            WhatsApp or phone
+            WhatsApp / phone <span className={isDark ? "text-inverse-muted" : "text-stone"}>(optional)</span>
           </label>
           <input
             id="cf-phone"
@@ -156,8 +162,27 @@ export function ContactForm({ inline, onSuccess, variant = "light" }: ContactFor
         </div>
 
         <div>
+          <label htmlFor="cf-practice" className={labelClass}>
+            Which practice are you reaching out about?
+          </label>
+          <select
+            id="cf-practice"
+            name="practice"
+            value={form.practice}
+            onChange={(e) => update("practice", e.target.value)}
+            className={inputClass}
+          >
+            <option value="" disabled>
+              Select a practice
+            </option>
+            <option value="Adamant Verify">Adamant Verify</option>
+            <option value="Adamant AI">Adamant AI</option>
+          </select>
+        </div>
+
+        <div>
           <label htmlFor="cf-message" className={labelClass}>
-            What do you need?
+            Tell us what you need
           </label>
           <textarea
             id="cf-message"

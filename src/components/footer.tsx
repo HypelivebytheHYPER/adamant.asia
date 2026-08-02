@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SectionContent, NavLinkContent } from "@/data/content";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, WHATSAPP_CHAT_URL, TELEGRAM_CHAT_URL } from "@/lib/site";
+import { WhatsAppIcon, TelegramIcon } from "@/components/chat-icons";
 
 interface FooterProps {
   content: SectionContent;
@@ -61,14 +62,26 @@ export function Footer({ content, navLinks, year }: FooterProps) {
           >
             {CONTACT_EMAIL}
           </a>
-          <a
-            href="https://wa.me/6589211191"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-background transition-colors"
-          >
-            WhatsApp +65 8921 1191
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href={WHATSAPP_CHAT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-background transition-colors"
+              aria-label="WhatsApp"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+            </a>
+            <a
+              href={TELEGRAM_CHAT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-background transition-colors"
+              aria-label="Telegram"
+            >
+              <TelegramIcon className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

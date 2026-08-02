@@ -1,15 +1,15 @@
 /**
- * Article JSON-LD — Google article rich result support
- * https://developers.google.com/search/docs/appearance/structured-data/article
+ * Article / BlogPosting JSON-LD — AEO/GEO optimized 2026
+ *
+ * Uses BlogPosting for blog content, Article for guides.
+ * Includes speakable for AI citation extraction,
+ * ImageObject with dimensions for rich results,
+ * and full Person author with sameAs for E-E-A-T.
+ *
+ * @see https://developers.google.com/search/docs/appearance/structured-data/article
  */
 
-import { SITE_URL, SITE_NAME } from "@/lib/site";
-
-interface ArticleAuthor {
-  name: string;
-  url?: string;
-  knowsAbout?: string[];
-}
+import { SITE_URL, SITE_NAME, SOCIAL_PROFILES } from "@/lib/site";
 
 interface ArticleJsonLdProps {
   title: string;
@@ -17,14 +17,21 @@ interface ArticleJsonLdProps {
   url: string;
   publishedAt: string;
   modifiedAt?: string;
-  author: ArticleAuthor;
-  image: string;
+  author: {
+    name: string;
+    url: string;
+    sameAs?: string[];
+    knowsAbout?: string[];
+  };
+  image?: string;
   imageWidth?: number;
   imageHeight?: number;
   keywords?: string[];
-  schemaType?: "Article" | "BlogPosting" | "NewsArticle";
-  /** CSS selector marking the passage eligible for voice/speakable results */
+  /** Use "BlogPosting" for blog posts, "Article" for evergreen guides */
+  schemaType?: "BlogPosting" | "Article";
+  /** CSS selector for the speakable (direct answer) section */
   speakableSelector?: string;
+  /** Word count for reading time estimation */
   wordCount?: number;
 }
 
@@ -36,62 +43,81 @@ export function ArticleJsonLd({
   modifiedAt,
   author,
   image,
-  imageWidth,
-  imageHeight,
-  keywords = [],
-  schemaType = "Article",
-  speakableSelector,
+  imageWidth = 1200,
+  imageHeight = 630,
+  keywords,
+  schemaType = "BlogPosting",
+  speakableSelector = "#direct-answer",
   wordCount,
 }: ArticleJsonLdProps) {
-  const schema = {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": schemaType,
+    "@id": `${url}#${schemaType.toLowerCase()}`,
     headline: title,
     description,
-    url,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": url,
+    image: {
+      "@type": "ImageObject",
+      url: image || `${SITE_URL}/opengraph-image`,
+      width: imageWidth,
+      height: imageHeight,
+      caption: title,
     },
     datePublished: publishedAt,
     dateModified: modifiedAt || publishedAt,
     author: {
       "@type": "Person",
+      "@id": author.url,
       name: author.name,
-      ...(author.url && { url: author.url, "@id": `${author.url}#person` }),
-      ...(author.knowsAbout?.length && { knowsAbout: author.knowsAbout }),
+      url: author.url,
+      sameAs: [
+        SOCIAL_PROFILES.linkedin,
+        ...(author.sameAs || []),
+      ],
+      knowsAbout: author.knowsAbout || [
+        "SaaS Development",
+        "AI Workflow Automation",
+        "Marketing Systems",
+      ],
+      worksFor: {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+      },
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
-      url: SITE_URL,
       logo: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/favicon.svg`,
+        "@id": `${SITE_URL}/#logo`,
+        url: `${SITE_URL}/logo.png`,
+        width: 512,
+        height: 512,
       },
     },
-    image: {
-      "@type": "ImageObject",
-      url: image,
-      ...(imageWidth && { width: imageWidth }),
-      ...(imageHeight && { height: imageHeight }),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
     },
-    ...(keywords.length > 0 && { keywords: keywords.join(", ") }),
-    ...(wordCount && { wordCount }),
-    ...(speakableSelector && {
-      speakable: {
-        "@type": "SpeakableSpecification",
-        cssSelector: [speakableSelector],
-      },
-    }),
+    url,
+    inLanguage: "en",
+    isAccessibleForFree: true,
+    ...(keywords?.length ? { keywords: keywords.join(", ") } : {}),
+    ...(wordCount ? { wordCount } : {}),
+  };
+
+  /* speakable: helps AI engines identify the direct answer passage */
+  schema.speakable = {
+    "@type": "SpeakableSpecification",
+    cssSelector: [speakableSelector, "h1", "article h2"],
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(schema),
-      }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
 }

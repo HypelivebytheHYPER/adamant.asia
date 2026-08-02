@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface CyclingHeadlineProps {
@@ -11,14 +11,14 @@ interface CyclingHeadlineProps {
 
 function AnimatedText({ text }: { text: string }) {
   const words = text.split(" ");
-  let charCount = 0;
 
   return (
     <span className="inline-block">
       {words.map((word, wordIdx) => {
         const chars = Array.from(word);
-        const wordStart = charCount;
-        charCount += chars.length;
+        const wordStart = words
+          .slice(0, wordIdx)
+          .reduce((sum, w) => sum + w.length, 0);
 
         return (
           <span key={`${wordIdx}-${word}`} className="inline-block whitespace-nowrap">
@@ -58,16 +58,16 @@ export function CyclingHeadline({
   className,
 }: CyclingHeadlineProps) {
   const [index, setIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const pauseRef = useRef(false);
 
   const next = useCallback(() => {
     setIndex((prev) => (prev + 1) % messages.length);
   }, [messages.length]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;

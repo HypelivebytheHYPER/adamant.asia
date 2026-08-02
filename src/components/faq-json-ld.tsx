@@ -1,6 +1,12 @@
 /**
- * FAQPage JSON-LD — Google FAQ rich result support
- * https://developers.google.com/search/docs/appearance/structured-data/faqpage
+ * FAQPage JSON-LD — Structured Q&A for AI search citations.
+ *
+ * P0 for GEO: FAQ schema helps AI engines extract direct answers
+ * from your content. Use on every page with Q&A content.
+ *
+ * 2026 update: Strip HTML from answers — schema must be plain text.
+ *
+ * @see https://developers.google.com/search/docs/appearance/structured-data/faqpage
  */
 
 interface FaqItem {
@@ -8,18 +14,29 @@ interface FaqItem {
   answer: string;
 }
 
-export function FaqJsonLd({ items }: { items: FaqItem[] }) {
-  if (items.length === 0) return null;
+/** Strip HTML tags and decode basic entities for schema compliance */
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
+export function FaqJsonLd({ items }: { items: FaqItem[] }) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: items.map((item) => ({
       "@type": "Question",
-      name: item.question,
+      name: stripHtml(item.question),
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer,
+        text: stripHtml(item.answer),
       },
     })),
   };
@@ -27,9 +44,7 @@ export function FaqJsonLd({ items }: { items: FaqItem[] }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(schema),
-      }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
   );
 }

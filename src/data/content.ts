@@ -5,6 +5,9 @@ export interface SectionContent {
   body?: string;
   ctaText?: string;
   ctaLink?: string;
+  cta2Text?: string;
+  cta2Link?: string;
+  tag?: string;
   enabled: boolean;
 }
 
@@ -32,7 +35,11 @@ export interface SolutionContent {
   icon: string;
   title: string;
   description: string;
+  subtitle: string;
+  detail: string;
   href: string;
+  pills: string[];
+  screen: "saas" | "marketing" | "aiworkflow" | "kol";
 }
 
 export interface MarqueeItemContent {
@@ -68,13 +75,69 @@ export interface ServicePageContent {
   testimonialIds: number[]; // indices into testimonials array
 }
 
+export interface PracticeContent {
+  tag: string;
+  headline: string;
+  body: string;
+  tags: string[];
+  href: string;
+  accent: "teal" | "amber";
+}
+
+export interface VerifyServiceContent {
+  num: string;
+  title: string;
+  body: string;
+}
+
+export interface TrustItemContent {
+  title: string;
+  body: string;
+}
+
+export interface VerifyDarkContent {
+  tag: string;
+  headline: string;
+  body: string;
+  badges: string[];
+  ctaText: string;
+  ctaLink: string;
+  services: VerifyServiceContent[];
+  trust: TrustItemContent[];
+}
+
+export interface VerifyProcessStepContent {
+  num: string;
+  title: string;
+  detail: string;
+}
+
+export interface VerifyProcessContent {
+  tag: string;
+  headline: string;
+  body: string;
+  phases: VerifyProcessStepContent[];
+}
+
 export const siteContent = {
   sections: {
     hero: {
       id: "hero",
-      headline: "AI agency for SaaS Mini Build & Marketing System Solution.",
-      body: "We build custom SaaS tools and marketing systems using AI. Two-week delivery. Your team gets a product that runs — not a deck that gathers dust.",
-      ctaText: "Book a free 45-minute intro call",
+      tag: "Singapore · Southeast Asia",
+      headline: "In Southeast Asia, the right partnerships start with the right intelligence.",
+      body: "Adamant brings KYC, AML, and AI expertise under one advisory roof — so you can verify before you commit, and build the systems to move after you do.",
+      ctaText: "Explore Adamant Verify",
+      ctaLink: "/verify",
+      cta2Text: "Explore Adamant AI",
+      cta2Link: "/ai",
+      enabled: true,
+    },
+    aiHero: {
+      id: "ai-hero",
+      tag: "Adamant AI — Singapore",
+      headline: "AI tools built for your workflow.",
+      body: "A Singapore AI agency that builds custom SaaS tools, marketing systems and AI workflow automation — scoped in one call, built in one sprint, handed over with full source code.",
+      ctaText: "Book a scope call",
       ctaLink: "#contact",
       enabled: true,
     },
@@ -99,9 +162,11 @@ export const siteContent = {
     },
     model: {
       id: "model",
-      headline: "SaaS Mini Build. Marketing System Solution. AI Agency.",
+      headline: "Adamant AI Business Solutions — Singapore",
       subheadline:
-        "We are an AI agency that builds real products — not slide decks. SaaS tools that ship in two weeks. Marketing systems that run without you. You get the speed of a product team with the care of a partner.",
+        "Real working AI systems built in two weeks. SaaS mini builds, marketing systems, AI workflow automation and KOL leaderboards — custom-built for Singapore operations with fixed pricing and full source code handover.",
+      ctaText: "Explore Adamant AI Business Solutions",
+      ctaLink: "/ai",
       enabled: true,
     },
     proof: {
@@ -112,10 +177,11 @@ export const siteContent = {
     },
     contact: {
       id: "contact",
-      headline: "Book your free 45-minute intro call.",
+      tag: "Engage us",
+      headline: "Start a conversation.",
       subheadline:
-        "We will map your pain points and show you what is possible. No pitch. No pressure. If we cannot help, we will tell you.",
-      ctaText: "Schedule now",
+        "All enquiries are handled in strict confidence. Tell us what you need — and which practice you are reaching out about. We reply within 24 hours.",
+      ctaText: "Send Message",
       ctaLink: "#contact",
       enabled: true,
     },
@@ -126,34 +192,130 @@ export const siteContent = {
     },
   } as Record<string, SectionContent>,
 
+  homePractices: {
+    verify: {
+      tag: "Adamant Verify",
+      headline: "Singapore KYC, KYB & AML screening. Know who you are dealing with.",
+      body: "Background checks, KYC/KYB verification, AML screening and ongoing counterparty monitoring — delivered as a named, concierge engagement for businesses operating in Singapore and across Southeast Asia.",
+      tags: ["KYC / KYB", "AML Screening", "Monitoring"],
+      href: "/verify",
+      accent: "amber",
+    },
+    ai: {
+      tag: "Adamant AI Business Solutions",
+      headline: "Singapore AI agency. Tools built to run without you.",
+      body: "Custom SaaS development, marketing systems and AI workflow automation for Singapore companies — scoped in one call, built in one sprint, handed over with full documentation and source code.",
+      tags: ["SaaS Build", "AI Workflow", "Marketing Systems"],
+      href: "/ai",
+      accent: "teal",
+    },
+  } satisfies Record<string, PracticeContent>,
+
+  verifyDark: {
+    tag: "Adamant Verify — Singapore & Southeast Asia",
+    headline: "Clarity before commitment. Discretion when it matters most.",
+    body: "Without verified counterparties, the cost of a wrong partnership in high-growth markets can be severe. Adamant Verify provides Singapore-based KYC services, KYB verification, AML screening, custom due diligence reports and subscription-based monitoring — with a named relationship manager at every step.",
+    badges: ["Powered by Sumsub", "Enterprise Verification", "Compliance", "PDPA Compliant", "Singapore"],
+    ctaText: "Request a Consultation",
+    ctaLink: "#contact",
+    services: [
+      {
+        num: "01",
+        title: "Background Checks & Identity Verification",
+        body: "Singapore KYC services for individuals and KYB verification for companies, directors and beneficial owners. Includes AML screening, sanctions checks and PEP screening — delivered as a named engagement, not a self-serve portal.",
+      },
+      {
+        num: "02",
+        title: "Due Diligence Reports",
+        body: "Custom due diligence reports for Singapore and Southeast Asia counterparties. Beyond raw data — structured narratives with adverse media, reputational checks and actionable recommendations for your specific risk question.",
+      },
+      {
+        num: "03",
+        title: "Monitoring Subscription",
+        body: "Continuous counterparty vigilance. Automated re-screening at agreed intervals with alert-based notifications on material changes. Monthly or quarterly summary reports managed by your named contact.",
+      },
+    ],
+    trust: [
+      {
+        title: "Concierge",
+        body: "Named relationship manager. No ticketing systems, no automated responses, no self-serve portal.",
+      },
+      {
+        title: "Discreet",
+        body: "All engagements handled in strict confidence. Singapore-headquartered, PDPA-compliant operations.",
+      },
+      {
+        title: "Actionable",
+        body: "We do not deliver raw data. Every report comes with structured recommendations and a follow-up conversation.",
+      },
+    ],
+  } satisfies VerifyDarkContent,
+
+
+  verifyProcess: {
+    tag: "The Verify Process",
+    headline: "From intake to intelligence.",
+    body: "Every Adamant Verify engagement follows a structured, confidential process. Nothing begins without a signed scope. Nothing is delivered without a follow-up conversation.",
+    phases: [
+      {
+        num: "01",
+        title: "Intake Consultation",
+        detail: "You brief us on the subject, the relationship, and the risk question you need answered. We advise on the appropriate check scope — KYC, KYB, AML, or full due diligence — and confirm whether the engagement is within our coverage for the region.",
+      },
+      {
+        num: "02",
+        title: "Engagement Agreement",
+        detail: "We issue a fixed-scope proposal with a clear fee, timeline, and mutual NDA. No work begins — and no data is collected — without written sign-off from both parties. All engagements are PDPA-compliant by design.",
+      },
+      {
+        num: "03",
+        title: "Verification & Screening",
+        detail: "Powered by Sumsub's enterprise infrastructure, we run identity verification, entity checks, AML and sanctions screening, and adverse media analysis in parallel. All data handling complies with Singapore PDPA obligations. Your named manager oversees every stage.",
+      },
+      {
+        num: "04",
+        title: "Intelligence Report",
+        detail: "We deliver a structured narrative report — not a raw data export. Findings are organised by risk indicator, supported by source references, and concluded with actionable recommendations specific to your business context. A debrief call is included with every report.",
+      },
+      {
+        num: "05",
+        title: "Ongoing Monitoring",
+        detail: "Optional subscription-based re-screening at agreed intervals. Your named manager handles every alert, update, and summary report. Monitoring can begin immediately after your first engagement closes.",
+      },
+    ],
+  } satisfies VerifyProcessContent,
+
+
   solutions: [
     {
       icon: "Zap",
       title: "SaaS Mini Build",
-      description:
-        "Custom SaaS tools built and shipped in two weeks. Internal dashboards, customer-facing apps, or workflow tools — you get working code, not a prototype.",
+      description: "Custom SaaS development in Singapore. Tools shipped in two weeks, full source included.",
+      subtitle: "Custom SaaS development for Singapore companies. You get working code, not a prototype.",
+      detail: "We scope in one call, build in one sprint, and hand over deployable code with documentation. Most projects start at SGD 13,000.",
       href: "/solutions/marketing-strategy",
+      pills: ["2-week sprint", "Full source code", "React + Node"],
+      screen: "saas",
     },
     {
       icon: "Network",
-      title: "Marketing System Solution",
-      description:
-        "Influencer campaigns, content pipelines, and performance tracking — all in one system that runs without you. From first contact to final report.",
+      title: "Marketing System",
+      description: "Influencer and KOL marketing systems for Singapore brands. Pipelines and campaign tracking, end-to-end.",
+      subtitle: "Influencer campaigns, KOL pipelines and performance tracking — all in one system.",
+      detail: "From first contact to final report. We set up the pipeline, automate the repetitive parts, and train your team to run it independently.",
       href: "/solutions/campaign-systems",
+      pills: ["End-to-end pipeline", "Team training", "Lark + Meta"],
+      screen: "marketing",
     },
     {
       icon: "Compass",
       title: "AI Workflow Automation",
-      description:
-        "The 40 tasks you repeat every day? Done before you open your laptop. AI workflows that connect the tools you already use. No new apps to learn.",
+      description: "AI workflow automation for Singapore teams. 40+ daily manual tasks automated before you open your laptop.",
+      subtitle: "The 40 tasks you repeat every day? Done before you open your laptop.",
+      detail: "No new apps to learn. No disruption. Just the manual work you hate, handled automatically — with full visibility and control.",
       href: "/solutions/productivity-ai",
-    },
-    {
-      icon: "Trophy",
-      title: "KOL Leaderboard",
-      description:
-        "Gamified creator rankings with real-time scoring. Track performance across platforms, rank creators by engagement and conversion, and reward top performers automatically.",
-      href: "/solutions/kol-leaderboard",
+      pills: ["Zero new tools", "Full audit trail", "OpenAI + Lark"],
+      screen: "aiworkflow",
     },
   ] satisfies SolutionContent[],
 
@@ -234,41 +396,25 @@ export const siteContent = {
   ] satisfies MarqueeItemContent[],
 
   navLinks: [
-    { label: "Home", href: "/" },
+    { label: "Adamant Verify", href: "/verify" },
+    { label: "Adamant AI", href: "/ai" },
     {
-      label: "Solutions",
-      href: "#solutions",
+      label: "About",
+      href: "/about",
       children: [
-        { label: "SaaS Mini Build", href: "/solutions/marketing-strategy" },
-        { label: "Marketing System", href: "/solutions/campaign-systems" },
-        { label: "AI Workflows", href: "/solutions/productivity-ai" },
-        { label: "KOL Leaderboard", href: "/solutions/kol-leaderboard" },
+        { label: "About Adamant", href: "/about" },
+        { label: "Founder", href: "/founder" },
       ],
     },
-    { label: "Process", href: "/#process" },
-    { label: "Fraud Watch", href: "/fraud-watch" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Founder", href: "/founder" },
-    { label: "Contact", href: "/#contact" },
+    { label: "Case Studies", href: "/case-studies" },
+    { label: "Insights", href: "/insights" },
+    { label: "Engage Us", href: "/contact" },
   ] satisfies NavLinkContent[],
 
   contactInfo: {
     email: "sam@adamant.asia",
-    location: "Remote-first",
+    location: "7 Temasek Boulevard, #12-07, Suntec Tower One, Singapore 038987",
   } satisfies ContactInfoContent,
-
-  footerNavLinks: [
-    { label: "Home", href: "/" },
-    { label: "SaaS Mini Build", href: "/solutions/marketing-strategy" },
-    { label: "Marketing System", href: "/solutions/campaign-systems" },
-    { label: "AI Workflows", href: "/solutions/productivity-ai" },
-    { label: "KOL Leaderboard", href: "/solutions/kol-leaderboard" },
-    { label: "Process", href: "/#process" },
-    { label: "Fraud Watch", href: "/fraud-watch" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Founder", href: "/founder" },
-    { label: "Contact", href: "/#contact" },
-  ] satisfies NavLinkContent[],
 
   faq: [
     {

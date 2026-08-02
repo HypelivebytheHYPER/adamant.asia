@@ -6,6 +6,7 @@ import {
   formatVoiceCallNotification,
 } from "@/lib/telegram";
 import { getWebhookSecret } from "@/lib/elevenlabs-config";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/webhook/elevenlabs
@@ -65,7 +66,7 @@ async function verifySignature(
   signature: string | null,
 ): Promise<Record<string, unknown> | null> {
   if (!WEBHOOK_SECRET || !signature) {
-    console.warn("[webhook/elevenlabs] missing secret or signature");
+    logger.warn("webhook/elevenlabs", "missing secret or signature");
     return null;
   }
 
@@ -74,7 +75,7 @@ async function verifySignature(
   const v0Match = signature.match(/v0=([a-f0-9]+)/);
 
   if (!tMatch || !v0Match) {
-    console.warn("[webhook/elevenlabs] signature format mismatch");
+    logger.warn("webhook/elevenlabs", "signature format mismatch");
     return null;
   }
 
@@ -98,7 +99,7 @@ async function verifySignature(
       .join("");
 
     if (actualSig !== expectedSig) {
-      console.warn("[webhook/elevenlabs] signature mismatch");
+      logger.warn("webhook/elevenlabs", "signature mismatch", { signaturePrefix: signature?.slice(0, 20) });
       return null;
     }
 
@@ -106,13 +107,13 @@ async function verifySignature(
     const now = Date.now() / 1000;
     const ts = parseInt(timestamp, 10);
     if (Math.abs(now - ts) > 300) {
-      console.warn("[webhook/elevenlabs] timestamp too old");
+      logger.warn("webhook/elevenlabs", "timestamp too old");
       return null;
     }
 
     return JSON.parse(payload) as Record<string, unknown>;
   } catch (err) {
-    console.error("[webhook/elevenlabs] verify error:", err);
+    logger.error("webhook/elevenlabs", "verify error", { error: err instanceof Error ? err.message : String(err) });
     return null;
   }
 }
@@ -181,21 +182,12 @@ async function processPostCallTranscription(payload: WebhookPayload) {
     summary,
     terminationReason,
   });
-  console.log(
-    "[elevenlabs:post_call] sending Telegram notification for",
-    data.conversation_id,
-  );
+  logger.info("elevenlabs:post_call", "sending Telegram notification", { conversationId: data.conversation_id });
   try {
     const ok = await sendTelegramMessage(telegramMsg);
-    console.log(
-      "[elevenlabs:post_call] Telegram notification:",
-      ok ? "sent" : "failed",
-    );
+    logger.info("elevenlabs:post_call", ok ? "Telegram sent" : "Telegram failed", { conversationId: data.conversation_id });
   } catch (err) {
-    console.error(
-      "[elevenlabs:post_call] Telegram error:",
-      err instanceof Error ? err.message : err,
-    );
+    logger.error("elevenlabs:post_call", "Telegram error", { error: err instanceof Error ? err.message : String(err), conversationId: data.conversation_id });
   }
 
   const record = {
@@ -213,16 +205,10 @@ async function processPostCallTranscription(payload: WebhookPayload) {
     "Termination Reason": terminationReason,
   };
 
-  console.log("[elevenlabs:post_call] record prepared", {
-    conversationId: data.conversation_id,
-    duration,
-    cost,
-  });
+  logger.info("elevenlabs:post_call", "record prepared", { conversationId: data.conversation_id, duration, cost });
 
   if (!BASE_APP_TOKEN || !TABLE_ID_CALLS) {
-    console.log(
-      "[elevenlabs:post_call] skipping Base write — LARK_BASE_APP_TOKEN or LARK_TABLE_ID_CALLS not set",
-    );
+    logger.info("elevenlabs:post_call", "skipping Base write — missing env");
     return;
   }
 
@@ -232,13 +218,10 @@ async function processPostCallTranscription(payload: WebhookPayload) {
     await client.batchCreateRecords(BASE_APP_TOKEN, TABLE_ID_CALLS, [
       { fields: record },
     ]);
-    console.log("[elevenlabs:post_call] written to Base", {
-      conversationId: data.conversation_id,
-      table: TABLE_ID_CALLS,
-    });
+    logger.info("elevenlabs:post_call", "written to Base", { conversationId: data.conversation_id, table: TABLE_ID_CALLS });
     return;
   } catch (err) {
-    console.error("[elevenlabs:post_call] Base write failed", err);
+    logger.error("elevenlabs:post_call", "Base write failed", { error: err instanceof Error ? err.message : String(err) });
   }
 }
 
@@ -252,15 +235,10 @@ export async function POST(request: NextRequest) {
   try {
     bodyText = await request.text();
   } catch (err) {
-    console.error("[webhook/elevenlabs] failed to read body:", err);
+    logger.error("webhook/elevenlabs", "failed to read body", { error: err instanceof Error ? err.message : String(err) });
     return NextResponse.json({ ok: false, error: "Bad body" }, { status: 400 });
   }
-  console.log(
-    "[webhook/elevenlabs] hit — signature present:",
-    !!signature,
-    "length:",
-    bodyText.length,
-  );
+  logger.info("webhook/elevenlabs", "hit", { signaturePresent: !!signature, bodyLength: bodyText.length });
 
   // Verify signature (constructEvent validates signature + timestamp + parses JSON)
   const event = await verifySignature(bodyText, signature);
@@ -278,25 +256,38 @@ export async function POST(request: NextRequest) {
   const data = payload.data;
   const conversationId = data?.conversation_id;
 
+  // Defensive: ElevenLabs may label post-call as "post_call_transcription",
+  // "transcript", or omit the type entirely. We treat ANY payload that looks
+  // like a post-call transcript as one.
+  const looksLikePostCall =
+    !!data &&
+    typeof data.conversation_id === "string" &&
+    (Array.isArray(data.transcript) ||
+      data.metadata ||
+      data.analysis ||
+      data.status);
+
+  const effectiveType = looksLikePostCall ? "post_call_transcription" : eventType;
+
   // Deduplicate using conversation_id + event_timestamp
   if (conversationId && isDuplicate(conversationId, eventTimestamp)) {
-    console.log("[webhook/elevenlabs] duplicate event, skipping", {
-      eventType,
-      conversationId,
-      eventTimestamp,
-    });
+    logger.info("webhook/elevenlabs", "duplicate event, skipping", { eventType, effectiveType, conversationId, eventTimestamp });
     return NextResponse.json({ ok: true, dedup: true });
   }
 
-  // Log receipt
-  console.log("[webhook/elevenlabs] received", {
+  // Log receipt with full shape for diagnostics
+  logger.info("webhook/elevenlabs", "received", {
     eventType,
+    effectiveType,
     conversationId,
     eventTimestamp: new Date(eventTimestamp * 1000).toISOString(),
+    hasTranscript: Array.isArray(data?.transcript),
+    hasMetadata: !!data?.metadata,
+    hasAnalysis: !!data?.analysis,
   });
 
   // Acknowledge immediately, process in background
-  switch (eventType) {
+  switch (effectiveType) {
     case "post_call_transcription": {
       after(async () => {
         await processPostCallTranscription(payload);
@@ -305,31 +296,24 @@ export async function POST(request: NextRequest) {
     }
     case "conversation_initiated": {
       after(() => {
-        console.log("[webhook/elevenlabs] conversation initiated", {
-          conversationId,
-        });
+        logger.info("webhook/elevenlabs", "conversation initiated", { conversationId });
       });
       break;
     }
     case "conversation_turn": {
       after(() => {
-        console.log("[webhook/elevenlabs] turn", {
-          conversationId,
-          turns: data?.transcript?.length,
-        });
+        logger.info("webhook/elevenlabs", "turn", { conversationId, turns: data?.transcript?.length });
       });
       break;
     }
     case "conversation_ended": {
       after(() => {
-        console.log("[webhook/elevenlabs] conversation ended", {
-          conversationId,
-        });
+        logger.info("webhook/elevenlabs", "conversation ended", { conversationId });
       });
       break;
     }
     default:
-      console.log("[webhook/elevenlabs] unhandled event:", eventType);
+    logger.warn("webhook/elevenlabs", "unhandled event", { eventType, fields: Object.keys(data ?? {}) });
   }
 
   return NextResponse.json({ ok: true, received: true });

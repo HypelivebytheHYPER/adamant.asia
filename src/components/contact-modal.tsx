@@ -4,6 +4,8 @@ import { useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { ContactForm } from "./contact-form";
+import { WhatsAppIcon, TelegramIcon } from "./chat-icons";
+import { WHATSAPP_CHAT_URL, TELEGRAM_CHAT_URL } from "@/lib/site";
 
 interface ContactModalProps {
   open: boolean;
@@ -93,14 +95,24 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
             {/* Quick contact alternatives */}
             <div className="px-6 pb-5">
               <div className="flex items-center gap-2 justify-center text-xs text-stone">
-                <span>or</span>
+                <span>or chat on</span>
                 <a
-                  href="https://wa.me/6589211191"
+                  href={WHATSAPP_CHAT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline underline-offset-2"
+                  className="text-primary hover:text-emerald-600 transition-colors"
+                  aria-label="WhatsApp"
                 >
-                  WhatsApp +65 8921 1191
+                  <WhatsAppIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={TELEGRAM_CHAT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-sky-500 transition-colors"
+                  aria-label="Telegram"
+                >
+                  <TelegramIcon className="w-4 h-4" />
                 </a>
               </div>
             </div>

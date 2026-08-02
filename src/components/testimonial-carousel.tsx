@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import type { TestimonialContent } from "@/data/content";
 
 interface TestimonialCardProps {
@@ -58,7 +57,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     const el = scrollRef.current;
     if (!el) return;
 
-    let speed = 0.6; // pixels per frame
+    const speed = 0.6; // pixels per frame
 
     const animate = () => {
       if (!isPaused && el) {

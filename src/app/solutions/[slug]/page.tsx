@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePage } from "@/sections/service-page";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { ServiceJsonLd } from "@/components/service-json-ld";
+import { WebPageJsonLd } from "@/components/webpage-json-ld";
 import { siteContent } from "@/data/content";
 import { SITE_URL } from "@/lib/site";
 
@@ -22,7 +24,8 @@ export async function generateMetadata({
   }
 
   const title = `${service.name} | Adamant`;
-  const description = `${service.hook} View our indicative fees. Adamant builds systems with transparent, fixed-price proposals.`;
+  const shortHook = service.hook.length > 120 ? service.hook.slice(0, 117) + "..." : service.hook;
+  const description = `${shortHook} Fixed-price. Two-week delivery.`;
 
   return {
     title,
@@ -36,11 +39,13 @@ export async function generateMetadata({
       description,
       type: "article",
       url: `${SITE_URL}/solutions/${slug}`,
+      images: [`${SITE_URL}/opengraph-image`],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [`${SITE_URL}/opengraph-image`],
     },
   };
 }
@@ -57,8 +62,29 @@ export default async function SolutionPage({
     notFound();
   }
 
+  const serviceUrl = `${SITE_URL}/solutions/${slug}`;
+
   return (
     <>
+      <WebPageJsonLd
+        url={serviceUrl}
+        title={`${service.name} | Adamant`}
+        description={service.hook}
+        pageType="ItemPage"
+      />
+      <ServiceJsonLd
+        name={service.name}
+        description={service.hook}
+        url={serviceUrl}
+        serviceType={service.name}
+        areaServed={["SG", "TH", "MY"]}
+        priceRange="$$"
+        estimatedCost={{ currency: "USD", value: "3000-8000" }}
+        faq={service.faq.map((item) => ({
+          question: item.q,
+          answer: item.a,
+        }))}
+      />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: `${SITE_URL}/` },
@@ -68,7 +94,7 @@ export default async function SolutionPage({
           },
           {
             name: service.name,
-            url: `${SITE_URL}/solutions/${slug}`,
+            url: serviceUrl,
           },
         ]}
       />

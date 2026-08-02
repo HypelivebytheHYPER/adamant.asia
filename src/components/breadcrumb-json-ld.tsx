@@ -1,6 +1,9 @@
 /**
  * BreadcrumbList JSON-LD — Google rich result support
  * https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
+ *
+ * 2026 update: Strict schema.org structure with @id references
+ * for entity resolution in AI search.
  */
 
 interface BreadcrumbItem {
@@ -16,7 +19,12 @@ export function BreadcrumbJsonLd({ items }: { items: BreadcrumbItem[] }) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: {
+        "@type": "WebPage",
+        "@id": item.url,
+        name: item.name,
+        url: item.url,
+      },
     })),
   };
 

@@ -9,3 +9,6 @@ export { FAQ } from "./faq";
 export { Model } from "./model";
 export { ServicePage } from "./service-page";
 export { ShowcaseCards } from "./showcase-cards";
+export { HomePractices } from "./home-practices";
+export { VerifyDark } from "./verify-dark";
+export { VerifyProcess } from "./verify-process";

@@ -13,12 +13,19 @@ import { AGENT_ID } from "@/lib/elevenlabs-config";
  * Appears in the bottom-right corner when a conversation is active.
  * Lets users end the call or mute from any page.
  */
+function fmtDuration(sec: number) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
 export function FloatingVoiceWidget() {
   const {
     status,
     isSpeaking,
     isListening,
     isMuted,
+    callDurationSec,
     getOutputByteFrequencyData,
     startSession,
     endSession,
@@ -61,21 +68,28 @@ export function FloatingVoiceWidget() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2"
+          className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2 sm:gap-3"
         >
-          {/* Status tooltip */}
-          <div className="px-3 py-1.5 rounded-lg bg-foreground/90 border border-white/10 text-xs text-inverse-weak backdrop-blur-sm">
-            {isSpeaking
-              ? "Agent speaking..."
-              : isListening
-                ? "Listening..."
-                : isConnecting
-                  ? "Connecting..."
-                  : "On call"}
+          {/* Status tooltip - Hidden on mobile to save space */}
+          <div className="hidden sm:flex px-3 py-1.5 rounded-lg bg-foreground/90 border border-white/10 text-xs text-inverse-weak backdrop-blur-sm items-center gap-2">
+            <span
+              className="font-medium"
+            >
+              {isSpeaking
+                ? "Agent speaking..."
+                : isListening
+                  ? "Listening..."
+                  : isConnecting
+                    ? "Connecting..."
+                    : "On call"}
+            </span>
+            {callDurationSec > 0 && (
+              <span className="text-inverse-weak/60 font-mono">{fmtDuration(callDurationSec)}</span>
+            )}
           </div>
 
           {/* Mini orb */}
-          <div className="relative w-14 h-14">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14">
             <div
               className={`absolute inset-0 rounded-full blur-lg opacity-50 bg-gradient-to-br ${orbGradient}`}
             />
@@ -93,12 +107,12 @@ export function FloatingVoiceWidget() {
               )}
               <button
                 onClick={handleCall}
-                className="relative z-10 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+                className="relative z-10 w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors active:scale-95"
               >
                 {isConnected ? (
-                  <PhoneOff className="w-4 h-4 text-white" />
+                  <PhoneOff className="w-5 h-5 sm:w-4 sm:h-4 text-white" />
                 ) : (
-                  <Phone className="w-4 h-4 text-white animate-pulse" />
+                  <Phone className="w-5 h-5 sm:w-4 sm:h-4 text-white animate-pulse" />
                 )}
               </button>
             </div>
@@ -108,12 +122,12 @@ export function FloatingVoiceWidget() {
           {isConnected && (
             <button
               onClick={() => setMuted(!isMuted)}
-              className="w-8 h-8 rounded-full bg-foreground/90 border border-white/10 flex items-center justify-center text-inverse-weak hover:bg-[#2a2a26] transition-colors"
+              className="w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-foreground/90 border border-white/10 flex items-center justify-center text-inverse-weak hover:bg-[#2a2a26] transition-colors active:scale-95"
             >
               {isMuted ? (
-                <MicOff className="w-3.5 h-3.5" />
+                <MicOff className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
               ) : (
-                <Mic className="w-3.5 h-3.5" />
+                <Mic className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
               )}
             </button>
           )}

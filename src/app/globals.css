@@ -334,6 +334,14 @@
     font-weight: 500;
   }
 
+  /* Tag pills, badges, author roles — small label text, normal case (11px) */
+  .text-label {
+    font-family: var(--font-geist-sans);
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+  }
+
   .text-2xs {
     /* Demo / dense UI readout — below text-xs */
     font-size: 0.625rem;

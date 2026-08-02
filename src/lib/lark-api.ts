@@ -9,6 +9,8 @@
  *   LARK_USER_ACCESS_TOKEN        → uses directly (from lark-cli auth or OAuth)
  */
 
+import "server-only"; // build-time guard: fails the build if imported client-side
+
 const BASE_URL = "https://open.larksuite.com/open-apis";
 
 interface LarkAuth {

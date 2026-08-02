@@ -7,15 +7,15 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     expect(screen.getByLabelText(/your name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/company or project name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/what do you need/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/company/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/tell us what you need/i)).toBeInTheDocument();
   });
 
   it("requires name, email and message", () => {
     render(<ContactForm />);
     const name = screen.getByLabelText(/your name/i) as HTMLInputElement;
     const email = screen.getByLabelText(/email/i) as HTMLInputElement;
-    const message = screen.getByLabelText(/what do you need/i) as HTMLTextAreaElement;
+    const message = screen.getByLabelText(/tell us what you need/i) as HTMLTextAreaElement;
     expect(name).toBeRequired();
     expect(email).toBeRequired();
     expect(message).toBeRequired();
@@ -23,7 +23,7 @@ describe("ContactForm", () => {
 
   it("company field is optional", () => {
     render(<ContactForm />);
-    const company = screen.getByLabelText(/company or project name/i) as HTMLInputElement;
+    const company = screen.getByLabelText(/company/i) as HTMLInputElement;
     expect(company).not.toBeRequired();
   });
 
@@ -31,7 +31,7 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     fireEvent.change(screen.getByLabelText(/your name/i), { target: { value: "Min" } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "min@test.com" } });
-    fireEvent.change(screen.getByLabelText(/what do you need/i), { target: { value: "Need a CRM setup" } });
+    fireEvent.change(screen.getByLabelText(/tell us what you need/i), { target: { value: "Need a CRM setup" } });
     fireEvent.click(screen.getByRole("button", { name: /send message/i }));
 
     await waitFor(() => {
@@ -44,7 +44,7 @@ describe("ContactForm", () => {
     render(<ContactForm onSuccess={onSuccess} />);
     fireEvent.change(screen.getByLabelText(/your name/i), { target: { value: "Min" } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "min@test.com" } });
-    fireEvent.change(screen.getByLabelText(/what do you need/i), { target: { value: "Help" } });
+    fireEvent.change(screen.getByLabelText(/tell us what you need/i), { target: { value: "Help" } });
     fireEvent.click(screen.getByRole("button", { name: /send message/i }));
 
     await waitFor(() => {

@@ -2,7 +2,10 @@
 
 import { BlurFade } from "@/components/animations/blur-fade";
 import { ContactForm } from "@/components/contact-form";
-import { Mail, MessageCircle } from "lucide-react";
+import { WhatsAppIcon } from "@/components/chat-icons";
+import { Mail } from "lucide-react";
+import { trackEmailClick } from "@/lib/analytics";
+import { WHATSAPP_CHAT_URL, TELEGRAM_CHAT_URL } from "@/lib/site";
 import type { SectionContent, ContactInfoContent } from "@/data/content";
 
 interface ContactProps {
@@ -34,6 +37,7 @@ export function Contact({ content, contactInfo }: ContactProps) {
                     <p className="text-caption text-inverse-muted">Email</p>
                     <a
                       href={`mailto:${contactInfo.email}`}
+                      onClick={() => trackEmailClick("contact_section")}
                       className="text-body text-background hover:text-primary transition-colors"
                     >
                       {contactInfo.email}
@@ -42,18 +46,31 @@ export function Contact({ content, contactInfo }: ContactProps) {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-background/10 flex items-center justify-center">
-                    <MessageCircle size={16} className="text-background" strokeWidth={1.5} />
+                    <WhatsAppIcon className="w-[18px] h-[18px] text-background" />
                   </div>
                   <div>
-                    <p className="text-caption text-inverse-muted">WhatsApp</p>
-                    <a
-                      href="https://wa.me/6589211191"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-body text-background hover:text-primary transition-colors"
-                    >
-                      +65 8921 1191
-                    </a>
+                    <p className="text-caption text-inverse-muted">Chat</p>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={WHATSAPP_CHAT_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-body text-background hover:text-primary transition-colors"
+                        aria-label="WhatsApp"
+                      >
+                        WhatsApp
+                      </a>
+                      <span className="text-inverse-muted">·</span>
+                      <a
+                        href={TELEGRAM_CHAT_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-body text-background hover:text-primary transition-colors"
+                        aria-label="Telegram"
+                      >
+                        Telegram
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

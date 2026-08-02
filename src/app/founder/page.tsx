@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const founderName = cfg.founder_name || "Samantha Tng";
   const founderTitle = cfg.founder_title || "Founder";
   const company = cfg.founder_company_name || "Adamant";
-  const bio = cfg.founder_bio_short || `${founderName} is the ${founderTitle} of ${company}, an AI agency that builds real products — SaaS tools and marketing systems that ship in two weeks.`;
+  const bio = cfg.founder_bio_short || `${founderName} is the ${founderTitle} of ${company}, a Singapore advisory house with two practices — Adamant Verify (KYC/KYB, AML screening and due diligence) and Adamant AI (custom SaaS, marketing systems and workflow automation).`;
   const canonical = cfg.founder_canonical_url || "/founder";
 
   const title = `${founderName} — ${founderTitle}`;
@@ -48,7 +48,7 @@ export default async function FounderPage() {
   const founderTitle = cfg.founder_title || "Founder";
   const linkedIn = cfg.founder_linkedin_url || "https://www.linkedin.com/in/sstng";
   const company = cfg.founder_company_name || "Adamant";
-  const bio = cfg.founder_bio_short || `${founderName} is the ${founderTitle} of ${company}, an AI agency that builds real products — SaaS tools and marketing systems that ship in two weeks.`;
+  const bio = cfg.founder_bio_short || `${founderName} is the ${founderTitle} of ${company}, a Singapore advisory house with two practices — Adamant Verify (KYC/KYB, AML screening and due diligence) and Adamant AI (custom SaaS, marketing systems and workflow automation).`;
   const heroHeadline = cfg.founder_hero_headline || "We started this because we were tired of watching good teams drown.";
   const heroKicker = cfg.founder_hero_kicker || `Behind ${company}`;
   const canonical = cfg.founder_canonical_url || "/founder";
@@ -71,6 +71,10 @@ export default async function FounderPage() {
         image={`${SITE_URL}/opengraph-image`}
         sameAs={linkedIn ? [linkedIn] : []}
         knowsAbout={[
+          "KYC Verification",
+          "AML Screening",
+          "Due Diligence",
+          "Counterparty Risk Assessment",
           "SaaS Development",
           "AI Workflow Automation",
           "Marketing Systems",

@@ -8,6 +8,9 @@
 
 const API_BASE = "https://api.telegram.org/bot";
 
+/** Direct chat link for WhatsApp replies in notifications */
+const WHATSAPP_CHAT_URL = "https://wa.me/message/BSROJ4X2IRGOH1";
+
 export interface TelegramMessage {
   text: string;
   parse_mode?: "HTML" | "Markdown" | "MarkdownV2";
@@ -78,11 +81,7 @@ export function formatLeadNotification(payload: {
 
   if (phone) {
     lines.push(`<b>📱 Phone/WhatsApp:</b> ${escapeHtml(phone)}`);
-    // Clean digits for wa.me link
-    const cleanDigits = phone.replace(/\D/g, "");
-    if (cleanDigits) {
-      lines.push(`<a href="https://wa.me/${cleanDigits}">💬 Chat on WhatsApp</a>`);
-    }
+    lines.push(`<a href="${WHATSAPP_CHAT_URL}">💬 Chat on WhatsApp</a>`);
   }
   if (company) lines.push(`<b>Company:</b> ${escapeHtml(company)}`);
   if (message) lines.push(`<b>Message:</b> ${escapeHtml(message.slice(0, 400))}`);
@@ -102,7 +101,7 @@ export function formatVoiceCallNotification(payload: {
   summary: string;
   terminationReason?: string;
 }): TelegramMessage {
-  const { userName, conversationId, duration, cost, callSuccessful, summary, terminationReason } = payload;
+  const { userName, conversationId, duration, callSuccessful, summary, terminationReason } = payload;
   const minutes = Math.floor(duration / 60);
   const seconds = duration % 60;
   const durationStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
@@ -125,6 +124,65 @@ export function formatVoiceCallNotification(payload: {
   if (summary.length > 500) {
     lines.push("...(truncated — full transcript in Lark Base)");
   }
+
+  return { text: lines.join("\n"), parse_mode: "HTML" };
+}
+
+/** Format a daily GSC performance summary for Telegram */
+export function formatGscDailyReport(payload: {
+  period: string;
+  worldwide: { clicks: number; impressions: number; ctr: number; position: number };
+  singapore: { clicks: number; impressions: number; ctr: number; position: number };
+  prevWorldwide: { clicks: number; impressions: number; ctr: number; position: number };
+  topQueries: Array<{ query: string; clicks: number; impressions: number; position: number }>;
+  topPages: Array<{ path: string; clicks: number; impressions: number }>;
+}): TelegramMessage {
+  const { period, worldwide, singapore, prevWorldwide, topQueries, topPages } = payload;
+
+  const fmt = (n: number) => new Intl.NumberFormat("en-SG").format(Math.round(n));
+  const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
+  const arrow = (n: number) => (n > 0 ? "↗️" : n < 0 ? "↘️" : "➡️");
+  const sign = (n: number) => (n > 0 ? "+" : "");
+  const delta = (curr: number, prev: number) => {
+    const d = curr - prev;
+    return `${arrow(d)} ${sign(d)}${fmt(d)}`;
+  };
+  const deltaPct = (curr: number, prev: number) => {
+    const d = curr - prev;
+    return `${arrow(d)} ${sign(d)}${pct(d)}`;
+  };
+  const deltaPos = (curr: number, prev: number) => {
+    const d = prev - curr; // lower position is better
+    return `${arrow(d)} ${sign(d)}${d.toFixed(1)}`;
+  };
+
+  const lines = [
+    `📊 <b>Adamant Daily SEO Report</b>`,
+    `<i>${escapeHtml(period)}</i>`,
+    "",
+    `<b>🌐 Worldwide</b>`,
+    `Clicks: ${fmt(worldwide.clicks)} ${delta(worldwide.clicks, prevWorldwide.clicks)}`,
+    `Impressions: ${fmt(worldwide.impressions)} ${delta(worldwide.impressions, prevWorldwide.impressions)}`,
+    `CTR: ${pct(worldwide.ctr)} ${deltaPct(worldwide.ctr, prevWorldwide.ctr)}`,
+    `Avg position: ${worldwide.position.toFixed(1)} ${deltaPos(worldwide.position, prevWorldwide.position)}`,
+    "",
+    `<b>🇸🇬 Singapore</b>`,
+    `Clicks: ${fmt(singapore.clicks)}`,
+    `Impressions: ${fmt(singapore.impressions)}`,
+    `CTR: ${pct(singapore.ctr)}`,
+    `Avg position: ${singapore.position.toFixed(1)}`,
+    "",
+    `<b>🔍 Top queries</b>`,
+    ...topQueries.slice(0, 5).map((r, i) => {
+      const q = r.query.length > 30 ? r.query.slice(0, 27) + "…" : r.query;
+      return `${i + 1}. ${escapeHtml(q)} — ${fmt(r.clicks)} clicks, ${fmt(r.impressions)} impr`;
+    }),
+    "",
+    `<b>📄 Top pages</b>`,
+    ...topPages.slice(0, 5).map((r, i) => {
+      return `${i + 1}. ${escapeHtml(r.path || "/")} — ${fmt(r.clicks)} clicks`;
+    }),
+  ];
 
   return { text: lines.join("\n"), parse_mode: "HTML" };
 }

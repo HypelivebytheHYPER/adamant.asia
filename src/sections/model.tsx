@@ -26,22 +26,19 @@ export function Model({ content }: ModelProps) {
                 {content.subheadline}
               </p>
             </BlurFade>
-            <BlurFade delay={0.15}>
-              <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <Link href="/solutions/productivity-ai" className="inline-flex items-center gap-1.5 text-ui text-primary hover:underline">
-                  Productivity AI
-                  <ArrowRight size={13} strokeWidth={2} />
-                </Link>
-                <Link href="/solutions/campaign-systems" className="inline-flex items-center gap-1.5 text-ui text-primary hover:underline">
-                  Campaign Systems
-                  <ArrowRight size={13} strokeWidth={2} />
-                </Link>
-                <Link href="/solutions/marketing-strategy" className="inline-flex items-center gap-1.5 text-ui text-primary hover:underline">
-                  Marketing Strategy
-                  <ArrowRight size={13} strokeWidth={2} />
-                </Link>
-              </div>
-            </BlurFade>
+            {content.ctaText && content.ctaLink && (
+              <BlurFade delay={0.15}>
+                <div className="mt-6">
+                  <Link
+                    href={content.ctaLink}
+                    className="inline-flex items-center gap-1.5 text-ui text-primary hover:underline"
+                  >
+                    {content.ctaText}
+                    <ArrowRight size={13} strokeWidth={2} />
+                  </Link>
+                </div>
+              </BlurFade>
+            )}
           </div>
 
           {/* Right: Visual */}
