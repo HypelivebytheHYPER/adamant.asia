@@ -173,11 +173,11 @@ export default function AboutPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-border">
                   <a
-                    href="mailto:sam@adamant.asia"
+                    href="mailto:hello@adamant.asia"
                     className="inline-flex items-center gap-2 text-body text-foreground hover:text-primary transition-colors"
                   >
                     <Mail size={16} />
-                    sam@adamant.asia
+                    hello@adamant.asia
                   </a>
                   <Link
                     href="/contact"

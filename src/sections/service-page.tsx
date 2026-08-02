@@ -242,7 +242,7 @@ export function ServicePage({ service, allTestimonials }: ServicePageProps) {
             </BlurFade>
             <BlurFade delay={0.15}>
               <motion.a
-                href="mailto:sam@adamant.asia"
+                href="mailto:hello@adamant.asia"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-2.5 text-ui text-foreground font-medium transition-all hover:bg-background/90"

@@ -412,7 +412,7 @@ export const siteContent = {
   ] satisfies NavLinkContent[],
 
   contactInfo: {
-    email: "sam@adamant.asia",
+    email: "hello@adamant.asia",
     location: "7 Temasek Boulevard, #12-07, Suntec Tower One, Singapore 038987",
   } satisfies ContactInfoContent,
 

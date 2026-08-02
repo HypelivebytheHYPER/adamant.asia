@@ -395,7 +395,7 @@ export function PricingClient({ items, categories }: PricingClientProps) {
                         <TelegramIcon className="w-4 h-4" />
                       </a>
                       <a
-                        href="mailto:sam@adamant.asia"
+                        href="mailto:hello@adamant.asia"
                         className="w-10 h-10 rounded-full border border-border bg-surface flex items-center justify-center text-stone hover:text-foreground hover:border-primary/30 transition-colors"
                         title="Email"
                       >
@@ -677,7 +677,7 @@ export function PricingClient({ items, categories }: PricingClientProps) {
                   </div>
                   <div className="pt-4">
                     <p className="text-caption text-stone mb-3">Ready to talk?</p>
-                    <a href="mailto:sam@adamant.asia" className="btn-primary inline-flex items-center gap-2">
+                    <a href="mailto:hello@adamant.asia" className="btn-primary inline-flex items-center gap-2">
                       <Mail size={14} />
                       Book your free intro call
                     </a>

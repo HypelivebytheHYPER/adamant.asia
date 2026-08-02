@@ -3,7 +3,7 @@
 Workflow systems for teams that move fast.
 
 **Live:** [adamant.asia](https://adamant.asia)
-**Contact:** sam@adamant.asia / WhatsApp +65 8921 1191
+**Contact:** hello@adamant.asia / WhatsApp +65 8921 1191
 
 ---
 

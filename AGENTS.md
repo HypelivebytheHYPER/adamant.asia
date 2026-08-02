@@ -12,7 +12,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 **Production URL:** `https://adamant.asia`
 **Vercel org:** `hypelives-projects`
-**Contact:** `sam@adamant.asia`
+**Contact:** `hello@adamant.asia`
 **WhatsApp:** `+65 8921 1191`
 
 ---
@@ -395,7 +395,7 @@ Applied to all routes via `next.config.ts`:
 - **Nav links:** Home, Solutions, Process, Reviews, Pricing, Founder, Contact
 - **Footer nav:** Home, all solutions, Process, Pricing, Founder, Contact
 - **Internal navigation:** Always use Next.js `<Link>` — bare `<a>` or `window.location` kills voice session
-- **Email:** `mailto:sam@adamant.asia`
+- **Email:** `mailto:hello@adamant.asia`
 - **WhatsApp:** `https://wa.me/6589211191` (static link to our number)
 - **All CTAs scroll to** `#contact`, `#process`, or navigate to `/pricing`
 - `aria-hidden="true"` on decorative elements only

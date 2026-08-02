@@ -12,7 +12,7 @@ export const OG_IMAGE = `${SITE_URL}/opengraph-image`; // Next.js OG image API
 /** Default OG/Twitter image (fallback when no page-specific image) */
 
 /** Company contact */
-export const CONTACT_EMAIL = "sam@adamant.asia";
+export const CONTACT_EMAIL = "hello@adamant.asia";
 
 /** Chat links — used instead of displaying a phone number */
 export const WHATSAPP_CHAT_URL = "https://wa.me/message/BSROJ4X2IRGOH1";
